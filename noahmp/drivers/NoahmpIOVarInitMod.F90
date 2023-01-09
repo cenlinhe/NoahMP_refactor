@@ -1630,6 +1630,12 @@ contains
     allocate ( NoahmpIO%SNOWNCV      (XSTART:XEND,YSTART:YEND) )            ! non-covective snow forcing (subset of rainncv) [mm]
     allocate ( NoahmpIO%GRAUPELNCV   (XSTART:XEND,YSTART:YEND) )            ! non-convective graupel forcing (subset of rainncv) [mm]
     allocate ( NoahmpIO%HAILNCV      (XSTART:XEND,YSTART:YEND) )            ! non-convective hail forcing (subset of rainncv) [mm]
+    allocate ( NoahmpIO%MP_RAINC     (XSTART:XEND,YSTART:YEND) )            ! convective precip forcing [mm]
+    allocate ( NoahmpIO%MP_RAINNC    (XSTART:XEND,YSTART:YEND) )            ! non-convective precip forcing [mm]
+    allocate ( NoahmpIO%MP_SHCV      (XSTART:XEND,YSTART:YEND) )            ! shallow conv. precip forcing [mm]
+    allocate ( NoahmpIO%MP_SNOW      (XSTART:XEND,YSTART:YEND) )            ! non-covective snow (subset of rainnc) [mm]
+    allocate ( NoahmpIO%MP_GRAUP     (XSTART:XEND,YSTART:YEND) )            ! non-convective graupel (subset of rainnc) [mm]
+    allocate ( NoahmpIO%MP_HAIL      (XSTART:XEND,YSTART:YEND) )            ! non-convective hail (subset of rainnc) [mm]
 
     allocate ( NoahmpIO%bexp_3d      (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! C-H B exponent
     allocate ( NoahmpIO%smcdry_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Dry
@@ -2088,6 +2094,12 @@ contains
     NoahmpIO%SNOWNCV         = undefined_real
     NoahmpIO%GRAUPELNCV      = undefined_real
     NoahmpIO%HAILNCV         = undefined_real
+    NoahmpIO%MP_RAINC        = 0.0
+    NoahmpIO%MP_RAINNC       = 0.0
+    NoahmpIO%MP_SHCV         = 0.0
+    NoahmpIO%MP_SNOW         = 0.0
+    NoahmpIO%MP_GRAUP        = 0.0
+    NoahmpIO%MP_HAIL         = 0.0
     NoahmpIO%TSK             = undefined_real
     NoahmpIO%QFX             = undefined_real
     NoahmpIO%SMSTAV          = undefined_real

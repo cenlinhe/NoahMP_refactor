@@ -35,7 +35,7 @@ contains
     associate(                                                                 &
               NumSoilLayer         => noahmp%config%domain%NumSoilLayer       ,& ! in,    number of soil layers
               DepthSoilLayer       => noahmp%config%domain%DepthSoilLayer     ,& ! in,    depth [m] of layer-bottom from soil surface
-              MainTimeStep         => noahmp%config%domain%MainTimeStep       ,& ! in,    main noahmp timestep [s]
+              SoilTimeStep         => noahmp%config%domain%SoilTimeStep       ,& ! in,    noahmp soil timestep [s]
               ThicknessSoilLayer   => noahmp%config%domain%ThicknessSoilLayer ,& ! in,    soil layer thickness [m]
               TileDrainCoeffSp     => noahmp%water%param%TileDrainCoeffSp     ,& ! in,    drainage coefficient [mm/d]
               DrainSoilLayerInd    => noahmp%water%param%DrainSoilLayerInd    ,& ! in,    starting soil layer for drainage
@@ -61,7 +61,7 @@ contains
     ThicknessSoilLayer = 0.0
     DrainWatTmp        = 0.0
     DrainFracTmp       = 0.0
-    DrainCoeffTmp      = TileDrainCoeffSp * MainTimeStep / (24.0 * 3600.0)
+    DrainCoeffTmp      = TileDrainCoeffSp * SoilTimeStep / (24.0 * 3600.0)
 
     do IndSoil = 1, NumSoilLayer
        if ( IndSoil == 1 ) then
@@ -199,7 +199,7 @@ contains
        endif
     endif
 
-    TileDrain = DrainWatVolTot / MainTimeStep
+    TileDrain = DrainWatVolTot / SoilTimeStep
 
     end associate
 

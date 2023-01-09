@@ -24,7 +24,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                        &
-              DrainSoilBot     => noahmp%water%flux%DrainSoilBot     ,& ! in,    soil bottom drainage [m/s]
+              DrainSoilBot     => noahmp%water%flux%DrainSoilBot     ,& ! in,    soil bottom drainage [mm/s]
               RunoffSubsurface => noahmp%water%flux%RunoffSubsurface  & ! inout, subsurface runoff [mm/s] 
              )
 ! ----------------------------------------------------------------------

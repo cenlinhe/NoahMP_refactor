@@ -53,7 +53,7 @@ contains
               SoilMoisture           => noahmp%water%state%SoilMoisture             ,& ! inout, total glacier water [m3/m3]
               PondSfcThinSnwMelt     => noahmp%water%state%PondSfcThinSnwMelt       ,& ! inout, surface ponding [mm] from snowmelt when thin snow has no layer
               WaterHeadSfc           => noahmp%water%state%WaterHeadSfc             ,& ! inout, surface water head [mm)]
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on glacier/soil surface [mm/s]
+              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on glacier/soil surface [m/s]
               FrostSnowSfcIce        => noahmp%water%flux%FrostSnowSfcIce           ,& ! inout, snow surface frost rate [mm/s]
               SublimSnowSfcIce       => noahmp%water%flux%SublimSnowSfcIce          ,& ! inout, snow surface sublimation rate [mm/s]
               GlacierExcessFlow      => noahmp%water%flux%GlacierExcessFlow         ,& ! inout, glacier snow excess flow [mm/s]

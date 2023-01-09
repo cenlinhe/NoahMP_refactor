@@ -31,11 +31,12 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                               &
-              MainTimeStep        => noahmp%config%domain%MainTimeStep      ,& ! in,    noahmp main time step [s]
+              SoilTimeStep        => noahmp%config%domain%SoilTimeStep      ,& ! in,    noahmp soil time step [s]
+              NumSoilTimeStep     => noahmp%config%domain%NumSoilTimeStep   ,& ! in,    number of time step for calculating soil processes
               IrriFloodRateFac    => noahmp%water%param%IrriFloodRateFac    ,& ! in,    flood application rate factor
               IrrigationFracFlood => noahmp%water%state%IrrigationFracFlood ,& ! in,    fraction of grid under flood irrigation (0 to 1)
               IrrigationAmtFlood  => noahmp%water%state%IrrigationAmtFlood  ,& ! inout, flood irrigation water amount [m]
-              SoilSfcInflow       => noahmp%water%flux%SoilSfcInflow        ,& ! inout, water input on soil surface [mm/s]
+              SoilSfcInflowAcc    => noahmp%water%flux%SoilSfcInflowAcc     ,& ! inout, accumulated water flux into soil during soil timestep [m/s * dt_soil/dt_main]
               IrrigationRateFlood => noahmp%water%flux%IrrigationRateFlood   & ! inout, flood irrigation water rate [m/timestep]
              )
 ! ----------------------------------------------------------------------
@@ -44,12 +45,12 @@ contains
     InfilRateSfc = 0.0
 
     ! estimate infiltration rate based on Philips Eq.
-    call IrrigationInfilPhilip(noahmp, MainTimeStep, InfilRateSfc)  
+    call IrrigationInfilPhilip(noahmp, SoilTimeStep, InfilRateSfc)  
 
     ! irrigation rate of flood irrigation. It should be
     ! greater than infiltration rate to get infiltration
     ! excess runoff at the time of application
-    IrrigationRateFlood = InfilRateSfc * MainTimeStep * IrriFloodRateFac   ! Limit irrigation rate to fac*infiltration rate 
+    IrrigationRateFlood = InfilRateSfc * SoilTimeStep * IrriFloodRateFac   ! Limit irrigation rate to fac*infiltration rate 
     IrrigationRateFlood = IrrigationRateFlood * IrrigationFracFlood
 
     if ( IrrigationRateFlood >= IrrigationAmtFlood ) then
@@ -60,7 +61,7 @@ contains
     endif
 
     ! update water flux going to surface soil
-    SoilSfcInflow = SoilSfcInflow + (IrrigationRateFlood / MainTimeStep)  ! [m/s]
+    SoilSfcInflowAcc = SoilSfcInflowAcc + (IrrigationRateFlood / SoilTimeStep * NumSoilTimeStep)  ! [m/s * dt_soil/dt_main]
 
     end associate
 

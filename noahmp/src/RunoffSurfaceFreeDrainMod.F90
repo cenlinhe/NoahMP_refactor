@@ -52,13 +52,13 @@ contains
               SoilLiqWater        => noahmp%water%state%SoilLiqWater        ,& ! in,  soil water content [m3/m3]
               SoilIce             => noahmp%water%state%SoilIce             ,& ! in,  soil ice content [m3/m3]
               SoilIceMax          => noahmp%water%state%SoilIceMax          ,& ! in,  maximum soil ice content [m3/m3]
-              SoilSfcInflow       => noahmp%water%flux%SoilSfcInflow        ,& ! in,  water input on soil surface [mm/s]
+              SoilSfcInflowMean   => noahmp%water%flux%SoilSfcInflowMean    ,& ! in,  water input on soil surface [m/s]
               SoilMoistureSat     => noahmp%water%param%SoilMoistureSat     ,& ! in,  saturated value of soil moisture [m3/m3]
               SoilMoistureWilt    => noahmp%water%param%SoilMoistureWilt    ,& ! in,  wilting point soil moisture [m3/m3]
               SoilInfilMaxCoeff   => noahmp%water%param%SoilInfilMaxCoeff   ,& ! in,  parameter to calculate maximum infiltration rate
               SoilImpervFracCoeff => noahmp%water%param%SoilImpervFracCoeff ,& ! in,  parameter to calculate frozen soil impermeable fraction
-              RunoffSurface       => noahmp%water%flux%RunoffSurface        ,& ! out, surface runoff [mm/s]
-              InfilRateSfc        => noahmp%water%flux%InfilRateSfc          & ! out, infiltration rate at surface [mm/s]
+              RunoffSurface       => noahmp%water%flux%RunoffSurface        ,& ! out, surface runoff [m/s]
+              InfilRateSfc        => noahmp%water%flux%InfilRateSfc          & ! out, infiltration rate at surface [m/s]
              )
 ! ----------------------------------------------------------------------
 
@@ -67,7 +67,7 @@ contains
     SoilWatMaxHold(1:NumSoilLayer) = 0.0
 
     ! start infiltration for free drainage scheme
-    if ( SoilSfcInflow > 0.0 ) then
+    if ( SoilSfcInflowMean > 0.0 ) then
 
        TimeStepDay    = TimeStep / 86400.0
        SoilWatHoldCap = SoilMoistureSat(1) - SoilMoistureWilt(1)
@@ -86,7 +86,7 @@ contains
        enddo
        FracVoidRem       = 1.0 - exp(-1.0 * SoilInfilMaxCoeff * TimeStepDay)
        SoilWatHoldMaxRem = SoilWatHoldMaxAcc * FracVoidRem
-       WaterInSfc        = max(0.0, SoilSfcInflow * TimeStep)
+       WaterInSfc        = max(0.0, SoilSfcInflowMean * TimeStep)
        InfilRateMax      = (WaterInSfc * (SoilWatHoldMaxRem/(WaterInSfc + SoilWatHoldMaxRem))) / TimeStep
 
        ! impermeable fraction due to frozen soil
@@ -117,10 +117,10 @@ contains
        InfilRateMax = min(InfilRateMax, WaterInSfc)
 
        ! compute surface runoff and infiltration rate
-       RunoffSurface = max(0.0, SoilSfcInflow-InfilRateMax)
-       InfilRateSfc  = SoilSfcInflow - RunoffSurface
+       RunoffSurface = max(0.0, SoilSfcInflowMean-InfilRateMax)
+       InfilRateSfc  = SoilSfcInflowMean - RunoffSurface
 
-    endif ! SoilSfcInflow > 0.0
+    endif ! SoilSfcInflowMean > 0.0
 
     end associate
 

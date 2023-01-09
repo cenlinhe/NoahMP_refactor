@@ -136,6 +136,7 @@ OBJS = ConstantDefineMod.o \
        SurfaceRadiationGlacierMod.o \
        WaterMainGlacierMod.o \
        ConfigVarOutMod.o \
+       ForcingVarOutMod.o \
        EnergyVarOutMod.o \
        WaterVarOutMod.o \
        BiochemVarOutMod.o
@@ -176,6 +177,7 @@ EnergyVarInitMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o Noahmp
 WaterVarInitMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o PedoTransferSR2006.o
 BiochemVarInitMod.o:    ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
 ConfigVarOutMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
+ForcingVarOutMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
 EnergyVarOutMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
 WaterVarOutMod.o:       ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
 BiochemVarOutMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o

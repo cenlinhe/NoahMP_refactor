@@ -36,6 +36,7 @@ module EnergyVarType
     real(kind=kind_noahmp) :: HeatLatentBareGrd           ! bare ground latent heat flux [W/m2] (+ to atm)
     real(kind=kind_noahmp) :: HeatGroundBareGrd           ! bare ground heat flux [W/m2] (+ to soil/snow)
     real(kind=kind_noahmp) :: HeatGroundTot               ! total ground heat flux [W/m2] (+ to soil/snow)
+    real(kind=kind_noahmp) :: HeatGroundTotMean           ! total ground heat flux [W/m2] averaged over soil timestep
     real(kind=kind_noahmp) :: HeatFromSoilBot             ! energy influx from soil bottom [W/m2]
     real(kind=kind_noahmp) :: HeatCanStorageChg           ! canopy heat storage change [W/m2]
     real(kind=kind_noahmp) :: HeatGroundTotAcc            ! accumulated total ground heat flux per soil timestep [W/m2 * dt_soil/dt_main] (+ to soil/snow)

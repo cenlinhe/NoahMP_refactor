@@ -61,12 +61,12 @@ contains
                DepthSoilLayer        => noahmp%config%domain%DepthSoilLayer        ,& ! in,  depth [m] of layer-bottom from soil surface
                OptDynVicInfiltration => noahmp%config%nmlist%OptDynVicInfiltration ,& ! in,  options for infiltration in dynamic VIC runoff scheme
                SoilMoisture          => noahmp%water%state%SoilMoisture            ,& ! in,  total soil moisture [m3/m3]
-               SoilSfcInflow         => noahmp%water%flux%SoilSfcInflow            ,& ! in,  water input on soil surface [mm/s]
+               SoilSfcInflowMean     => noahmp%water%flux%SoilSfcInflowMean        ,& ! in,  mean water input on soil surface [m/s]
                SoilMoistureSat       => noahmp%water%param%SoilMoistureSat         ,& ! in,  saturated value of soil moisture [m3/m3]
                InfilHeteroDynVic     => noahmp%water%param%InfilHeteroDynVic       ,& ! in,  Dynamic VIC heterogeniety parameter for infiltration
                InfilFacDynVic        => noahmp%water%param%InfilFacDynVic          ,& ! in,  Dynamic VIC model infiltration parameter
-               RunoffSurface         => noahmp%water%flux%RunoffSurface            ,& ! out, surface runoff [mm/s]
-               InfilRateSfc          => noahmp%water%flux%InfilRateSfc              & ! out, infiltration rate at surface [mm/s]
+               RunoffSurface         => noahmp%water%flux%RunoffSurface            ,& ! out, surface runoff [m/s]
+               InfilRateSfc          => noahmp%water%flux%InfilRateSfc              & ! out, infiltration rate at surface [m/s]
               )
 ! ----------------------------------------------------------------------
 
@@ -92,7 +92,7 @@ contains
      enddo
      if ( WaterDepthTop > WaterDepthSatTop ) WaterDepthTop = WaterDepthSatTop
 
-     WaterInSoilSfc = SoilSfcInflow * TimeStep                                                                     ! precipitation depth, [m]
+     WaterInSoilSfc = SoilSfcInflowMean * TimeStep                                                                     ! precipitation depth, [m]
      WaterDepthMax  = WaterDepthSatTop * (InfilFacDynVic + 1.0)                                                    ! maximum infiltration capacity [m], Eq.14
      WaterDepthInit = WaterDepthMax * (1.0 - (1.0 - (WaterDepthTop/WaterDepthSatTop)**(1.0/(1.0+InfilFacDynVic)))) ! infiltration capacity, [m] in Eq.1
      !WaterDepthMax = CAP_minf ; WaterDepthInit = A  
@@ -289,9 +289,9 @@ contains
      endif
 
 2001 RunoffSurface = (RunoffSatExcess + RunoffInfilExcess) / TimeStep
-     RunoffSurface = min(RunoffSurface, SoilSfcInflow)
+     RunoffSurface = min(RunoffSurface, SoilSfcInflowMean)
      RunoffSurface = max(RunoffSurface, 0.0)
-     InfilRateSfc  = SoilSfcInflow - RunoffSurface
+     InfilRateSfc  = SoilSfcInflowMean - RunoffSurface
 
     end associate
 

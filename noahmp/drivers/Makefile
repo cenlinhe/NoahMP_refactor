@@ -39,4 +39,5 @@ NoahmpDriverMainMod.o:      ../utility/Machine.o ../src/NoahmpVarType.o NoahmpIO
                             ../src/NoahmpMainMod.o ../src/NoahmpMainGlacierMod.o \
                             ../src/ConfigVarOutMod.o ../src/EnergyVarOutMod.o \
                             ../src/WaterVarOutMod.o ../src/BiochemVarOutMod.o \
+                            ../src/ForcingVarOutMod.o \
                             ../../hrldas/Utility_routines/module_ra_gfdleta.o

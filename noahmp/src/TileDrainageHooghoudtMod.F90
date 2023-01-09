@@ -50,7 +50,7 @@ contains
     associate(                                                                 &
               NumSoilLayer         => noahmp%config%domain%NumSoilLayer       ,& ! in,    number of soil layers
               DepthSoilLayer       => noahmp%config%domain%DepthSoilLayer     ,& ! in,    depth [m] of layer-bottom from soil surface
-              MainTimeStep         => noahmp%config%domain%MainTimeStep       ,& ! in,    main noahmp timestep [s]
+              SoilTimeStep         => noahmp%config%domain%SoilTimeStep       ,& ! in,    noahmp soil timestep [s]
               GridSize             => noahmp%config%domain%GridSize           ,& ! in,    noahmp model grid spacing [m]
               ThicknessSoilLayer   => noahmp%config%domain%ThicknessSoilLayer ,& ! in,    soil layer thickness [m]
               SoilMoistureFieldCap => noahmp%water%param%SoilMoistureFieldCap ,& ! in,    reference soil moisture (field capacity) [m3/m3]
@@ -82,7 +82,7 @@ contains
     DepthToLayerTop      = 0.0
     LateralFlow          = 0.0
     ThickSatZoneTot      = 0.0
-    DrainCoeffTmp        = TileDrainCoeff * 1000.0 * MainTimeStep / (24.0 * 3600.0)                   ! m per day to mm per timestep
+    DrainCoeffTmp        = TileDrainCoeff * 1000.0 * SoilTimeStep / (24.0 * 3600.0)                   ! m per day to mm per timestep
 
     ! Thickness of soil layers    
     do IndSoil = 1, NumSoilLayer
@@ -127,7 +127,7 @@ contains
 
     ! lateral hydraulic conductivity and total lateral flow
     do IndSoil = 1, NumSoilLayer
-       LateralWatCondTmp(IndSoil) = SoilWatConductivity(IndSoil) * LateralWatCondFac * MainTimeStep      ! m/s to m/timestep
+       LateralWatCondTmp(IndSoil) = SoilWatConductivity(IndSoil) * LateralWatCondFac * SoilTimeStep      ! m/s to m/timestep
        LateralFlow                = LateralFlow + (ThickSatZone(IndSoil) * LateralWatCondTmp(IndSoil))
        ThickSatZoneTot            = ThickSatZoneTot + ThickSatZone(IndSoil)
     enddo
@@ -173,7 +173,7 @@ contains
        endif
     enddo
 
-    TileDrain = TileDrain / MainTimeStep            ! mm/s
+    TileDrain = TileDrain / SoilTimeStep            ! mm/s
 
     end associate
 

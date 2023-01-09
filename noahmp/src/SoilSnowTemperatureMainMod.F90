@@ -39,10 +39,11 @@ contains
               NumSoilLayer          => noahmp%config%domain%NumSoilLayer         ,& ! in,  number of soil layers
               NumSnowLayerMax       => noahmp%config%domain%NumSnowLayerMax      ,& ! in,  maximum number of snow layers
               NumSnowLayerNeg       => noahmp%config%domain%NumSnowLayerNeg      ,& ! in,  actual number of snow layers (negative)
-              MainTimeStep          => noahmp%config%domain%MainTimeStep         ,& ! in,  main noahmp timestep [s]
+              SoilTimeStep          => noahmp%config%domain%SoilTimeStep         ,& ! in,  noahmp soil process timestep [s]
               DepthSoilTempBottom   => noahmp%config%domain%DepthSoilTempBottom  ,& ! in,  depth [m] from soil surface for soil temp. lower boundary
               SnowDepth             => noahmp%water%state%SnowDepth              ,& ! in,  snow depth [m]
               DepthSoilTempBotToSno => noahmp%energy%state%DepthSoilTempBotToSno ,& ! out, depth [m] of soil temp. lower boundary from snow surface
+              HeatFromSoilBot       => noahmp%energy%flux%HeatFromSoilBot        ,& ! out, energy influx from soil bottom during soil timestep [J/m2]
               RadSwPenetrateGrd     => noahmp%energy%flux%RadSwPenetrateGrd       & ! out, light penetrating through soil/snow water [W/m2]
              )
 ! ----------------------------------------------------------------------
@@ -65,7 +66,10 @@ contains
 
     ! compute soil temperatures
     call SoilSnowThermalDiffusion(noahmp, MatLeft1, MatLeft2, MatLeft3, MatRight)
-    call SoilSnowTemperatureSolver(noahmp, MainTimeStep, MatLeft1, MatLeft2, MatLeft3, MatRight)
+    call SoilSnowTemperatureSolver(noahmp, SoilTimeStep, MatLeft1, MatLeft2, MatLeft3, MatRight)
+
+    ! accumulate soil bottom flux for soil timestep
+    HeatFromSoilBot = HeatFromSoilBot * SoilTimeStep
 
     end associate
 

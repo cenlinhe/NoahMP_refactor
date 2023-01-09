@@ -71,71 +71,88 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                        &
-              NumSoilLayer            => noahmp%config%domain%NumSoilLayer           ,& ! in,  number of soil layers
-              SurfaceType             => noahmp%config%domain%SurfaceType            ,& ! in,  surface type 1-soil; 2-lake
-              GridIndexI              => noahmp%config%domain%GridIndexI             ,& ! in,  grid index in x-direction
-              GridIndexJ              => noahmp%config%domain%GridIndexJ             ,& ! in,  grid index in y-direction
-              ThicknessSnowSoilLayer  => noahmp%config%domain%ThicknessSnowSoilLayer ,& ! in,  thickness of snow/soil layers [m]
-              MainTimeStep            => noahmp%config%domain%MainTimeStep           ,& ! in,  main noahmp timestep [s]
-              FlagCropland            => noahmp%config%domain%FlagCropland           ,& ! in,  flag to identify croplands
-              IrriFracThreshold       => noahmp%water%param%IrriFracThreshold        ,& ! in,  irrigation fraction parameter
-              IrrigationFracGrid      => noahmp%water%state%IrrigationFracGrid       ,& ! in,  total input irrigation fraction
-              WaterTableDepth         => noahmp%water%state%WaterTableDepth          ,& ! in,  water table depth [m]
-              CanopyLiqWater          => noahmp%water%state%CanopyLiqWater           ,& ! in,  canopy intercepted liquid water [mm]
-              CanopyIce               => noahmp%water%state%CanopyIce                ,& ! in,  canopy intercepted ice [mm]
-              SnowWaterEquiv          => noahmp%water%state%SnowWaterEquiv           ,& ! in,  snow water equivalent [mm]
-              SoilMoisture            => noahmp%water%state%SoilMoisture             ,& ! in,  total soil moisture [m3/m3]
-              WaterStorageAquifer     => noahmp%water%state%WaterStorageAquifer      ,& ! in,  water storage in aquifer [mm]
-              WaterStorageTotBeg      => noahmp%water%state%WaterStorageTotBeg       ,& ! in,  total water storage [mm] at the beginning
-              PrecipTotRefHeight      => noahmp%water%flux%PrecipTotRefHeight        ,& ! in,  total precipitation [mm/s] at reference height
-              EvapCanopyNet           => noahmp%water%flux%EvapCanopyNet             ,& ! in,  evaporation of intercepted water [mm/s]
-              Transpiration           => noahmp%water%flux%Transpiration             ,& ! in,  transpiration rate [mm/s]
-              EvapGroundNet           => noahmp%water%flux%EvapGroundNet             ,& ! in,  net ground (soil/snow) evaporation [mm/s]
-              RunoffSurface           => noahmp%water%flux%RunoffSurface             ,& ! in,  surface runoff [mm/s]
-              RunoffSubsurface        => noahmp%water%flux%RunoffSubsurface          ,& ! in,  subsurface runoff [mm/s]
-              TileDrain               => noahmp%water%flux%TileDrain                 ,& ! in,  tile drainage [mm/s]
-              IrrigationRateSprinkler => noahmp%water%flux%IrrigationRateSprinkler   ,& ! in,  rate of irrigation by sprinkler [m/timestep]
-              IrrigationRateMicro     => noahmp%water%flux%IrrigationRateMicro       ,& ! in,  micro irrigation water rate [m/timestep]
-              IrrigationRateFlood     => noahmp%water%flux%IrrigationRateFlood       ,& ! in,  flood irrigation water rate [m/timestep]
-              WaterStorageTotEnd      => noahmp%water%state%WaterStorageTotEnd       ,& ! out, total water storage [mm] at the end
-              WaterBalanceError       => noahmp%water%state%WaterBalanceError         & ! out, water balance error [mm] per time step
+              NumSoilLayer            => noahmp%config%domain%NumSoilLayer           ,& ! in,    number of soil layers
+              SurfaceType             => noahmp%config%domain%SurfaceType            ,& ! in,    surface type 1-soil; 2-lake
+              GridIndexI              => noahmp%config%domain%GridIndexI             ,& ! in,    grid index in x-direction
+              GridIndexJ              => noahmp%config%domain%GridIndexJ             ,& ! in,    grid index in y-direction
+              ThicknessSnowSoilLayer  => noahmp%config%domain%ThicknessSnowSoilLayer ,& ! in,    thickness of snow/soil layers [m]
+              MainTimeStep            => noahmp%config%domain%MainTimeStep           ,& ! in,    main noahmp timestep [s]
+              FlagCropland            => noahmp%config%domain%FlagCropland           ,& ! in,    flag to identify croplands
+              FlagSoilProcess         => noahmp%config%domain%FlagSoilProcess        ,& ! in,    flag to calculate soil process
+              IrriFracThreshold       => noahmp%water%param%IrriFracThreshold        ,& ! in,    irrigation fraction parameter
+              IrrigationFracGrid      => noahmp%water%state%IrrigationFracGrid       ,& ! in,    total input irrigation fraction
+              WaterTableDepth         => noahmp%water%state%WaterTableDepth          ,& ! in,    water table depth [m]
+              CanopyLiqWater          => noahmp%water%state%CanopyLiqWater           ,& ! in,    canopy intercepted liquid water [mm]
+              CanopyIce               => noahmp%water%state%CanopyIce                ,& ! in,    canopy intercepted ice [mm]
+              SnowWaterEquiv          => noahmp%water%state%SnowWaterEquiv           ,& ! in,    snow water equivalent [mm]
+              SoilMoisture            => noahmp%water%state%SoilMoisture             ,& ! in,    total soil moisture [m3/m3]
+              WaterStorageAquifer     => noahmp%water%state%WaterStorageAquifer      ,& ! in,    water storage in aquifer [mm]
+              WaterStorageTotBeg      => noahmp%water%state%WaterStorageTotBeg       ,& ! in,    total water storage [mm] at the beginning
+              PrecipTotRefHeight      => noahmp%water%flux%PrecipTotRefHeight        ,& ! in,    total precipitation [mm/s] at reference height
+              EvapCanopyNet           => noahmp%water%flux%EvapCanopyNet             ,& ! in,    evaporation of intercepted water [mm/s]
+              Transpiration           => noahmp%water%flux%Transpiration             ,& ! in,    transpiration rate [mm/s]
+              EvapGroundNet           => noahmp%water%flux%EvapGroundNet             ,& ! in,    net ground (soil/snow) evaporation [mm/s]
+              RunoffSurface           => noahmp%water%flux%RunoffSurface             ,& ! in,    surface runoff [mm/dt_soil] per soil timestep
+              RunoffSubsurface        => noahmp%water%flux%RunoffSubsurface          ,& ! in,    subsurface runoff [mm/dt_soil] per soil timestep
+              TileDrain               => noahmp%water%flux%TileDrain                 ,& ! in,    tile drainage [mm/dt_soil] per soil timestep
+              IrrigationRateSprinkler => noahmp%water%flux%IrrigationRateSprinkler   ,& ! in,    rate of irrigation by sprinkler [m/timestep]
+              IrrigationRateMicro     => noahmp%water%flux%IrrigationRateMicro       ,& ! in,    micro irrigation water rate [m/timestep]
+              IrrigationRateFlood     => noahmp%water%flux%IrrigationRateFlood       ,& ! in,    flood irrigation water rate [m/timestep]
+              SfcWaterTotChgAcc       => noahmp%water%flux%SfcWaterTotChgAcc         ,& ! inout, accumulated snow,soil,canopy water change per soil timestep [mm]
+              PrecipTotAcc            => noahmp%water%flux%PrecipTotAcc              ,& ! inout, accumulated precipitation per soil timestep [mm]
+              EvapCanopyNetAcc        => noahmp%water%flux%EvapCanopyNetAcc          ,& ! inout, accumulated net canopy evaporation per soil timestep [mm]
+              TranspirationAcc        => noahmp%water%flux%TranspirationAcc          ,& ! inout, accumulated transpiration per soil timestep [mm]
+              EvapGroundNetAcc        => noahmp%water%flux%EvapGroundNetAcc          ,& ! inout, accumulated net ground evaporation per soil timestep [mm]
+              WaterStorageTotEnd      => noahmp%water%state%WaterStorageTotEnd       ,& ! out,   total water storage [mm] at the end
+              WaterBalanceError       => noahmp%water%state%WaterBalanceError         & ! out,   water balance error [mm] per time step
              )
 ! ----------------------------------------------------------------------
 
     ! before water balance check, add irrigation water to precipitation
     if ( (FlagCropland .eqv. .true.) .and. (IrrigationFracGrid >= IrriFracThreshold) ) then
-       PrecipTotRefHeight = PrecipTotRefHeight + &
-                           (IrrigationRateSprinkler + IrrigationRateMicro + IrrigationRateFlood)*1000.0 / MainTimeStep  ! irrigation
+       PrecipTotRefHeight = PrecipTotRefHeight + IrrigationRateSprinkler * 1000.0 / MainTimeStep  ! irrigation
     endif
 
+    ! only water balance check for every soil timestep
     ! Error in water balance should be < 0.1 mm
     if ( SurfaceType == 1 ) then   ! soil
        WaterStorageTotEnd = CanopyLiqWater + CanopyIce + SnowWaterEquiv + WaterStorageAquifer
        do LoopInd = 1, NumSoilLayer
           WaterStorageTotEnd = WaterStorageTotEnd + SoilMoisture(LoopInd) * ThicknessSnowSoilLayer(LoopInd) * 1000.0
        enddo
-       WaterBalanceError = WaterStorageTotEnd - WaterStorageTotBeg - (PrecipTotRefHeight - EvapCanopyNet - &
-                           Transpiration - EvapGroundNet - RunoffSurface - RunoffSubsurface - TileDrain) * MainTimeStep
+       ! accumualted water change (only for canopy and snow during non-soil timestep)
+       SfcWaterTotChgAcc = SfcWaterTotChgAcc + (WaterStorageTotEnd - WaterStorageTotBeg)  ! snow, canopy, and soil water change
+       PrecipTotAcc      = PrecipTotAcc      + PrecipTotRefHeight * MainTimeStep          ! accumulated precip 
+       EvapCanopyNetAcc  = EvapCanopyNetAcc  + EvapCanopyNet      * MainTimeStep          ! accumulated canopy evapo
+       TranspirationAcc  = TranspirationAcc  + Transpiration      * MainTimeStep          ! accumulated transpiration
+       EvapGroundNetAcc  = EvapGroundNetAcc  + EvapGroundNet      * MainTimeStep          ! accumulated soil evapo
+
+       ! check water balance at soil timestep
+       if ( FlagSoilProcess .eqv. .true. ) then
+          WaterBalanceError = SfcWaterTotChgAcc - (PrecipTotAcc + IrrigationRateMicro*1000.0 + IrrigationRateFlood*1000.0 - &
+                              EvapCanopyNetAcc - TranspirationAcc - EvapGroundNetAcc - RunoffSurface - RunoffSubsurface -   &
+                              TileDrain)
 #ifndef WRF_HYDRO
-       if ( abs(WaterBalanceError) > 0.1 ) then
-          if ( WaterBalanceError > 0 ) then
-             write(*,*) "The model is gaining water (WaterBalanceError is positive)"
-          else
-             write(*,*) "The model is losing water (WaterBalanceError is negative)"
+          if ( abs(WaterBalanceError) > 0.1 ) then
+             if ( WaterBalanceError > 0 ) then
+                write(*,*) "The model is gaining water (WaterBalanceError is positive)"
+             else
+                write(*,*) "The model is losing water (WaterBalanceError is negative)"
+             endif
+             write(*,*) 'WaterBalanceError = ',WaterBalanceError, "kg m{-2} timestep{-1}"
+             write(*, &
+                  '("  GridIndexI  GridIndexJ  SfcWaterTotChgAcc  PrecipTotRefHeightAcc  IrrigationRateMicro       &
+                       IrrigationRateFlood  EvapCanopyNetAcc  EvapGroundNetAcc  TranspirationAcc  RunoffSurface    &
+                       RunoffSubsurface  WaterTableDepth  TileDrain")')
+             write(*,'(i6,i6,f10.3,10f10.5)') GridIndexI, GridIndexJ, SfcWaterTotChgAcc, PrecipTotAcc,             &
+                                              IrrigationRateMicro*1000.0, IrrigationRateFlood*1000.0,              &
+                                              EvapCanopyNetAcc, EvapGroundNetAcc, TranspirationAcc, RunoffSurface, &
+                                              RunoffSubsurface, WaterTableDepth, TileDrain
+             stop "Error: Water budget problem in NoahMP LSM"
           endif
-          write(*,*) 'WaterBalanceError = ',WaterBalanceError, "kg m{-2} timestep{-1}"
-          write(*, &
-               '("  GridIndexI  GridIndexJ  WaterStorageTotEnd  WaterStorageTotBeg  PrecipTotRefHeight &
-                    EvapCanopyNet  EvapGroundNet  Transpiration  RunoffSurface  RunoffSubsurface       &
-                    WaterTableDepth  TileDrain")')
-          write(*,'(i6,1x,i6,1x,2f15.3,9f11.5)') GridIndexI, GridIndexJ, WaterStorageTotEnd, WaterStorageTotBeg, &
-                                                 PrecipTotRefHeight*MainTimeStep, EvapCanopyNet*MainTimeStep,    &
-                                                 EvapGroundNet*MainTimeStep, Transpiration*MainTimeStep,         &
-                                                 RunoffSurface*MainTimeStep, RunoffSubsurface*MainTimeStep,      &
-                                                 WaterTableDepth, TileDrain*MainTimeStep
-          stop "Error: Water budget problem in NoahMP LSM"
-       endif
 #endif
+       endif ! FlagSoilProcess
+
     else ! water point
        WaterBalanceError = 0.0
     endif

@@ -32,9 +32,10 @@ contains
              )
 
     ! config domain variables
-    NoahmpIO%ISNOWXY(I,J) = noahmp%config%domain%NumSnowLayerNeg
+    NoahmpIO%ISNOWXY(I,J)  = noahmp%config%domain%NumSnowLayerNeg
     NoahmpIO%ZSNSOXY(I,-NumSnowLayerMax+1:NumSoilLayer,J) = &
                             noahmp%config%domain%DepthSnowSoilLayer(-NumSnowLayerMax+1:NumSoilLayer)
+    NoahmpIO%FORCZLSM(I,J) = noahmp%config%domain%RefHeightAboveSfc
 
     end associate
 

@@ -44,7 +44,7 @@ contains
 ! --------------------------------------------------------------------
     associate(                                                                     &
               NumSoilLayer           => noahmp%config%domain%NumSoilLayer         ,& ! in,    number of soil layers
-              MainTimeStep           => noahmp%config%domain%MainTimeStep         ,& ! in,    noahmp main time step [s]
+              SoilTimeStep           => noahmp%config%domain%SoilTimeStep         ,& ! in,    noahmp soil timestep [s]
               DepthSoilLayer         => noahmp%config%domain%DepthSoilLayer       ,& ! in,    depth of soil layer-bottom [m]
               SoilImpervFracMax      => noahmp%water%state%SoilImpervFracMax      ,& ! in,    maximum soil imperviousness fraction
               SoilIce                => noahmp%water%state%SoilIce                ,& ! in,    soil ice content [m3/m3]
@@ -133,16 +133,16 @@ contains
     WaterHead         = SoilMatPotFrz - DepthSoilMid(IndUnsatSoil) * 1.0e3   !(mm)
     RechargeGw        = -AquiferWatConduct * (WaterHeadTbl - WaterHead) / &
                         ((WaterTableDepth-DepthSoilMid(IndUnsatSoil)) * 1.0e3)
-    RechargeGw        = max(-10.0/MainTimeStep, min(10.0/MainTimeStep, RechargeGw))
+    RechargeGw        = max(-10.0/SoilTimeStep, min(10.0/SoilTimeStep, RechargeGw))
 
     ! Water storage in the aquifer + saturated soil
-    WaterStorageSoilAqf = WaterStorageSoilAqf + (RechargeGw - DischargeGw) * MainTimeStep     !(mm)
+    WaterStorageSoilAqf = WaterStorageSoilAqf + (RechargeGw - DischargeGw) * SoilTimeStep     !(mm)
     if ( IndUnsatSoil == NumSoilLayer ) then
-       WaterStorageAquifer      = WaterStorageAquifer + (RechargeGw - DischargeGw) * MainTimeStep     !(mm)
+       WaterStorageAquifer      = WaterStorageAquifer + (RechargeGw - DischargeGw) * SoilTimeStep     !(mm)
        WaterStorageSoilAqf      = WaterStorageAquifer
        WaterTableDepth          = (-DepthSoilLayer(NumSoilLayer) + 25.0) - &
                                   WaterStorageAquifer / 1000.0 / SpecYieldGw      !(m)
-       SoilLiqTmp(NumSoilLayer) = SoilLiqTmp(NumSoilLayer) - RechargeGw * MainTimeStep        ! [mm]
+       SoilLiqTmp(NumSoilLayer) = SoilLiqTmp(NumSoilLayer) - RechargeGw * SoilTimeStep        ! [mm]
        SoilLiqTmp(NumSoilLayer) = SoilLiqTmp(NumSoilLayer) + max(0.0, (WaterStorageAquifer-5000.0))
        WaterStorageAquifer      = min(WaterStorageAquifer, 5000.0)
     else
@@ -162,7 +162,7 @@ contains
           WatConductAcc = WatConductAcc + SoilWatConductTmp(LoopInd) * ThicknessSoil(LoopInd)
        enddo
        do LoopInd = 1, NumSoilLayer           ! Removing subsurface runoff
-          SoilLiqTmp(LoopInd) = SoilLiqTmp(LoopInd) - DischargeGw * MainTimeStep * &
+          SoilLiqTmp(LoopInd) = SoilLiqTmp(LoopInd) - DischargeGw * SoilTimeStep * &
                                                       SoilWatConductTmp(LoopInd) * ThicknessSoil(LoopInd) / WatConductAcc
        enddo
     endif

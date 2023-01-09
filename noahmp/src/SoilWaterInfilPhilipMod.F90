@@ -41,7 +41,7 @@ contains
     associate(                                                                     &
               SoilMoisture           => noahmp%water%state%SoilMoisture           ,& ! in, total soil moisture [m3/m3]
               SoilIce                => noahmp%water%state%SoilIce                ,& ! in, soil ice content [m3/m3] 
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow           ,& ! in, water input on soil surface [mm/s]
+              SoilSfcInflowMean      => noahmp%water%flux%SoilSfcInflowMean       ,& ! in, mean water input on soil surface [m/s]
               SoilMoistureSat        => noahmp%water%param%SoilMoistureSat        ,& ! in, saturated value of soil moisture [m3/m3]
               SoilMoistureWilt       => noahmp%water%param%SoilMoistureWilt       ,& ! in, wilting point soil moisture [m3/m3]
               SoilWatDiffusivitySat  => noahmp%water%param%SoilWatDiffusivitySat  ,& ! in, saturated soil hydraulic diffusivity [m2/s]
@@ -87,10 +87,10 @@ contains
        InfilSfcTmp = (1.0/2.0) * SoilSorptivity * (TimeStep**(-1.0/2.0)) + SoilWatConductTmp
 
        ! infiltration rate at surface
-       if ( SoilWatConductivitySat(IndSoil) < SoilSfcInflow ) then
-          InfilSfcTmp = min(SoilSfcInflow, InfilSfcTmp)
+       if ( SoilWatConductivitySat(IndSoil) < SoilSfcInflowMean ) then
+          InfilSfcTmp = min(SoilSfcInflowMean, InfilSfcTmp)
        else
-          InfilSfcTmp = SoilSfcInflow
+          InfilSfcTmp = SoilSfcInflowMean
        endif
        ! accumulated infiltration function
        InfilSfcAcc = InfilSfcAcc + InfilSfcTmp

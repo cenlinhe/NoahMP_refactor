@@ -24,15 +24,15 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                           &
-              SoilSfcInflow     => noahmp%water%flux%SoilSfcInflow      ,& ! in,  water input on soil surface [mm/s]
+              SoilSfcInflowMean => noahmp%water%flux%SoilSfcInflowMean  ,& ! in,  mean water input on soil surface [m/s]
               RunoffDecayFac    => noahmp%water%param%RunoffDecayFac    ,& ! in,  runoff decay factor [1/m]
               SoilSfcSatFracMax => noahmp%water%param%SoilSfcSatFracMax ,& ! in,  maximum surface saturated fraction (global mean)
               SoilExpCoeffB     => noahmp%water%param%SoilExpCoeffB     ,& ! in,  soil B parameter
               SoilImpervFrac    => noahmp%water%state%SoilImpervFrac    ,& ! in,  impervious fraction due to frozen soil
               WaterTableDepth   => noahmp%water%state%WaterTableDepth   ,& ! in,  water table depth [m]
               SoilSaturateFrac  => noahmp%water%state%SoilSaturateFrac  ,& ! out, fractional saturated area for soil moisture
-              RunoffSurface     => noahmp%water%flux%RunoffSurface      ,& ! out, surface runoff [mm/s]
-              InfilRateSfc      => noahmp%water%flux%InfilRateSfc        & ! out, infiltration rate at surface [mm/s]
+              RunoffSurface     => noahmp%water%flux%RunoffSurface      ,& ! out, surface runoff [m/s]
+              InfilRateSfc      => noahmp%water%flux%InfilRateSfc        & ! out, infiltration rate at surface [m/s]
              )
 ! ----------------------------------------------------------------------
 
@@ -45,9 +45,9 @@ contains
     SoilSaturateFrac = SoilSfcSatFracMax * exp(-0.5 * RunoffDecayFac * WaterTableDepth) ! GY Niu's update 2022
 
     ! compute surface runoff and infiltration  m/s
-    if ( SoilSfcInflow > 0.0 ) then
-       RunoffSurface = SoilSfcInflow * ((1.0-SoilImpervFrac(1)) * SoilSaturateFrac + SoilImpervFrac(1))
-       InfilRateSfc  = SoilSfcInflow - RunoffSurface 
+    if ( SoilSfcInflowMean > 0.0 ) then
+       RunoffSurface = SoilSfcInflowMean * ((1.0-SoilImpervFrac(1)) * SoilSaturateFrac + SoilImpervFrac(1))
+       InfilRateSfc  = SoilSfcInflowMean - RunoffSurface 
     endif
 
     end associate

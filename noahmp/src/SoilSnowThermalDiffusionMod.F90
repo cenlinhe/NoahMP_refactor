@@ -52,7 +52,7 @@ contains
               TemperatureSoilSnow      => noahmp%energy%state%TemperatureSoilSnow       ,& ! in,  snow and soil layer temperature [K]
               ThermConductSoilSnow     => noahmp%energy%state%ThermConductSoilSnow      ,& ! in,  thermal conductivity [W/m/K] for all soil & snow
               HeatCapacSoilSnow        => noahmp%energy%state%HeatCapacSoilSnow         ,& ! in,  heat capacity [J/m3/K] for all soil & snow
-              HeatGroundTot            => noahmp%energy%flux%HeatGroundTot              ,& ! in,  total ground heat flux [W/m2] (+ to soil/snow)
+              HeatGroundTotMean        => noahmp%energy%flux%HeatGroundTotMean          ,& ! in,  total ground heat flux [W/m2] averaged during soil timestep
               RadSwPenetrateGrd        => noahmp%energy%flux%RadSwPenetrateGrd          ,& ! in,  light penetrating through soil/snow water [W/m2]
               HeatFromSoilBot          => noahmp%energy%flux%HeatFromSoilBot             & ! out, energy influx from soil bottom [W/m2]
              )
@@ -80,7 +80,7 @@ contains
           DepthSnowSoilInv(LoopInd) = 2.0 / DepthSnowSoilTmp
           TempGradDepth(LoopInd)    = 2.0 * (TemperatureSoilSnow(LoopInd) - TemperatureSoilSnow(LoopInd+1)) / DepthSnowSoilTmp
           EnergyExcess(LoopInd)     = ThermConductSoilSnow(LoopInd) * TempGradDepth(LoopInd) - &
-                                      HeatGroundTot - RadSwPenetrateGrd(LoopInd)
+                                      HeatGroundTotMean - RadSwPenetrateGrd(LoopInd)
        elseif ( LoopInd < NumSoilLayer ) then
           HeatCapacPerArea(LoopInd) = (DepthSnowSoilLayer(LoopInd-1) - DepthSnowSoilLayer(LoopInd)) * HeatCapacSoilSnow(LoopInd)
           DepthSnowSoilTmp          = DepthSnowSoilLayer(LoopInd-1) - DepthSnowSoilLayer(LoopInd+1)

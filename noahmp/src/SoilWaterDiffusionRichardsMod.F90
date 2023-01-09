@@ -49,9 +49,9 @@ contains
               OptSoilPermeabilityFrozen => noahmp%config%nmlist%OptSoilPermeabilityFrozen ,& ! in,  options for frozen soil permeability
               OptRunoffSubsurface       => noahmp%config%nmlist%OptRunoffSubsurface       ,& ! in,  options for drainage and subsurface runoff
               SoilDrainSlope            => noahmp%water%param%SoilDrainSlope              ,& ! in,  slope index for soil drainage
-              InfilRateSfc              => noahmp%water%flux%InfilRateSfc                 ,& ! in,  infiltration rate at surface [mm/s]
-              EvapSoilSfcLiq            => noahmp%water%flux%EvapSoilSfcLiq               ,& ! in,  evaporation from soil surface [mm/s]
-              TranspWatLossSoil         => noahmp%water%flux%TranspWatLossSoil            ,& ! in,  transpiration water loss from soil layers [mm/s]
+              InfilRateSfc              => noahmp%water%flux%InfilRateSfc                 ,& ! in,  infiltration rate at surface [m/s]
+              EvapSoilSfcLiqMean        => noahmp%water%flux%EvapSoilSfcLiqMean           ,& ! in,  mean evaporation from soil surface [m/s]
+              TranspWatLossSoilMean     => noahmp%water%flux%TranspWatLossSoilMean        ,& ! in,  mean transpiration water loss from soil layers [m/s]
               SoilLiqWater              => noahmp%water%state%SoilLiqWater                ,& ! in,  soil water content [m3/m3]
               SoilMoisture              => noahmp%water%state%SoilMoisture                ,& ! in,  total soil moisture [m3/m3]
               WaterTableDepth           => noahmp%water%state%WaterTableDepth             ,& ! in,  water table depth [m]
@@ -109,7 +109,7 @@ contains
           DepthSnowSoilInv(LoopInd) = 2.0 / DepthSnowSoilTmp
           SoilWaterGrad(LoopInd)    = 2.0 * (SoilMoistureTmp(LoopInd)-SoilMoistureTmp(LoopInd+1)) / DepthSnowSoilTmp
           WaterExcess(LoopInd)      = SoilWatDiffusivity(LoopInd)*SoilWaterGrad(LoopInd) + SoilWatConductivity(LoopInd) - &
-                                      InfilRateSfc + TranspWatLossSoil(LoopInd) + EvapSoilSfcLiq
+                                      InfilRateSfc + TranspWatLossSoilMean(LoopInd) + EvapSoilSfcLiqMean
        else if ( LoopInd < NumSoilLayer ) then
           SoilThickTmp(LoopInd)     = (DepthSoilLayer(LoopInd-1) - DepthSoilLayer(LoopInd))
           DepthSnowSoilTmp          = (DepthSoilLayer(LoopInd-1) - DepthSoilLayer(LoopInd+1))
@@ -117,7 +117,7 @@ contains
           SoilWaterGrad(LoopInd)    = 2.0 * (SoilMoistureTmp(LoopInd) - SoilMoistureTmp(LoopInd+1)) / DepthSnowSoilTmp
           WaterExcess(LoopInd)      = SoilWatDiffusivity(LoopInd)*SoilWaterGrad(LoopInd) + SoilWatConductivity(LoopInd) - &
                                       SoilWatDiffusivity(LoopInd-1)*SoilWaterGrad(LoopInd-1) - SoilWatConductivity(LoopInd-1) + &
-                                      TranspWatLossSoil(LoopInd)
+                                      TranspWatLossSoilMean(LoopInd)
        else
           SoilThickTmp(LoopInd) = (DepthSoilLayer(LoopInd-1) - DepthSoilLayer(LoopInd))
           if ( (OptRunoffSubsurface == 1) .or. (OptRunoffSubsurface == 2) ) then
@@ -144,7 +144,7 @@ contains
              DrainSoilBot           = SoilWatDiffusivity(LoopInd) * SoilWaterGrad(LoopInd) + SoilWatConductivity(LoopInd)
           endif
           WaterExcess(LoopInd) = -(SoilWatDiffusivity(LoopInd-1)*SoilWaterGrad(LoopInd-1)) - SoilWatConductivity(LoopInd-1) + &
-                                 TranspWatLossSoil(LoopInd) + DrainSoilBot
+                                 TranspWatLossSoilMean(LoopInd) + DrainSoilBot
        endif
     enddo
 

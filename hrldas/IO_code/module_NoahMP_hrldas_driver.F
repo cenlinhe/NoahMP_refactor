@@ -1069,7 +1069,7 @@ contains
                                   NoahmpIO%TERRAIN, NoahmpIO%ISURBAN, NoahmpIO%IVGTYP,      &
                                   NoahmpIO%RIVERCONDXY, NoahmpIO%RIVERBEDXY, NoahmpIO%EQZWT,& 
                                   NoahmpIO%PEXPXY, NoahmpIO%SMOIS, NoahmpIO%SH2O,           & 
-                                  NoahmpIO%SMCWTDXY, NoahmpIO%ZWTXY,                        & 
+                                  NoahmpIO%SMCWTDXY, NoahmpIO%ZWTXY, NoahmpIO%QLATXY,       & 
                                   NoahmpIO%QRFXY, NoahmpIO%DEEPRECHXY, NoahmpIO%QSPRINGXY,  &
                                   NoahmpIO%QSLATXY, NoahmpIO%QRFSXY, NoahmpIO%QSPRINGSXY,   &  
                                   NoahmpIO%RECHXY,                                          &

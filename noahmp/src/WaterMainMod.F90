@@ -34,9 +34,12 @@ contains
 ! --------------------------------------------------------------------
     associate(                                                                       &
               MainTimeStep           => noahmp%config%domain%MainTimeStep           ,& ! in,    noahmp main time step [s]
+              SoilTimeStep           => noahmp%config%domain%SoilTimeStep           ,& ! in,    soil process timestep [s]
               SurfaceType            => noahmp%config%domain%SurfaceType            ,& ! in,    surface type 1-soil; 2-lake 
               FlagCropland           => noahmp%config%domain%FlagCropland           ,& ! in,    flag to identify croplands
               FlagUrban              => noahmp%config%domain%FlagUrban              ,& ! in,    urban point flag
+              FlagSoilProcess        => noahmp%config%domain%FlagSoilProcess        ,& ! in,    flag to calculate soil processes
+              NumSoilTimeStep        => noahmp%config%domain%NumSoilTimeStep        ,& ! in,    number of timesteps for soil process calculation
               VaporizeGrd            => noahmp%water%flux%VaporizeGrd               ,& ! in,    ground vaporize rate total (evap+sublim) [mm/s]
               CondenseVapGrd         => noahmp%water%flux%CondenseVapGrd            ,& ! in,    ground vapor condense rate total (dew+frost) [mm/s]
               RainfallGround         => noahmp%water%flux%RainfallGround            ,& ! in,    ground surface rain rate [mm/s]
@@ -61,22 +64,29 @@ contains
               WaterHeadSfc           => noahmp%water%state%WaterHeadSfc             ,& ! inout, surface water head (mm) 
               IrrigationAmtFlood     => noahmp%water%state%IrrigationAmtFlood       ,& ! inout, flood irrigation water amount [m]
               IrrigationAmtMicro     => noahmp%water%state%IrrigationAmtMicro       ,& ! inout, micro irrigation water amount [m]
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on soil surface [mm/s]
-              EvapSoilSfcLiq         => noahmp%water%flux%EvapSoilSfcLiq            ,& ! inout, evaporation from soil surface [mm/s]
+              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on soil surface [m/s]
+              EvapSoilSfcLiq         => noahmp%water%flux%EvapSoilSfcLiq            ,& ! inout, evaporation from soil surface [m/s]
               DewSoilSfcLiq          => noahmp%water%flux%DewSoilSfcLiq             ,& ! inout, soil surface dew rate [mm/s]
               FrostSnowSfcIce        => noahmp%water%flux%FrostSnowSfcIce           ,& ! inout, snow surface frost rate[mm/s]
               SublimSnowSfcIce       => noahmp%water%flux%SublimSnowSfcIce          ,& ! inout, snow surface sublimation rate[mm/s]
-              TranspWatLossSoil      => noahmp%water%flux%TranspWatLossSoil         ,& ! inout, transpiration water loss from soil layers [mm/s]
+              TranspWatLossSoil      => noahmp%water%flux%TranspWatLossSoil         ,& ! inout, transpiration water loss from soil layers [m/s]
               GlacierExcessFlow      => noahmp%water%flux%GlacierExcessFlow         ,& ! inout, glacier excess flow [mm/s]
+              SoilSfcInflowAcc       => noahmp%water%flux%SoilSfcInflowAcc          ,& ! inout, accumulated water flux into soil during soil timestep [m/s * dt_soil/dt_main]
+              EvapSoilSfcLiqAcc      => noahmp%water%flux%EvapSoilSfcLiqAcc         ,& ! inout, accumulated soil surface evaporation during soil timestep [m/s * dt_soil/dt_main]
+              TranspWatLossSoilAcc   => noahmp%water%flux%TranspWatLossSoilAcc      ,& ! inout, accumualted transpiration water loss during soil timestep [m/s * dt_soil/dt_main]
               SpecHumidity2mBare     => noahmp%energy%state%SpecHumidity2mBare      ,& ! out,   bare ground 2-m specific humidity [kg/kg]
               SpecHumiditySfcBare    => noahmp%energy%state%SpecHumiditySfcBare     ,& ! out,   specific humidity at bare surface [kg/kg]
               EvapGroundNet          => noahmp%water%flux%EvapGroundNet             ,& ! out,   net ground (soil/snow) evaporation [mm/s]
               Transpiration          => noahmp%water%flux%Transpiration             ,& ! out,   transpiration rate [mm/s]
               EvapCanopyNet          => noahmp%water%flux%EvapCanopyNet             ,& ! out,   evaporation of intercepted water [mm/s]
-              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out,   surface runoff [mm/s]
-              RunoffSubsurface       => noahmp%water%flux%RunoffSubsurface          ,& ! out,   subsurface runoff [mm/s]
+              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out,   surface runoff [mm/dt_soil] per soil timestep
+              RunoffSubsurface       => noahmp%water%flux%RunoffSubsurface          ,& ! out,   subsurface runoff [mm/dt_soil] per soil timestep
+              TileDrain              => noahmp%water%flux%TileDrain                 ,& ! out,   tile drainage per soil timestep [mm/dt_soil]
               SnowBotOutflow         => noahmp%water%flux%SnowBotOutflow            ,& ! out,   total water (snowmelt+rain through pack) out of snow bottom [mm/s]
               WaterToAtmosTotal      => noahmp%water%flux%WaterToAtmosTotal         ,& ! out,   total water vapor flux to atmosphere [mm/s]
+              SoilSfcInflowMean      => noahmp%water%flux%SoilSfcInflowMean         ,& ! out,   mean water flux into soil during soil timestep [m/s]
+              EvapSoilSfcLiqMean     => noahmp%water%flux%EvapSoilSfcLiqMean        ,& ! out,   mean soil surface evaporation during soil timestep [m/s]
+              TranspWatLossSoilMean  => noahmp%water%flux%TranspWatLossSoilMean     ,& ! out,   mean transpiration water loss during soil timestep [m/s]
               PondSfcThinSnwComb     => noahmp%water%state%PondSfcThinSnwComb       ,& ! out,   surface ponding [mm] from liquid in thin snow layer combination
               PondSfcThinSnwTrans    => noahmp%water%state%PondSfcThinSnwTrans       & ! out,   surface ponding [mm] from thin snow liquid during transition from multilayer to no layer
              )
@@ -86,7 +96,9 @@ contains
     TranspWatLossSoil  = 0.0
     GlacierExcessFlow  = 0.0
     RunoffSubsurface   = 0.0
+    RunoffSurface      = 0.0
     SoilSfcInflow      = 0.0
+    TileDrain          = 0.0
 
     ! prepare for water process
     SoilIce(:)         = max(0.0, SoilMoisture(:)-SoilLiqWater(:))
@@ -126,15 +138,16 @@ contains
           SoilLiqWater(1) = SoilLiqWater(1) + SoilIce(1)
           SoilIce(1)      = 0.0
        endif
+       SoilMoisture(1) = SoilLiqWater(1) + SoilIce(1)
     endif
     EvapSoilSfcLiq = EvapSoilSfcLiq * 0.001 ! mm/s -> m/s
 
-    ! transpiration
+    ! transpiration mm/s -> m/s
     do LoopInd = 1, NumSoilLayerRoot
        TranspWatLossSoil(LoopInd) = Transpiration * SoilTranspFac(LoopInd) * 0.001
     enddo
 
-    ! total surface input water to soil
+    ! total surface input water to soil mm/s -> m/s
     SoilSfcInflow    = (PondSfcThinSnwMelt + PondSfcThinSnwComb + PondSfcThinSnwTrans) / &
                        MainTimeStep * 0.001  ! convert units (mm/s -> m/s)
     if ( NumSnowLayerNeg == 0 ) then
@@ -147,26 +160,40 @@ contains
     SoilSfcInflow    = SoilSfcInflow + WaterHeadSfc / MainTimeStep * 0.001
 #endif
 
-    ! irrigation: call flood irrigation and add to SoilSfcInflow
-    if ( (FlagCropland .eqv. .true.) .and. (IrrigationAmtFlood > 0.0) ) call IrrigationFlood(noahmp)
+    ! calculate soil process only at soil timestep
+    SoilSfcInflowAcc     = SoilSfcInflowAcc     + SoilSfcInflow
+    EvapSoilSfcLiqAcc    = EvapSoilSfcLiqAcc    + EvapSoilSfcLiq
+    TranspWatLossSoilAcc = TranspWatLossSoilAcc + TranspWatLossSoil
 
-    ! irrigation: call micro irrigation assuming we implement drip in first layer
-    ! of the Noah-MP. Change layer 1 moisture wrt to MI rate
-    if ( (FlagCropland .eqv. .true.) .and. (IrrigationAmtMicro > 0.0) ) call IrrigationMicro(noahmp)
+    ! start soil water processes
+    if ( FlagSoilProcess .eqv. .true. ) then
 
-    ! lake/soil water balances
-    if ( SurfaceType == 2 ) then   ! lake
-       RunoffSurface = 0.0
-       if ( WaterStorageLake >= WaterStorageLakeMax ) RunoffSurface = SoilSfcInflow * 1000.0   ! mm/s
-       WaterStorageLake = WaterStorageLake + (SoilSfcInflow-EvapSoilSfcLiq) * 1000.0 * MainTimeStep - &
-                          RunoffSurface * MainTimeStep   !mm
-    else                           ! soil
-       ! soil water processes (including groundwater and shallow water MMF update)
-       call SoilWaterMain(noahmp)
-    endif
+       ! irrigation: call flood irrigation and add to SoilSfcInflowAcc
+       if ( (FlagCropland .eqv. .true.) .and. (IrrigationAmtFlood > 0.0) ) call IrrigationFlood(noahmp)
+
+       ! irrigation: call micro irrigation assuming we implement drip in first layer
+       ! of the Noah-MP. Change layer 1 moisture wrt to MI rate
+       if ( (FlagCropland .eqv. .true.) .and. (IrrigationAmtMicro > 0.0) ) call IrrigationMicro(noahmp)
+
+       ! compute mean water flux during soil timestep
+       SoilSfcInflowMean     = SoilSfcInflowAcc / NumSoilTimeStep
+       EvapSoilSfcLiqMean    = EvapSoilSfcLiqAcc / NumSoilTimeStep
+       TranspWatLossSoilMean = TranspWatLossSoilAcc / NumSoilTimeStep
+
+       ! lake/soil water balances
+       if ( SurfaceType == 2 ) then   ! lake
+          RunoffSurface = 0.0
+          if ( WaterStorageLake >= WaterStorageLakeMax ) RunoffSurface = SoilSfcInflowMean*1000.0*SoilTimeStep             ! mm per soil timestep
+          WaterStorageLake = WaterStorageLake + (SoilSfcInflowMean-EvapSoilSfcLiqMean)*1000.0*SoilTimeStep - RunoffSurface ! mm per soil timestep
+       else                           ! soil
+          ! soil water processes (including Top model groundwater and shallow water MMF groundwater)
+          call SoilWaterMain(noahmp)
+       endif
+
+    endif ! FlagSoilProcess soil timestep
 
     ! merge excess glacier snow flow to subsurface runoff
-    RunoffSubsurface = RunoffSubsurface + GlacierExcessFlow         !mm/s
+    RunoffSubsurface = RunoffSubsurface + GlacierExcessFlow * MainTimeStep  ! mm per soil timestep
 
     ! update surface water vapor flux ! urban - jref
     WaterToAtmosTotal = Transpiration + EvapCanopyNet + EvapGroundNet

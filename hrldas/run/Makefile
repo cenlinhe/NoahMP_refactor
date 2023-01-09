@@ -174,6 +174,7 @@ OBJS = \
         ../../noahmp/src/SurfaceRadiationGlacierMod.o \
         ../../noahmp/src/WaterMainGlacierMod.o \
         ../../noahmp/src/ConfigVarOutMod.o \
+        ../../noahmp/src/ForcingVarOutMod.o \
         ../../noahmp/src/EnergyVarOutMod.o \
         ../../noahmp/src/WaterVarOutMod.o \
         ../../noahmp/src/BiochemVarOutMod.o

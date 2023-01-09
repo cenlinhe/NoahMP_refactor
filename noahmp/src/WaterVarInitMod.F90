@@ -188,6 +188,9 @@ contains
     noahmp%water%flux%EvapCanopyNetAcc             = undefined_real
     noahmp%water%flux%TranspirationAcc             = undefined_real
     noahmp%water%flux%EvapGroundNetAcc             = undefined_real
+    noahmp%water%flux%EvapSoilSfcLiqMean           = undefined_real
+    noahmp%water%flux%SoilSfcInflowMean            = undefined_real
+    noahmp%water%flux%TranspWatLossSoilMean        = undefined_real
     noahmp%water%flux%IrrigationRateFlood          = 0.0
     noahmp%water%flux%IrrigationRateMicro          = 0.0
     noahmp%water%flux%IrrigationRateSprinkler      = 0.0

@@ -16,6 +16,7 @@ module NoahmpDriverMainMod
   use WaterVarInitMod
   use BiochemVarInitMod
   use ConfigVarOutMod
+  use ForcingVarOutMod
   use EnergyVarOutMod
   use WaterVarOutMod
   use BiochemVarOutMod
@@ -213,6 +214,7 @@ contains
         !---------------------------------------------------------------------
 
         call ConfigVarOutTransfer (noahmp, NoahmpIO)
+        call ForcingVarOutTransfer(noahmp, NoahmpIO)
         call EnergyVarOutTransfer (noahmp, NoahmpIO)
         call WaterVarOutTransfer  (noahmp, NoahmpIO)
         call BiochemVarOutTransfer(noahmp, NoahmpIO) 

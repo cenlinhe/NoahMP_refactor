@@ -62,7 +62,7 @@ contains
 ! --------------------------------------------------------------------
     associate(                                                                       &
               NumSoilLayer           => noahmp%config%domain%NumSoilLayer           ,& ! in,    number of soil layers
-              MainTimeStep           => noahmp%config%domain%MainTimeStep           ,& ! in,    noahmp main time step [s]
+              SoilTimeStep           => noahmp%config%domain%SoilTimeStep           ,& ! in,    noahmp soil time step [s]
               ThicknessSnowSoilLayer => noahmp%config%domain%ThicknessSnowSoilLayer ,& ! in,    thickness of snow/soil layers [m]
               FlagUrban              => noahmp%config%domain%FlagUrban              ,& ! in,    logical flag for urban grid
               OptRunoffSurface       => noahmp%config%nmlist%OptRunoffSurface       ,& ! in,    options for surface runoff
@@ -70,15 +70,16 @@ contains
               OptTileDrainage        => noahmp%config%nmlist%OptTileDrainage        ,& ! in,    options for tile drainage
               SoilIce                => noahmp%water%state%SoilIce                  ,& ! in,    soil ice content [m3/m3]
               TileDrainFrac          => noahmp%water%state%TileDrainFrac            ,& ! in,    tile drainage map (fraction)
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! in,    water input on soil surface [mm/s]
+              SoilSfcInflowMean      => noahmp%water%flux%SoilSfcInflowMean         ,& ! in,    mean water input on soil surface [m/s]
               SoilMoistureSat        => noahmp%water%param%SoilMoistureSat          ,& ! in,    saturated value of soil moisture [m3/m3]
               SoilLiqWater           => noahmp%water%state%SoilLiqWater             ,& ! inout, soil water content [m3/m3]
               SoilMoisture           => noahmp%water%state%SoilMoisture             ,& ! inout, total soil water content [m3/m3]
               RechargeGwDeepWT       => noahmp%water%state%RechargeGwDeepWT         ,& ! inout, recharge to or from the water table when deep [m]
               DrainSoilBot           => noahmp%water%flux%DrainSoilBot              ,& ! out,   soil bottom drainage [m/s]
-              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out,   surface runoff [mm/s]
-              RunoffSubsurface       => noahmp%water%flux%RunoffSubsurface          ,& ! out,   subsurface runoff [mm/s] 
-              InfilRateSfc           => noahmp%water%flux%InfilRateSfc              ,& ! out,   infiltration rate at surface [mm/s]
+              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out,   surface runoff [mm per soil timestep]
+              RunoffSubsurface       => noahmp%water%flux%RunoffSubsurface          ,& ! out,   subsurface runoff [mm per soil timestep] 
+              InfilRateSfc           => noahmp%water%flux%InfilRateSfc              ,& ! out,   infiltration rate at surface [m/s]
+              TileDrain              => noahmp%water%flux%TileDrain                 ,& ! out,   tile drainage [mm per soil timestep]
               SoilImpervFracMax      => noahmp%water%state%SoilImpervFracMax        ,& ! out,   maximum soil imperviousness fraction
               SoilWatConductivity    => noahmp%water%state%SoilWatConductivity      ,& ! out,   soil hydraulic conductivity [m/s]
               SoilEffPorosity        => noahmp%water%state%SoilEffPorosity          ,& ! out,   soil effective porosity [m3/m3]
@@ -141,19 +142,19 @@ contains
     ! surface runoff and infiltration rate using different schemes
     if ( OptRunoffSurface == 1 ) call RunoffSurfaceTopModelGrd(noahmp)
     if ( OptRunoffSurface == 2 ) call RunoffSurfaceTopModelEqui(noahmp)
-    if ( OptRunoffSurface == 3 ) call RunoffSurfaceFreeDrain(noahmp,MainTimeStep)
+    if ( OptRunoffSurface == 3 ) call RunoffSurfaceFreeDrain(noahmp,SoilTimeStep)
     if ( OptRunoffSurface == 4 ) call RunoffSurfaceBATS(noahmp)
     if ( OptRunoffSurface == 5 ) call RunoffSurfaceTopModelMMF(noahmp)
-    if ( OptRunoffSurface == 6 ) call RunoffSurfaceVIC(noahmp,MainTimeStep)
-    if ( OptRunoffSurface == 7 ) call RunoffSurfaceXinAnJiang(noahmp,MainTimeStep)
-    if ( OptRunoffSurface == 8 ) call RunoffSurfaceDynamicVic(noahmp,MainTimeStep,InfilSfcAcc)
+    if ( OptRunoffSurface == 6 ) call RunoffSurfaceVIC(noahmp,SoilTimeStep)
+    if ( OptRunoffSurface == 7 ) call RunoffSurfaceXinAnJiang(noahmp,SoilTimeStep)
+    if ( OptRunoffSurface == 8 ) call RunoffSurfaceDynamicVic(noahmp,SoilTimeStep,InfilSfcAcc)
 
     ! determine iteration times  to solve soil water diffusion and moisture
     NumIterSoilWat = 3
-    if ( (InfilRateSfc*MainTimeStep) > (ThicknessSnowSoilLayer(1)*SoilMoistureSat(1)) ) then
+    if ( (InfilRateSfc*SoilTimeStep) > (ThicknessSnowSoilLayer(1)*SoilMoistureSat(1)) ) then
        NumIterSoilWat = NumIterSoilWat*2
     endif
-    TimeStepFine = MainTimeStep / NumIterSoilWat
+    TimeStepFine = SoilTimeStep / NumIterSoilWat
 
     ! solve soil moisture
     InfilSfcAcc      = 1.0e-06
@@ -161,7 +162,7 @@ contains
     RunoffSurfaceAcc = 0.0
 
     do IndIter = 1, NumIterSoilWat
-       if ( SoilSfcInflow > 0.0 ) then
+       if ( SoilSfcInflowMean > 0.0 ) then
           if ( OptRunoffSurface == 3 ) call RunoffSurfaceFreeDrain(noahmp,TimeStepFine)
           if ( OptRunoffSurface == 6 ) call RunoffSurfaceVIC(noahmp,TimeStepFine)
           if ( OptRunoffSurface == 7 ) call RunoffSurfaceXinAnJiang(noahmp,TimeStepFine)
@@ -176,8 +177,8 @@ contains
 
     DrainSoilBot  = DrainSoilBotAcc / NumIterSoilWat
     RunoffSurface = RunoffSurfaceAcc / NumIterSoilWat
-    RunoffSurface = RunoffSurface * 1000.0 + SoilSatExcAcc * 1000.0 / MainTimeStep  ! m/s -> mm/s
-    DrainSoilBot  = DrainSoilBot * 1000.0
+    RunoffSurface = RunoffSurface * 1000.0 + SoilSatExcAcc * 1000.0 / SoilTimeStep  ! m/s -> mm/s
+    DrainSoilBot  = DrainSoilBot * 1000.0  ! m/s -> mm/s
 
     ! compute tile drainage ! pvk
     if ( (OptTileDrainage == 1) .and. (TileDrainFrac > 0.3) .and. (OptRunoffSurface == 3) ) then
@@ -194,7 +195,7 @@ contains
           SoilWatConductAcc = SoilWatConductAcc + SoilWatConductivity(LoopInd1) * ThicknessSnowSoilLayer(LoopInd1)
        enddo
        do LoopInd1 = 1, NumSoilLayer
-          WaterRemove            = RunoffSubsurface * MainTimeStep * &
+          WaterRemove            = RunoffSubsurface * SoilTimeStep * &
                                   (SoilWatConductivity(LoopInd1)*ThicknessSnowSoilLayer(LoopInd1)) / SoilWatConductAcc
           SoilLiqWater(LoopInd1) = SoilLiqWater(LoopInd1) - WaterRemove / (ThicknessSnowSoilLayer(LoopInd1)*1000.0)
        enddo
@@ -224,7 +225,7 @@ contains
            SoilWatRem = 0.0
        endif
        SoilLiqTmp(LoopInd2) = SoilLiqTmp(LoopInd2) + SoilWatRem
-       RunoffSubsurface     = RunoffSubsurface - SoilWatRem/MainTimeStep
+       RunoffSubsurface     = RunoffSubsurface - SoilWatRem/SoilTimeStep
 
        if ( OptRunoffSubsurface == 5 ) RechargeGwDeepWT = RechargeGwDeepWT - SoilWatRem * 1.0e-3
 
@@ -249,6 +250,11 @@ contains
 
     ! compute subsurface runoff and shallow water table for MMF scheme
     if ( OptRunoffSubsurface == 5 ) call RunoffSubSurfaceShallowWaterMMF(noahmp)
+
+    ! accumulated water flux over soil timestep [mm]
+    RunoffSurface    = RunoffSurface    * SoilTimeStep
+    RunoffSubsurface = RunoffSubsurface * SoilTimeStep
+    TileDrain        = TileDrain        * SoilTimeStep
 
     end associate
 

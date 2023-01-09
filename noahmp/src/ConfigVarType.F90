@@ -132,6 +132,7 @@ module ConfigVarType
     logical                :: FlagCropland                ! flag to identify croplands
     logical                :: FlagDynamicCrop             ! flag to activate dynamic crop model
     logical                :: FlagDynamicVeg              ! flag to activate dynamic vegetation scheme
+    logical                :: FlagSoilProcess           ! flag to determine if calculating soil processes
     integer                :: GridIndexI                  ! model grid index in x-direction
     integer                :: GridIndexJ                  ! model grid index in y-direction
     integer                :: VegType                     ! vegetation type
@@ -151,8 +152,9 @@ module ConfigVarType
     integer                :: NumCropGrowStage            ! number of crop growth stages
     integer                :: NumDayInYear                ! Number of days in the particular year
     integer                :: RunoffSlopeType             ! underground runoff slope term type
+    integer                :: NumSoilTimeStep             ! number of timesteps to calculate soil processes
     real(kind=kind_noahmp) :: MainTimeStep                ! noahmp main timestep [sec]
-    real(kind=kind_noahmp) :: SoilTimeStep                ! soil process timestep [sec]
+    real(kind=kind_noahmp) :: SoilTimeStep                ! soil timestep [sec]
     real(kind=kind_noahmp) :: GridSize                    ! noahmp model grid spacing [m]
     real(kind=kind_noahmp) :: DayJulianInYear             ! julian day of the year
     real(kind=kind_noahmp) :: CosSolarZenithAngle         ! cosine solar zenith angle
