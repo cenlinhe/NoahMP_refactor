@@ -73,7 +73,7 @@ contains
     NoahmpIO%SNOWH       (I,J) = noahmp%water%state%SnowDepth
     NoahmpIO%CANWAT      (I,J) = noahmp%water%state%CanopyLiqWater + noahmp%water%state%CanopyIce
     NoahmpIO%ACSNOW      (I,J) = NoahmpIO%ACSNOW(I,J) + (NoahmpIO%RAINBL (I,J) * noahmp%water%state%FrozenPrecipFrac)
-    NoahmpIO%ACSNOM      (I,J) = NoahmpIO%ACSNOM(I,J) + (noahmp%water%flux%SnowBotOutflow * NoahmpIO%DTBL) + &
+    NoahmpIO%ACSNOM      (I,J) = NoahmpIO%ACSNOM(I,J) + (noahmp%water%flux%MeltGroundSnow * NoahmpIO%DTBL) + &
                                  noahmp%water%state%PondSfcThinSnwMelt + noahmp%water%state%PondSfcThinSnwComb + &
                                  noahmp%water%state%PondSfcThinSnwTrans
     NoahmpIO%CANLIQXY    (I,J) = noahmp%water%state%CanopyLiqWater
@@ -106,6 +106,7 @@ contains
     NoahmpIO%QFRZCXY     (I,J) = noahmp%water%flux%RefrzCanopyLiq
     NoahmpIO%QMELTCXY    (I,J) = noahmp%water%flux%MeltCanopyIce
     NoahmpIO%QSNBOTXY    (I,J) = noahmp%water%flux%SnowBotOutflow
+    NoahmpIO%QMELTXY     (I,J) = noahmp%water%flux%MeltGroundSnow
     NoahmpIO%PONDINGXY   (I,J) = noahmp%water%state%PondSfcThinSnwTrans + &
                                  noahmp%water%state%PondSfcThinSnwComb + noahmp%water%state%PondSfcThinSnwMelt
     NoahmpIO%FPICEXY     (I,J) = noahmp%water%state%FrozenPrecipFrac

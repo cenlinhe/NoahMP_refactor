@@ -471,9 +471,9 @@ contains
        allocate( SoilSand(1:NumSoilLayer) )
        allocate( SoilClay(1:NumSoilLayer) )
        allocate( SoilOrg (1:NumSoilLayer) )
-       SoilSand(1:4) = 0.01 * NoahmpIO%soilcomp(I,1:4,J)
-       SoilClay(1:4) = 0.01 * NoahmpIO%soilcomp(I,5:8,J)
-       SoilOrg(1:4)  = 0.0
+       SoilSand = 0.01 * NoahmpIO%soilcomp(I,1:NumSoilLayer,J)
+       SoilClay = 0.01 * NoahmpIO%soilcomp(I,(NumSoilLayer+1):(NumSoilLayer*2),J)
+       SoilOrg  = 0.0
        if (noahmp%config%nmlist%OptPedotransfer == 1) &
           call PedoTransfer_SR2006(NoahmpIO,noahmp,SoilSand,SoilClay,SoilOrg)
     endif

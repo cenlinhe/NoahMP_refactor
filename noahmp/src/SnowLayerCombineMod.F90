@@ -73,7 +73,7 @@ contains
                 else  ! SnowIce OVER-SUBLIMATED EARLIER
                    PondSfcThinSnwComb = SnowLiqWater(J) + SnowIce(J)
                    if ( PondSfcThinSnwComb < 0.0 ) then                ! IF SnowIce AND SnowLiqWater SUBLIMATES REMOVE FROM SOIL
-                      SoilIce(1)         = max(0.0, SoilIce(1)+PondSfcThinSnwComb/(ThicknessSnowSoilLayer(1)*1000.0))
+                      SoilIce(1) = SoilIce(1) + PondSfcThinSnwComb/(ThicknessSnowSoilLayer(1)*1000.0) ! negative SoilIce from oversublimation is adjusted below
                       PondSfcThinSnwComb = 0.0
                    endif
                    SnowWaterEquiv = 0.0

@@ -44,7 +44,7 @@ module WaterVarType
     real(kind=kind_noahmp) :: SoilSfcInflow              ! water input on soil surface [m/s]
     real(kind=kind_noahmp) :: RunoffSurface              ! surface runoff [mm/s]
     real(kind=kind_noahmp) :: RunoffSubsurface           ! subsurface runoff [mm/s]
-    real(kind=kind_noahmp) :: InfilRateSfc               ! infiltration rate at surface [mm/s]
+    real(kind=kind_noahmp) :: InfilRateSfc               ! infiltration rate at surface [m/s]
     real(kind=kind_noahmp) :: EvapSoilSfcLiq             ! soil surface water evaporation [m/s]
     real(kind=kind_noahmp) :: DrainSoilBot               ! soil bottom drainage [mm/s]
     real(kind=kind_noahmp) :: TileDrain                  ! tile drainage [mm/s]

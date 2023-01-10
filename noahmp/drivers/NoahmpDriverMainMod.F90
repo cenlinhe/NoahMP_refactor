@@ -43,11 +43,10 @@ contains
  
     implicit none 
     
-    type(NoahmpIO_type)                 :: NoahmpIO
+    type(NoahmpIO_type), intent(inout)  :: NoahmpIO
     
     !local
     type(noahmp_type)                   :: noahmp
-
     integer                             :: I
     integer                             :: J
     integer                             :: K
