@@ -704,6 +704,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:)      :: RC_TABLE          ! tree crown radius (m)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: MFSNO_TABLE       ! snowmelt curve parameter ()
     real(kind=kind_noahmp), allocatable, dimension(:)      :: SCFFAC_TABLE      ! snow cover factor (m) (replace original hard-coded 2.5*z0 in SCF formulation)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: CBIOM_TABLE       ! canopy biomass heat capacity parameter (m) 
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: SAIM_TABLE        ! monthly stem area index, one-sided
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: LAIM_TABLE        ! monthly leaf area index, one-sided
     real(kind=kind_noahmp), allocatable, dimension(:)      :: SLA_TABLE         ! single-side leaf area per Kg [m2/kg]

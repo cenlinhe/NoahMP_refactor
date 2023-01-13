@@ -349,6 +349,7 @@ contains
     noahmp%energy%param%ResistanceSnowSfc           = undefined_real
     noahmp%energy%param%VegFracAnnMax               = undefined_real
     noahmp%energy%param%VegFracGreen                = undefined_real
+    noahmp%energy%param%HeatCapacCanFac             = undefined_real
     
     if ( .not. allocated(noahmp%energy%param%LeafAreaIndexMon) )   &
        allocate( noahmp%energy%param%LeafAreaIndexMon(1:12) )
@@ -493,6 +494,7 @@ contains
     noahmp%energy%param%AirTempOptimTransp                        = NoahmpIO%TOPT_TABLE  (VegType)
     noahmp%energy%param%VaporPresDeficitFac                       = NoahmpIO%HS_TABLE    (VegType)
     noahmp%energy%param%LeafDimLength                             = NoahmpIO%DLEAF_TABLE (VegType)
+    noahmp%energy%param%HeatCapacCanFac                           = NoahmpIO%CBIOM_TABLE (VegType)
     noahmp%energy%param%LeafAreaIndexMon (1:12)                   = NoahmpIO%LAIM_TABLE  (VegType,1:12)
     noahmp%energy%param%StemAreaIndexMon (1:12)                   = NoahmpIO%SAIM_TABLE  (VegType,1:12)
     noahmp%energy%param%ReflectanceLeaf  (1:NumSWRadBand)         = NoahmpIO%RHOL_TABLE  (VegType,1:NumSWRadBand)

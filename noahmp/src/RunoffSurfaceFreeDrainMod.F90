@@ -114,7 +114,7 @@ contains
        call SoilDiffusivityConductivityOpt2(noahmp, SoilWatDiffusivity, SoilWatConductivity, SoilLiqWater(1), SoilIceMax, 1)
 
        InfilRateMax = max(InfilRateMax, SoilWatConductivity)
-       InfilRateMax = min(InfilRateMax, WaterInSfc)
+       InfilRateMax = min(InfilRateMax, WaterInSfc/TimeStep)
 
        ! compute surface runoff and infiltration rate
        RunoffSurface = max(0.0, SoilSfcInflowMean-InfilRateMax)

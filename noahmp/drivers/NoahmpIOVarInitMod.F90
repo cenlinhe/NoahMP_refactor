@@ -51,7 +51,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, EPS1, EPS2, EPS3, EPS4, EPS5
     namelist / noahmp_usgs_veg_categories /   VEG_DATASET_DESCRIPTION, NVEG
     namelist / noahmp_usgs_parameters     /   ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL,                 &
@@ -59,7 +59,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, SAI_JAN, SAI_FEB, SAI_MAR, SAI_APR, SAI_MAY,                           &
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
@@ -71,7 +71,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, SAI_JAN, SAI_FEB, SAI_MAR, SAI_APR, SAI_MAY,                           &
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
@@ -217,6 +217,7 @@ contains
     allocate( NoahmpIO%RC_TABLE    (MVT) )
     allocate( NoahmpIO%MFSNO_TABLE (MVT) )
     allocate( NoahmpIO%SCFFAC_TABLE(MVT) )
+    allocate( NoahmpIO%CBIOM_TABLE (MVT) )
     allocate( NoahmpIO%SAIM_TABLE  (MVT,12) )
     allocate( NoahmpIO%LAIM_TABLE  (MVT,12) )
     allocate( NoahmpIO%SLA_TABLE   (MVT) )
@@ -390,6 +391,7 @@ contains
     NoahmpIO%RC_TABLE           = -1.0e36
     NoahmpIO%MFSNO_TABLE        = -1.0e36
     NoahmpIO%SCFFAC_TABLE       = -1.0e36
+    NoahmpIO%CBIOM_TABLE        = -1.0e36
     NoahmpIO%RHOL_TABLE         = -1.0e36
     NoahmpIO%RHOS_TABLE         = -1.0e36
     NoahmpIO%TAUL_TABLE         = -1.0e36
@@ -695,6 +697,7 @@ contains
     NoahmpIO%RC_TABLE     (1:NVEG) = RC     (1:NVEG)
     NoahmpIO%MFSNO_TABLE  (1:NVEG) = MFSNO  (1:NVEG)
     NoahmpIO%SCFFAC_TABLE (1:NVEG) = SCFFAC (1:NVEG)
+    NoahmpIO%CBIOM_TABLE  (1:NVEG) = CBIOM  (1:NVEG)
     NoahmpIO%XL_TABLE     (1:NVEG) = XL     (1:NVEG)
     NoahmpIO%CWPVT_TABLE  (1:NVEG) = CWPVT  (1:NVEG)
     NoahmpIO%C3PSN_TABLE  (1:NVEG) = C3PSN  (1:NVEG)

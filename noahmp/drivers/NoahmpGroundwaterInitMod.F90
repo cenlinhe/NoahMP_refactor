@@ -21,7 +21,7 @@ contains
 ! ------------------------------------------------------------------------- 
 
   use GroundWaterMmfMod, only : LATERALFLOW
-  use module_domain, only: domain
+  use module_domain,     only : domain
   
 #if (EM_CORE == 1)
 #ifdef DM_PARALLEL
@@ -33,7 +33,7 @@ contains
     implicit none 
     
     type(NoahmpIO_type), intent(inout)    :: NoahmpIO
-    type(domain), target                  :: grid                                                    ! state
+    type(domain), target                  :: grid  
     
 ! local
     integer                :: I,J,K,ITER,itf,jtf, NITER, NCOUNT,NS
@@ -42,13 +42,12 @@ contains
     real(kind=kind_noahmp) :: DELTAT,RCOND,TOTWATER
     real(kind=kind_noahmp) :: AA,BBB,CC,DD,DX,FUNC,DFUNC,DDZ,EXPON,SMC,FLUX
 
-    real(kind=kind_noahmp),&            
-      dimension(1:NoahmpIO%NSOIL)                                     :: SMCEQ,ZSOIL
-    real(kind=kind_noahmp),& 
-      dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: QLAT, QRF
-    integer,               &              
-      dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: LANDMASK     !-1 for water (ice or no ice) and glacial areas, 1 for land where the LSM does its soil moisture calculations  
-    
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: SMCEQ,ZSOIL
+    real(kind=kind_noahmp), dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: QLAT, QRF
+    integer,                dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: LANDMASK     !-1 for water (ice or no ice) and glacial areas, 1 for land where the LSM does its soil moisture calculations  
+    logical :: urbanpt_flag ! added to identify urban pixels by accounting for LCZ
+
+! --------------------------------------------------------------------------------    
     associate(                                        &
               NSOIL      => NoahmpIO%num_soil_layers, &
               DZS        => NoahmpIO%dzs            , &
@@ -101,7 +100,7 @@ contains
               kts        => NoahmpIO%kts            , &
               kte        => NoahmpIO%kte              & 
              )
-
+! -------------------------------------------------------------------------------- 
     
     ! Given the soil layer thicknesses (in DZS), calculate the soil layer
     ! depths from the surface.
@@ -110,12 +109,8 @@ contains
        ZSOIL(NS)       = ZSOIL(NS-1) - DZS(NS)
     enddo
 
-    
-
     itf=min0(ite,(ide+1)-1)
     jtf=min0(jte,(jde+1)-1)
-
-    
 
     where(IVGTYP.NE.NoahmpIO%ISWATER_TABLE.AND.IVGTYP.NE.NoahmpIO%ISICE_TABLE)
          LANDMASK=1
@@ -249,7 +244,18 @@ contains
              SMCMAX = NoahmpIO%SMCMAX_TABLE(ISLTYP(I,J))
              SMCWLT = NoahmpIO%SMCWLT_TABLE(ISLTYP(I,J))
                 
-             if(IVGTYP(I,J)==NoahmpIO%ISURBAN_TABLE)then
+             ! add urban flag to include LCZ
+             urbanpt_flag = .false.
+             if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
+                  IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
+                  IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
+                  IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
+                  IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
+                  IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+                 urbanpt_flag = .true.
+             endif
+             !IF(IVGTYP(I,J)== NoahmpIO%ISURBAN_TABLE)THEN
+             if (urbanpt_flag) then
                 SMCMAX = 0.45         
                 SMCWLT = 0.40         
              endif 

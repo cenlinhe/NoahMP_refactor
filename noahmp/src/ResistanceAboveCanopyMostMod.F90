@@ -158,7 +158,7 @@ contains
     if ( abs(CH2FH2) <= MPE ) CH2FH2 = MPE
     ExchCoeffMomAbvCan = ConstVonKarman * ConstVonKarman / (CMFM * CMFM)
     ExchCoeffShAbvCan  = ConstVonKarman * ConstVonKarman / (CMFM * CHFH)
-    ExchCoeffSh2mVegMo = ConstVonKarman * ConstVonKarman / (CM2FM2 * CH2FH2)
+    !ExchCoeffSh2mVegMo = ConstVonKarman * ConstVonKarman / (CM2FM2 * CH2FH2)
 
     ! friction velocity
     FrictionVelVeg     = WindSpdRefHeight * sqrt(ExchCoeffMomAbvCan)

@@ -31,9 +31,8 @@ contains
                                                    its, ite, jts, jte, kts, kte
     integer                                     :: errflag,i,j,itf,jtf,ns
     logical                                     :: restart, allowed_to_read
-
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: ZSOIL      ! Depth of the soil layer bottom (m) from
-    !                                                           the surface (negative)
+    logical                                     :: urbanpt_flag       ! added to identify urban pixels by accounting for LCZ
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: ZSOIL      ! Depth of the soil layer bottom (m) from the surface (negative)
     real(kind=kind_noahmp)                      :: BEXP, SMCMAX, PSISAT
     real(kind=kind_noahmp)                      :: FK, masslai, masssai
     real(kind=kind_noahmp), parameter           :: BLIM  = 5.5
@@ -300,9 +299,19 @@ contains
               areaxy     (I,J) = (DX * DY) / ( MSFTX(I,J) * MSFTY(I,J) )
            endif
 
+           ! add urban flag to include LCZ
+           urbanpt_flag = .false.
+           if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+               urbanpt_flag = .true.
+           endif
+
            if(IVGTYP(I,J) == NoahmpIO%ISBARREN_TABLE .OR. IVGTYP(I,J) == NoahmpIO%ISICE_TABLE .OR. &
-             (NoahmpIO%SF_URBAN_PHYSICS == 0 .AND. IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE)     .OR. &
-              IVGTYP(I,J) == NoahmpIO%ISWATER_TABLE ) then
+             (NoahmpIO%SF_URBAN_PHYSICS == 0 .AND. urbanpt_flag) .OR. IVGTYP(I,J) == NoahmpIO%ISWATER_TABLE ) then
              lai        (I,J) = 0.0
              xsaixy     (I,J) = 0.0
              lfmassxy   (I,J) = 0.0

@@ -95,6 +95,7 @@ contains
               CanopyIce               => noahmp%water%state%CanopyIce                ,& ! in,    canopy intercepted ice [mm]
               HeightCanopyTop         => noahmp%energy%param%HeightCanopyTop         ,& ! in,    top of canopy [m]
               ZilitinkevichCoeff      => noahmp%energy%param%ZilitinkevichCoeff      ,& ! in,    Zilitinkevich Coefficient for exchange coefficient calculation
+              HeatCapacCanFac         => noahmp%energy%param%HeatCapacCanFac         ,& ! in,    canopy biomass heat capacity parameter [m]
               RadSwAbsVeg             => noahmp%energy%flux%RadSwAbsVeg              ,& ! in,    solar radiation absorbed by vegetation [W/m2]
               RadSwAbsGrd             => noahmp%energy%flux%RadSwAbsGrd              ,& ! in,    solar radiation absorbed by ground [W/m2]
               HeatPrecipAdvCanopy     => noahmp%energy%flux%HeatPrecipAdvCanopy      ,& ! in,    precipitation advected heat - vegetation net [W/m2]
@@ -300,7 +301,7 @@ contains
           HeatLatentCanEvap = min(CanopyIce*LatHeatVapCanopy/MainTimeStep, HeatLatentCanEvap)
        endif
        ! canopy heat capacity
-       HeatCapacCan         = 0.02*VegAreaIndTmp*ConstHeatCapacWater + CanopyLiqWater*ConstHeatCapacWater/ConstDensityWater + &
+       HeatCapacCan         = HeatCapacCanFac*VegAreaIndTmp*ConstHeatCapacWater + CanopyLiqWater*ConstHeatCapacWater/ConstDensityWater + &
                               CanopyIce*ConstHeatCapacIce/ConstDensityIce      ! [J/m2/K]
        ! compute vegetation temperature change
        EnergyResTmp         = RadSwAbsVeg - RadLwNetCanopy - HeatSensibleCanopy - &

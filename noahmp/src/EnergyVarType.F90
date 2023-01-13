@@ -278,6 +278,7 @@ module EnergyVarType
     real(kind=kind_noahmp) :: ResistanceSnowSfc           ! surface resistance for snow [s/m]
     real(kind=kind_noahmp) :: VegFracGreen                ! green vegetation fraction
     real(kind=kind_noahmp) :: VegFracAnnMax               ! annual maximum vegetation fraction
+    real(kind=kind_noahmp) :: HeatCapacCanFac             ! canopy biomass heat capacity parameter [m]
 
     real(kind=kind_noahmp), allocatable, dimension(:) :: LeafAreaIndexMon      ! monthly leaf area index, one-sided
     real(kind=kind_noahmp), allocatable, dimension(:) :: StemAreaIndexMon      ! monthly stem area index, one-sided

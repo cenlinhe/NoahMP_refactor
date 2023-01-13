@@ -10,7 +10,7 @@ module HumiditySaturationMod
 
 contains
 
-  subroutine HumiditySaturation(TemperatureAir, PressureAir, SpecHumiditySat, SpecHumSatTempD)
+  subroutine HumiditySaturation(TemperatureAir, PressureAir, MixingRatioSat, MixingRatioSatTempD)
 
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: CALHUM
@@ -22,8 +22,8 @@ contains
 
     real(kind=kind_noahmp), intent(in)  :: TemperatureAir                                   ! air temperature (K)
     real(kind=kind_noahmp), intent(in)  :: PressureAir                                      ! air pressure (pa)
-    real(kind=kind_noahmp), intent(out) :: SpecHumiditySat                                  ! saturation specific humidity (g/g)
-    real(kind=kind_noahmp), intent(out) :: SpecHumSatTempD                                  ! d(SpecHumiditySat)/d(T)
+    real(kind=kind_noahmp), intent(out) :: MixingRatioSat                                   ! saturated mixing ratio (g/g)
+    real(kind=kind_noahmp), intent(out) :: MixingRatioSatTempD                              ! d(MixingRatioSat)/d(T)
 
 ! local variable
     real(kind=kind_noahmp), parameter   :: Const1          = 17.67                          ! constant 1
@@ -40,23 +40,23 @@ contains
 ! ----------------------------------------------------------------------
 
     ! calculated saturated vapor pressure at air temperature
-    VapPresSatTemp  = VapPresSatFrz * exp(ConstLatHeatVap / GasConstWatVap * &
-                                          (1.0/TemperatureFrz - 1.0/TemperatureAir))
+    VapPresSatTemp = VapPresSatFrz * exp(ConstLatHeatVap / GasConstWatVap * &
+                                        (1.0/TemperatureFrz - 1.0/TemperatureAir))
 
     ! convert PressureAir from Pa to KPa
-    PressureAirKpa  = PressureAir * 1.0e-3
+    PressureAirKpa = PressureAir * 1.0e-3
 
-    ! calculate saturated mixing ratio ~ specific humidity
-    SpecHumiditySat = RatioGasConst * VapPresSatTemp / (PressureAirKpa - VapPresSatTemp)
+    ! calculate saturated mixing ratio
+    MixingRatioSat = RatioGasConst * VapPresSatTemp / (PressureAirKpa - VapPresSatTemp)
 
     ! convert from  g/g to g/kg
-    SpecHumiditySat = SpecHumiditySat * 1.0e3
+    MixingRatioSat = MixingRatioSat * 1.0e3
 
-    ! SpecHumSatTempD is calculated assuming SpecHumiditySat is a specific humidity
-    SpecHumSatTempD = (SpecHumiditySat / (1+SpecHumiditySat)) * Const3 / (TemperatureAir-Const2)**2
+    ! MixingRatioSatTempD is calculated assuming MixingRatioSat is a specific humidity
+    MixingRatioSatTempD = (MixingRatioSat / (1+MixingRatioSat)) * Const3 / (TemperatureAir-Const2)**2
 
-    ! SpecHumiditySat needs to be in g/g when returned for surface flux calculation
-    SpecHumiditySat = SpecHumiditySat / 1.0e3
+    ! MixingRatioSat needs to be in g/g when returned for surface flux calculation
+    MixingRatioSat = MixingRatioSat / 1.0e3
 
   end subroutine HumiditySaturation
 

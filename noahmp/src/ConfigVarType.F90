@@ -78,7 +78,7 @@ module ConfigVarType
                                               ! 4 -> BATS surface and subsurface runoff (free drainage)
                                               ! 5 -> Miguez-Macho&Fan groundwater scheme
                                               ! 6 -> Variable Infiltration Capacity Model surface runoff scheme
-                                              ! 7 -> Xiananjiang Infiltration and surface runoff scheme 
+                                              ! 7 -> Xinanjiang Infiltration and surface runoff scheme 
                                               ! 8 -> Dynamic VIC surface runoff scheme
     integer :: OptRunoffSubsurface         ! options for drainage & subsurface runoff 
                                               ! 1~8: similar to runoff option, separated from original NoahMP runoff option

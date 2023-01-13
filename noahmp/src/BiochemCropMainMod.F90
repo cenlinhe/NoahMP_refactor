@@ -101,7 +101,10 @@ contains
     enddo
 
     ! start crop carbon process
-    call CropPhotosynthesis(noahmp)
+    ! Note: The following CropPhotosynthesis is not used currently. 
+    ! Photosynthesis rate is directly from calculations in the energy part (similar to the treatment in CARBON subroutine)    
+
+    !call CropPhotosynthesis(noahmp)
     call CropGrowDegreeDay(noahmp)
     call CarbonFluxCrop(noahmp)
     
