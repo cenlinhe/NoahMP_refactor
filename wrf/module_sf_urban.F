@@ -1947,7 +1947,7 @@ ENDIF
 !
 !===============================================================================
    SUBROUTINE urban_param_init(DZR,DZB,DZG,num_soil_layers, &
-                               sf_urban_physics,use_wudapt_lcz)
+                               sf_urban_physics,use_wudapt_lcz,IRI_URBAN) ! cenlin: added for use in noahmp driver
 !                              num_roof_layers,num_wall_layers,num_road_layers)
 
    IMPLICIT NONE
@@ -1962,6 +1962,7 @@ ENDIF
    REAL, DIMENSION(1:num_soil_layers), INTENT(INOUT) :: DZG
    INTEGER,                            INTENT(IN)    :: SF_URBAN_PHYSICS
    INTEGER,                            INTENT(IN)    :: USE_WUDAPT_LCZ !AndreaLCZ
+   INTEGER,                            INTENT(INOUT) :: IRI_URBAN ! cenlin added
 
    INTEGER :: LC, K
    INTEGER :: IOSTATUS, ALLOCATE_STATUS
@@ -2375,6 +2376,9 @@ ENDIF
    enddo READLOOP
 
    CLOSE(11)
+
+   ! cenlin: pass IRI_SCHEME value to NoahmpIO variable IRI_URBAN
+   IRI_URBAN = IRI_SCHEME
 
    ! Assign a few table values that do not need to come from URBPARM.TBL
 
