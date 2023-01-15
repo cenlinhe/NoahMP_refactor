@@ -190,7 +190,6 @@ contains
     noahmp%water%flux%EvapGroundNetAcc             = undefined_real
     noahmp%water%flux%EvapSoilSfcLiqMean           = undefined_real
     noahmp%water%flux%SoilSfcInflowMean            = undefined_real
-    noahmp%water%flux%TranspWatLossSoilMean        = undefined_real
     noahmp%water%flux%IrrigationRateFlood          = 0.0
     noahmp%water%flux%IrrigationRateMicro          = 0.0
     noahmp%water%flux%IrrigationRateSprinkler      = 0.0
@@ -210,13 +209,16 @@ contains
        allocate( noahmp%water%flux%TranspWatLossSoil(1:NumSoilLayer) )
     if ( .not. allocated(noahmp%water%flux%TranspWatLossSoilAcc) )  &
        allocate( noahmp%water%flux%TranspWatLossSoilAcc(1:NumSoilLayer) )
+    if ( .not. allocated(noahmp%water%flux%TranspWatLossSoilMean) )  &
+       allocate( noahmp%water%flux%TranspWatLossSoilMean(1:NumSoilLayer) )
 
-    noahmp%water%flux%CompactionSnowAging (:)      = undefined_real
-    noahmp%water%flux%CompactionSnowBurden(:)      = undefined_real
-    noahmp%water%flux%CompactionSnowMelt  (:)      = undefined_real
-    noahmp%water%flux%CompactionSnowTot   (:)      = undefined_real
-    noahmp%water%flux%TranspWatLossSoil   (:)      = undefined_real
-    noahmp%water%flux%TranspWatLossSoilAcc(:)      = undefined_real
+    noahmp%water%flux%CompactionSnowAging  (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowBurden (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowMelt   (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowTot    (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoil    (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoilAcc (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoilMean(:)     = undefined_real
 
     ! water parameter variables
     noahmp%water%param%DrainSoilLayerInd           = undefined_int
