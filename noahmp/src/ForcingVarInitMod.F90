@@ -70,19 +70,30 @@ contains
     noahmp%forcing%RadLwDownRefHeight      = NoahmpIO%GLW      (I,J)
     noahmp%forcing%RadSwDownRefHeight      = NoahmpIO%SWDOWN   (I,J)
     noahmp%forcing%TemperatureSoilBottom   = NoahmpIO%TMN      (I,J)
-    noahmp%forcing%PrecipConvRefHeight     = NoahmpIO%MP_RAINC (I,J) / NoahmpIO%DTBL
-    noahmp%forcing%PrecipNonConvRefHeight  = NoahmpIO%MP_RAINNC(I,J) / NoahmpIO%DTBL
-    noahmp%forcing%PrecipShConvRefHeight   = NoahmpIO%MP_SHCV  (I,J) / NoahmpIO%DTBL
-    noahmp%forcing%PrecipSnowRefHeight     = NoahmpIO%MP_SNOW  (I,J) / NoahmpIO%DTBL
-    noahmp%forcing%PrecipGraupelRefHeight  = NoahmpIO%MP_GRAUP (I,J) / NoahmpIO%DTBL
-    noahmp%forcing%PrecipHailRefHeight     = NoahmpIO%MP_HAIL  (I,J) / NoahmpIO%DTBL
-    ! treat other precipitation (e.g. fog) contained in total precipitation
+    ! treat different precipitation types
     PrecipTotalRefHeight                   = NoahmpIO%RAINBL   (I,J) / NoahmpIO%DTBL                ! convert precip unit from mm/timestep to mm/s
-    PrecipOtherRefHeight                   = PrecipTotalRefHeight - noahmp%forcing%PrecipConvRefHeight - &
-                                             noahmp%forcing%PrecipNonConvRefHeight - noahmp%forcing%PrecipShConvRefHeight
-    PrecipOtherRefHeight                   = max(0.0, PrecipOtherRefHeight)
-    noahmp%forcing%PrecipNonConvRefHeight  = noahmp%forcing%PrecipNonConvRefHeight + PrecipOtherRefHeight
-    noahmp%forcing%PrecipSnowRefHeight     = noahmp%forcing%PrecipSnowRefHeight + PrecipOtherRefHeight * NoahmpIO%SR(I,J)
+    if ( present(NoahmpIO%MP_RAINC) .and. present(NoahmpIO%MP_RAINNC) .and. present(NoahmpIO%MP_SHCV) .and. &
+         present(NoahmpIO%MP_SNOW)  .and. present(NoahmpIO%MP_GRAUP)  .and. present(NoahmpIO%MP_HAIL) ) then
+       noahmp%forcing%PrecipConvRefHeight    = NoahmpIO%MP_RAINC (I,J) / NoahmpIO%DTBL
+       noahmp%forcing%PrecipNonConvRefHeight = NoahmpIO%MP_RAINNC(I,J) / NoahmpIO%DTBL
+       noahmp%forcing%PrecipShConvRefHeight  = NoahmpIO%MP_SHCV  (I,J) / NoahmpIO%DTBL
+       noahmp%forcing%PrecipSnowRefHeight    = NoahmpIO%MP_SNOW  (I,J) / NoahmpIO%DTBL
+       noahmp%forcing%PrecipGraupelRefHeight = NoahmpIO%MP_GRAUP (I,J) / NoahmpIO%DTBL
+       noahmp%forcing%PrecipHailRefHeight    = NoahmpIO%MP_HAIL  (I,J) / NoahmpIO%DTBL
+       ! treat other precipitation (e.g. fog) contained in total precipitation
+       PrecipOtherRefHeight                  = PrecipTotalRefHeight - noahmp%forcing%PrecipConvRefHeight - &
+                                               noahmp%forcing%PrecipNonConvRefHeight - noahmp%forcing%PrecipShConvRefHeight
+       PrecipOtherRefHeight                  = max(0.0, PrecipOtherRefHeight)
+       noahmp%forcing%PrecipNonConvRefHeight = noahmp%forcing%PrecipNonConvRefHeight + PrecipOtherRefHeight
+       noahmp%forcing%PrecipSnowRefHeight    = noahmp%forcing%PrecipSnowRefHeight + PrecipOtherRefHeight * NoahmpIO%SR(I,J)
+    else
+       noahmp%forcing%PrecipConvRefHeight    = 0.0
+       noahmp%forcing%PrecipNonConvRefHeight = PrecipTotalRefHeight
+       noahmp%forcing%PrecipShConvRefHeight  = 0.0
+       noahmp%forcing%PrecipSnowRefHeight    = PrecipTotalRefHeight * NoahmpIO%SR(I,J)
+       noahmp%forcing%PrecipGraupelRefHeight = 0.0
+       noahmp%forcing%PrecipHailRefHeight    = 0.0
+    endif
 
     end associate
  

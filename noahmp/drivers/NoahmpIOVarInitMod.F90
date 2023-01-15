@@ -1197,7 +1197,6 @@ contains
     integer                 :: NSOIL                 ! number of soil layers
     integer                 :: forcing_timestep
     integer                 :: noah_timestep
-    real(kind=kind_noahmp)  :: soil_timestep = 0.0   ! soil timestep (default=0: same as main noahmp timestep)
     integer                 :: start_year
     integer                 :: start_month
     integer                 :: start_day
@@ -1210,30 +1209,20 @@ contains
     integer                 :: spinup_loops     = 0
     integer                 :: sf_urban_physics = 0
     integer                 :: use_wudapt_lcz   = 0  ! add for LCZ urban
-    integer                 :: num_urban_ndm    = 1
-    integer                 :: num_urban_ng     = 1
-    integer                 :: num_urban_nwr    = 1
-    integer                 :: num_urban_ngb    = 1
-    integer                 :: num_urban_nf     = 1
-    integer                 :: num_urban_nz     = 1
-    integer                 :: num_urban_nbui   = 1
+    integer                 :: num_urban_ndm    = 2
+    integer                 :: num_urban_ng     = 10
+    integer                 :: num_urban_nwr    = 10
+    integer                 :: num_urban_ngb    = 10
+    integer                 :: num_urban_nf     = 10
+    integer                 :: num_urban_nz     = 18
+    integer                 :: num_urban_nbui   = 15
     integer                 :: num_urban_hi     = 15 
-    real(kind=kind_noahmp)  :: urban_atmosphere_thickness = 2.0
- 
-    ! new urban var for green roof and solar panel
     integer                 :: num_urban_ngr    = 10  ! = ngr_u in bep_bem.F
-    integer                 :: urban_map_zgrd   = 1
+    integer                 :: noahmp_output    = 0
+    real(kind=kind_noahmp)  :: urban_atmosphere_thickness = 2.0
+    real(kind=kind_noahmp)  :: soil_timestep    = 0.0   ! soil timestep (default=0: same as main noahmp timestep)
 
     ! derived urban dimensions
-    integer                 :: urban_map_zrd
-    integer                 :: urban_map_zwd
-    integer                 :: urban_map_gd
-    integer                 :: urban_map_zd
-    integer                 :: urban_map_zdf
-    integer                 :: urban_map_bd
-    integer                 :: urban_map_wd
-    integer                 :: urban_map_gbd
-    integer                 :: urban_map_fbd
     character(len=256)      :: forcing_name_T  = "T2D"
     character(len=256)      :: forcing_name_Q  = "Q2D"
     character(len=256)      :: forcing_name_U  = "U2D"
@@ -1290,7 +1279,7 @@ contains
 #endif
          indir, nsoil, soil_thick_input, forcing_timestep, noah_timestep, soil_timestep,  &
          start_year, start_month, start_day, start_hour, start_min,                       &
-         outdir, skip_first_output,                                                       &
+         outdir, skip_first_output, noahmp_output,                                        &
          restart_filename_requested, restart_frequency_hours, output_timestep,            &
          spinup_loops,                                                                    &
          forcing_name_T,forcing_name_Q,forcing_name_U,forcing_name_V,forcing_name_P,      &
@@ -1305,7 +1294,7 @@ contains
          tile_drainage_option,soil_data_option, pedotransfer_option, crop_option,         &
          sf_urban_physics,use_wudapt_lcz,num_urban_hi,urban_atmosphere_thickness,         &
          num_urban_ndm,num_urban_ng,num_urban_nwr ,num_urban_ngb ,                        &
-         num_urban_nf ,num_urban_nz,num_urban_nbui,                                       &
+         num_urban_nf ,num_urban_nz,num_urban_nbui,num_urban_ngr ,                        &
          split_output_count,                                                              & 
          khour, kday, zlvl, hrldas_setup_file,                                            &
          spatial_filename, agdata_flnm, tdinput_flnm,                                     &
@@ -1334,6 +1323,7 @@ contains
     NoahmpIO%output_timestep         = -999
     NoahmpIO%restart_frequency_hours = -999
     NoahmpIO%spinup_loops            = 0
+    NoahmpIO%noahmp_output           = 0
 
     !---------------------------------------------------------------
     ! read namelist.input
@@ -1526,6 +1516,7 @@ contains
     NoahmpIO%start_hour                        = start_hour
     NoahmpIO%start_min                         = start_min
     NoahmpIO%outdir                            = outdir
+    NoahmpIO%noahmp_output                     = noahmp_output
     NoahmpIO%restart_filename_requested        = restart_filename_requested
     NoahmpIO%restart_frequency_hours           = restart_frequency_hours
     NoahmpIO%output_timestep                   = output_timestep
@@ -1542,16 +1533,6 @@ contains
     NoahmpIO%num_urban_hi                      = num_urban_hi
     NoahmpIO%urban_atmosphere_thickness        = urban_atmosphere_thickness
     NoahmpIO%num_urban_ngr                     = num_urban_ngr
-    NoahmpIO%urban_map_zgrd                    = urban_map_zgrd
-    NoahmpIO%urban_map_zrd                     = urban_map_zrd
-    NoahmpIO%urban_map_zwd                     = urban_map_zwd
-    NoahmpIO%urban_map_gd                      = urban_map_gd
-    NoahmpIO%urban_map_zd                      = urban_map_zd
-    NoahmpIO%urban_map_zdf                     = urban_map_zdf
-    NoahmpIO%urban_map_bd                      = urban_map_bd
-    NoahmpIO%urban_map_wd                      = urban_map_wd
-    NoahmpIO%urban_map_gbd                     = urban_map_gbd
-    NoahmpIO%urban_map_fbd                     = urban_map_fbd
     NoahmpIO%forcing_name_T                    = forcing_name_T
     NoahmpIO%forcing_name_Q                    = forcing_name_Q
     NoahmpIO%forcing_name_U                    = forcing_name_U
@@ -1905,9 +1886,6 @@ contains
        allocate ( NoahmpIO%rn_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%ts_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%HRANG          (XSTART:XEND,                 YSTART:YEND) )  !
-       allocate ( NoahmpIO%DECLIN                                                    )  !
-       allocate ( NoahmpIO%GMT                                                       )  !
-       allocate ( NoahmpIO%JULDAY                                                    )  !
        allocate ( NoahmpIO%frc_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%utype_urb2d    (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%lp_urb2d       (XSTART:XEND,                 YSTART:YEND) )  !
@@ -1938,7 +1916,6 @@ contains
        allocate ( NoahmpIO%trl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
        allocate ( NoahmpIO%tbl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
        allocate ( NoahmpIO%tgl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%psim_urb2d     (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%psih_urb2d     (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%u10_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
@@ -1948,7 +1925,6 @@ contains
        allocate ( NoahmpIO%th2_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%q2_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%ust_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%dzr            (             nsoil                      ) )  !
        allocate ( NoahmpIO%dzb            (             nsoil                      ) )  !
        allocate ( NoahmpIO%dzg            (             nsoil                      ) )  !
@@ -1962,11 +1938,9 @@ contains
        allocate ( NoahmpIO%flxhumr_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%flxhumb_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%flxhumg_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%chs            (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%chs2           (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%cqs2           (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%mh_urb2d       (XSTART:XEND,                 YSTART:YEND) )  !
        allocate ( NoahmpIO%stdh_urb2d     (XSTART:XEND,                 YSTART:YEND) )  !
        allocate ( NoahmpIO%lf_urb2d       (XSTART:XEND, 4,              YSTART:YEND) )  !
@@ -2229,7 +2203,6 @@ contains
     NoahmpIO%QMELTCXY        = undefined_real
     NoahmpIO%QSNBOTXY        = undefined_real
     NoahmpIO%QMELTXY         = undefined_real
-    NoahmpIO%PONDINGXY       = 0.0
     NoahmpIO%FPICEXY         = undefined_real
     NoahmpIO%RAINLSM         = undefined_real
     NoahmpIO%SNOWLSM         = undefined_real
@@ -2238,13 +2211,14 @@ contains
     NoahmpIO%FORCPLSM        = undefined_real
     NoahmpIO%FORCZLSM        = undefined_real
     NoahmpIO%FORCWLSM        = undefined_real
+    NoahmpIO%EFLXBXY         = undefined_real
+    NoahmpIO%SOILENERGY      = undefined_real
+    NoahmpIO%SNOWENERGY      = undefined_real
+    NoahmpIO%PONDINGXY       = 0.0
     NoahmpIO%ACC_SSOILXY     = 0.0
     NoahmpIO%ACC_QINSURXY    = 0.0
     NoahmpIO%ACC_QSEVAXY     = 0.0
     NoahmpIO%ACC_ETRANIXY    = 0.0
-    NoahmpIO%EFLXBXY         = undefined_real
-    NoahmpIO%SOILENERGY      = 0.0
-    NoahmpIO%SNOWENERGY      = 0.0
     NoahmpIO%ACC_DWATERXY    = 0.0
     NoahmpIO%ACC_PRCPXY      = 0.0
     NoahmpIO%ACC_ECANXY      = 0.0
@@ -2300,7 +2274,7 @@ contains
     NoahmpIO%IRRSPLH         = 0.0
     NoahmpIO%LOCTIM          = undefined_real
  
-    if (NoahmpIO%SF_URBAN_PHYSICS > 0 )then  ! any urban model
+    if ( NoahmpIO%SF_URBAN_PHYSICS > 0 )then  ! any urban model
       NoahmpIO%HRANG         = undefined_real
       NoahmpIO%DECLIN        = undefined_real
       NoahmpIO%sh_urb2d      = undefined_real

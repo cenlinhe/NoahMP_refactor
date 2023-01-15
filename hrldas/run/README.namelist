@@ -68,11 +68,33 @@
                                                              !     only needed for urban options 2 and 3  [default = 2.0 ]
 							     !     must be less than zlvl/3
 
- NUM_URBAN_LAYERS = 360                                      !    Number of urban building layers
-                                                             !     only needed for urban options 2 and 3  [default = 360 ]
+ NUM_URBAN_NDM    = 2                                        !    Maximum number of urban street dimensions 
+                                                             !     only needed for urban options 2 and 3  [default = 2   ]
+
+ NUM_URBAN_NWR    = 10                                       !    Number of urban grid levels in the walls or roof
+                                                             !     only needed for urban options 2 and 3  [default = 10  ]
+
+ NUM_URBAN_NZ     = 18                                       !    Maximum number of urban vertical levels
+                                                             !     only needed for urban options 2 and 3  [default = 18  ]
+
+ NUM_URBAN_NG     = 10                                       !    Number of urban grid levels in the ground
+                                                             !     only needed for urban options 2 and 3  [default = 10  ]
 
  NUM_URBAN_HI     = 15                                       !    Number of urban atmosphere layers
                                                              !     only needed for urban options 2 and 3  [default = 15  ]
+
+ NUM_URBAN_NGB    = 10                                       !    Number of urban grid levels in the ground below buildings
+                                                             !     only needed for urban option 3  [default = 10  ]
+
+ NUM_URBAN_NF     = 10                                       !    Number of urban grid levels in the floors
+                                                             !     only needed for urban option 3  [default = 10  ]
+
+ NUM_URBAN_NBUI   = 15                                       !    Maximum number of building types in an urban class
+                                                             !     only needed for urban option 3  [default = 15  ], must <= NUM_URBAN_NZ
+
+ NUM_URBAN_NGR    = 10                                       !    Number of urban grid levels in the green roof
+                                                             !     only needed for urban option 3  [default = 10  ]
+
 
  FORCING_NAME_T                                              !    Forcing variable name for temperature   [default = "T2D"]
  FORCING_NAME_Q                                              !    Forcing variable name for spec humidity [default = "Q2D"]
@@ -123,8 +145,8 @@
                                                              !   2 -> CLM  (matric potential)
                                                              !   3 -> SSiB (matric potential)
 
- SURFACE_RUNOFF_OPTION             = 3                       ! options for surface runoff         [default = none]
- SUBSURFACE_RUNOFF_OPTION          = 3                       ! options for subsurface runoff (currently only tested for same as surface runoff option)
+ RUNOFF_OPTION                     = 3                       ! options for runoff and groundwater      [default = none]
+
                                                              !   1 -> TOPMODEL with groundwater (Niu et al. 2007 JGR) ;
                                                              !   2 -> TOPMODEL with an equilibrium water table (Niu et al. 2005 JGR) ;
                                                              ! **3 -> original surface and subsurface runoff (free drainage)
@@ -216,6 +238,7 @@
                                                         	   geogrid must have been run with GEOGRID.TBL.ARW.noahmp, use with caution
                                                  		0 -> No crop model, will run default dynamic vegetation
                                                      		1 -> Liu, et al. 2016
+                                                     		2 -> Gecros (Genotype-by-Environment interaction on CROp growth Simulator) Yin and van Laar, 2005
 
  IRRIGATION_OPTION                 = 0,        		     !  options for irrigation scheme  [default = 0]
                                                            	geogrid must have been run with GEOGRID.TBL.ARW.noahmp, use with caution
@@ -237,4 +260,10 @@
                                                                1 -> Simple drainage
                                                                2 -> Hooghoudt's equation based tile drainage
 
+ SOIL_TIMESTEP                     = 0.0,                    ! Noah-MP soil process timestep (seconds) for solving soil water and temperature
+                                                               0 -> default, the same as main NoahMP model timestep
+                                                               N * dt_noahmp -> longer than main NoahMP model timestep (often used for WRF coupled run)
+ NOAHMP_OUTPUT                     = 0,                      ! NoahMP output level
+                                                               0 -> standard output
+                                                               1 -> standard output with additional water and energy budget term output
 /

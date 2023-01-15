@@ -82,7 +82,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  GLW                 ! longwave down at surface [W m-2]
     real(kind=kind_noahmp), allocatable, dimension(:,:,:)  ::  P8W                 ! 3D pressure, valid at interface [Pa]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  RAINBL              ! precipitation entering land model [mm] per time step
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  RAINBL_tmp          ! precipitation forcingentering land model [mm/s]
+    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  RAINBL_tmp          ! precipitation forcing entering land model [mm/s]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  SNOWBL              ! snow entering land model [mm]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  SR                  ! frozen precip ratio entering land model [-]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  RAINCV              ! convective precip forcing [mm]
@@ -387,10 +387,10 @@ module NoahmpIOVarType
 
     integer                                                ::  num_urban_atmosphere ! atmospheric levels including ZLVL for BEP/BEM models
     integer                                                ::  IRI_URBAN            ! urban irrigation flag (move from module_sf_urban to here)
-    real(kind=kind_noahmp), allocatable                    ::  GMT                  ! Hour of day (fractional) (needed for urban)
-    integer, allocatable                                   ::  JULDAY               ! Integer day (needed for urban)
+    real(kind=kind_noahmp)                                 ::  GMT                  ! Hour of day (fractional) (needed for urban)
+    integer                                                ::  JULDAY               ! Integer day (needed for urban)
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  HRANG                ! hour angle (needed for urban)
-    real(kind=kind_noahmp), allocatable                    ::  DECLIN               ! declination (needed for urban)
+    real(kind=kind_noahmp)                                 ::  DECLIN               ! declination (needed for urban)
     integer                                                ::  num_roof_layers = 4
     integer                                                ::  num_road_layers = 4
     integer                                                ::  num_wall_layers = 4
@@ -538,7 +538,7 @@ module NoahmpIOVarType
     integer                                                ::  clock_count_1 = 0
     integer                                                ::  clock_count_2 = 0
     integer                                                ::  clock_rate    = 0
-    real                                                   ::  timing_sum    = 0.0
+    real(kind=kind_noahmp)                                 ::  timing_sum    = 0.0
     integer                                                ::  sflx_count_sum
     integer                                                ::  count_before_sflx
     integer                                                ::  count_after_sflx
@@ -625,10 +625,8 @@ module NoahmpIOVarType
     integer                                                ::  num_urban_nz
     integer                                                ::  num_urban_nbui
     integer                                                ::  num_urban_hi
-    real                                                   ::  urban_atmosphere_thickness
-    ! new urban var for green roof and solar panel
     integer                                                ::  num_urban_ngr
-    integer                                                ::  urban_map_zgrd
+    real(kind=kind_noahmp)                                 ::  urban_atmosphere_thickness
 
    ! derived urban dimensions
     integer                                                ::  urban_map_zrd
@@ -640,6 +638,8 @@ module NoahmpIOVarType
     integer                                                ::  urban_map_wd
     integer                                                ::  urban_map_gbd
     integer                                                ::  urban_map_fbd
+    integer                                                ::  urban_map_zgrd
+    integer                                                ::  max_urban_dim  ! C. He: maximum urban dimension for urban variable
 
     character(len=256)                                     ::  forcing_name_T
     character(len=256)                                     ::  forcing_name_Q
@@ -651,12 +651,12 @@ module NoahmpIOVarType
     character(len=256)                                     ::  forcing_name_PR
     character(len=256)                                     ::  forcing_name_SN
 
-    integer                                                ::  noahmp_output
+    integer                                                ::  noahmp_output       ! =0: default output; >0 include additional output
     integer                                                ::  split_output_count
     logical                                                ::  skip_first_output
     integer                                                ::  khour
     integer                                                ::  kday
-    real                                                   ::  zlvl 
+    real(kind=kind_noahmp)                                 ::  zlvl 
     character(len=256)                                     ::  hrldas_setup_file
     character(len=256)                                     ::  spatial_filename
     character(len=256)                                     ::  external_veg_filename_template

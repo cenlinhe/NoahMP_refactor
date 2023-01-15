@@ -30,7 +30,6 @@ contains
               J               => noahmp%config%domain%GridIndexJ       &
              )
 
-    NoahmpIO%SNOWLSM   (I,J) = noahmp%water%flux%SnowfallRefHeight
     NoahmpIO%FORCTLSM  (I,J) = noahmp%forcing%TemperatureAirRefHeight
     NoahmpIO%FORCQLSM  (I,J) = noahmp%forcing%SpecHumidityRefHeight
     NoahmpIO%FORCPLSM  (I,J) = noahmp%forcing%PressureAirRefHeight

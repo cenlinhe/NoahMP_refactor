@@ -95,20 +95,23 @@ contains
   
       if (NoahmpIO%sf_urban_physics > 0 ) then
       
-         NoahmpIO%urban_map_zrd = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nwr * NoahmpIO%num_urban_nz
-         NoahmpIO%urban_map_zwd = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nwr * NoahmpIO%num_urban_nz &
-                               * NoahmpIO%num_urban_nbui
-         NoahmpIO%urban_map_gd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ng
-         NoahmpIO%urban_map_zd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
-         NoahmpIO%urban_map_zdf = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz 
-         NoahmpIO%urban_map_bd  = NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
-         NoahmpIO%urban_map_wd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
-         NoahmpIO%urban_map_gbd = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ngb * NoahmpIO%num_urban_nbui
-         NoahmpIO%urban_map_fbd = NoahmpIO%num_urban_ndm * (NoahmpIO%num_urban_nz - 1)  * &
-                         NoahmpIO%num_urban_nf  * NoahmpIO%num_urban_nbui
-
-! new urban var
-        NoahmpIO%urban_map_zgrd = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ngr * NoahmpIO%num_urban_nz
+         NoahmpIO%urban_map_zrd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nwr * NoahmpIO%num_urban_nz
+         NoahmpIO%urban_map_zwd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nwr * NoahmpIO%num_urban_nz * &
+                                   NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_gd   = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ng
+         NoahmpIO%urban_map_zd   = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_zdf  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz 
+         NoahmpIO%urban_map_bd   = NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_wd   = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_nz  * NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_gbd  = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ngb * NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_fbd  = NoahmpIO%num_urban_ndm * (NoahmpIO%num_urban_nz - 1)  * &
+                                   NoahmpIO%num_urban_nf  * NoahmpIO%num_urban_nbui
+         NoahmpIO%urban_map_zgrd = NoahmpIO%num_urban_ndm * NoahmpIO%num_urban_ngr * NoahmpIO%num_urban_nz  ! for green roof
+         ! C. He: compute maximum urban dimension
+         NoahmpIO%max_urban_dim  = max(NoahmpIO%num_urban_hi, NoahmpIO%urban_map_zrd, NoahmpIO%urban_map_zwd, &
+                                       NoahmpIO%urban_map_gd, NoahmpIO%urban_map_zd,  NoahmpIO%urban_map_zdf, &
+                                       NoahmpIO%urban_map_bd, NoahmpIO%urban_map_wd,  NoahmpIO%urban_map_gbd, &
+                                       NoahmpIO%urban_map_fbd,NoahmpIO%urban_map_zgrd)
 
       end if     
       
@@ -424,9 +427,9 @@ contains
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,      "HI_URB2D"  ,     NoahmpIO%HI_URB2D  )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,      "LF_URB2D"  ,     NoahmpIO%LF_URB2D  )
 
-     ENDIF
+!     ENDIF
          
-     IF(NoahmpIO%SF_URBAN_PHYSICS == 1 ) THEN  ! single layer urban model
+!     IF(NoahmpIO%SF_URBAN_PHYSICS == 1 ) THEN  ! single layer urban model
          
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "CMR_SFCDIF" ,    NoahmpIO%CMR_SFCDIF )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "CHR_SFCDIF" ,    NoahmpIO%CHR_SFCDIF )
@@ -458,9 +461,9 @@ contains
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "FLXHUMB_URB2D"  ,NoahmpIO%FLXHUMB_URB2D  )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "FLXHUMG_URB2D"  ,NoahmpIO%FLXHUMG_URB2D  )
 
-     ENDIF
+!     ENDIF
 
-     IF(NoahmpIO%SF_URBAN_PHYSICS == 2 .or. NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEP or BEM urban models
+!     IF(NoahmpIO%SF_URBAN_PHYSICS == 2 .or. NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEP or BEM urban models
          
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "TRB_URB4D"  ,    NoahmpIO%TRB_URB4D  )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "TW1_URB4D"  ,    NoahmpIO%TW1_URB4D  )
@@ -471,9 +474,9 @@ contains
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "SFR_URB3D"  ,    NoahmpIO%SFR_URB3D  )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,     "SFG_URB3D"  ,    NoahmpIO%SFG_URB3D  )
 
-     ENDIF
+!     ENDIF
 
-     IF(NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEM urban model
+!     IF(NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEM urban model
          
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,    "TLEV_URB3D"  ,   NoahmpIO%TLEV_URB3D  )
        call get_from_restart(xstart, xend, xstart, ixfull, jxfull,    "QLEV_URB3D"  ,   NoahmpIO%QLEV_URB3D  )
@@ -730,7 +733,7 @@ contains
 
   endif  ! restart flag
 
-  NoahmpIO%NTIME=(NoahmpIO%KHOUR)*3600./nint(NoahmpIO%dtbl)*(NoahmpIO%spinup_loops+1)
+  NoahmpIO%NTIME       = (NoahmpIO%KHOUR)*3600.0/nint(NoahmpIO%dtbl)*(NoahmpIO%spinup_loops+1)
   NoahmpIO%spinup_loop = 0
   NoahmpIO%reset_spinup_date = .false.
 
@@ -1057,11 +1060,12 @@ contains
                        
          ENDIF 
 
-         if (NoahmpIO%IOPT_RUNSUB == 5 .and. mod(ITIME,NoahmpIO%STEPWTD) == 0) then
-           CALL wrf_message('calling WTABLE' )
+         if ( NoahmpIO%IOPT_RUNSUB == 5 ) then
+            if ( mod(ITIME,NoahmpIO%STEPWTD) == 0 ) then
+               CALL wrf_message('calling WTABLE' )
 
-!gmm update wtable from lateral flow and shed water to rivers
-           CALL WTABLE_MMF_NOAHMP(NoahmpIO,                                                 &
+               !gmm update wtable from lateral flow and shed water to rivers
+               CALL WTABLE_MMF_NOAHMP(NoahmpIO,                                             &
                                   NoahmpIO%NUM_SOIL_LAYERS, NoahmpIO%XLAND, NoahmpIO%XICE,  & 
                                   NoahmpIO%XICE_THRESHOLD, NoahmpIO%ISICE,                  &
                                   NoahmpIO%ISLTYP, NoahmpIO%SMOISEQ, NoahmpIO%DZS,          &       
@@ -1078,58 +1082,17 @@ contains
                                   NoahmpIO%JMS,NoahmpIO%JME, NoahmpIO%KMS,NoahmpIO%KME,     &
                                   NoahmpIO%ITS,NoahmpIO%ITE, NoahmpIO%JTS,NoahmpIO%JTE,     &
                                   NoahmpIO%KTS,NoahmpIO%KTE)
-
-!         IF(NoahmpIO%SF_URBAN_PHYSICS.eq.1) THEN
-!           DO j=NoahmpIO%jts,NoahmpIO%jte                                           !urban
-!             DO i=NoahmpIO%its,NoahmpIO%ite                                         !urban
-!             IF( NoahmpIO%IVGTYP(I,J) == NoahmpIO%ISURBAN    .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_1 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_2 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_3      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_4 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_5 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_6      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_7 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_8 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_9      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_10 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_11 )THEN
-!                 NoahmpIO%Q2(I,J)  = (NoahmpIO%FVEGXY(I,J)*NoahmpIO%Q2MVXY(I,J) + (1.-NoahmpIO%FVEGXY(I,J))*NoahmpIO%Q2MBXY(I,J))*(1.-NoahmpIO%FRC_URB2D(I,J)) +   &
-!                             NoahmpIO%Q2_URB2D(I,J)*NoahmpIO%FRC_URB2D(I,J)
-!                 NoahmpIO%T2(I,J)  = (NoahmpIO%FVEGXY(I,J)*NoahmpIO%T2MVXY(I,J) + (1.-NoahmpIO%FVEGXY(I,J))*NoahmpIO%T2MBXY(I,J))*(1.-NoahmpIO%FRC_URB2D(I,J)) +   &
-!                             (NoahmpIO%TH2_URB2D(i,j)/((1.E5/NoahmpIO%PSFC(i,j))**NoahmpIO%RCP))*NoahmpIO%FRC_URB2D(I,J)
-!                 NoahmpIO%TH2(I,J) = NoahmpIO%T2(i,j)*(1.E5/NoahmpIO%PSFC(i,j))**NoahmpIO%RCP
-!                 NoahmpIO%U10(I,J)  = NoahmpIO%U10_URB2D(I,J)                       !urban
-!                 NoahmpIO%V10(I,J)  = NoahmpIO%V10_URB2D(I,J)                       !urban
-!                 NoahmpIO%PSIM(I,J) = NoahmpIO%PSIM_URB2D(I,J)                      !urban
-!                 NoahmpIO%PSIH(I,J) = NoahmpIO%PSIH_URB2D(I,J)                      !urban
-!                 NoahmpIO%GZ1OZ0(I,J) = NoahmpIO%GZ1OZ0_URB2D(I,J)                  !urban
-!                 NoahmpIO%AKHS(I,J) = NoahmpIO%CHS(I,J)                             !urban
-!                 NoahmpIO%AKMS(I,J) = NoahmpIO%AKMS_URB2D(I,J)                      !urban
-!               END IF                                             !urban
-!             ENDDO                                                !urban
-!           ENDDO                                                  !urban
-!         ENDIF
-
-!         IF((NoahmpIO%SF_URBAN_PHYSICS.eq.2).OR.(NoahmpIO%SF_URBAN_PHYSICS.eq.3)) THEN
-!           DO j=NoahmpIO%j_start(ij),NoahmpIO%j_end(ij)                             !urban
-!             DO i=NoahmpIO%i_start(ij),NoahmpIO%i_end(ij)                           !urban
-!             IF( NoahmpIO%IVGTYP(I,J) == NoahmpIO%ISURBAN    .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_1 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_2 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_3      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_4 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_5 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_6      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_7 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_8 .or. &
-!             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_9      .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_10 .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_11 )THEN
-!                NoahmpIO%T2(I,J)   = NoahmpIO%TH_PHY(i,1,j)/((1.E5/NoahmpIO%PSFC(I,J))**NoahmpIO%RCP) !urban
-!                NoahmpIO%TH2(I,J) = NoahmpIO%TH_PHY(i,1,j) !urban
-!                NoahmpIO%Q2(I,J)   = NoahmpIO%qv_curr(i,1,j)  !urban
-!                NoahmpIO%U10(I,J)  = NoahmpIO%U_phy(I,1,J)                       !urban
-!                NoahmpIO%V10(I,J)  = NoahmpIO%V_phy(I,1,J)                       !urban
-!               END IF                                             !urban
-!             ENDDO                                                !urban
-!           ENDDO                                                  !urban
-!         ENDIF
-
- ENDIF
+            endif ! MMF timestep
+         endif ! MMF groundwater
 
 !------------------------------------------------------------------------
 ! END of surface_driver consistent code
 !------------------------------------------------------------------------
 
- ENDIF   ! SKIP FIRST TIMESTEP
+    ENDIF   ! ITIME > 0: SKIP FIRST TIMESTEP
 
 ! Output for history
-     OUTPUT_FOR_HISTORY: if (NoahmpIO%output_timestep > 0) then
+    OUTPUT_FOR_HISTORY: if (NoahmpIO%output_timestep > 0) then
         if (mod(ITIME*NoahmpIO%noah_timestep, NoahmpIO%output_timestep) == 0 &
             .and. .not. NoahmpIO%skip_first_output ) then
 
@@ -1253,7 +1216,7 @@ contains
               call add_to_output(NoahmpIO%PSNXY      , "PSN"     , "Total photosynthesis"                   , "umol CO@ m{-2} s{-1}")
               call add_to_output(NoahmpIO%APARXY     , "APAR"    , "Photosynthesis active energy by canopy" , "W m{-2}"             )
         ! additional NoahMP output
-          if (NoahmpIO%noahmp_output > 0) then
+            if (NoahmpIO%noahmp_output > 0) then
               ! additional water budget terms
               call add_to_output(NoahmpIO%QINTSXY    , "QINTS"   , "canopy interception (loading) rate for snowfall", "mm s{-1}"    )
               call add_to_output(NoahmpIO%QINTRXY    , "QINTR"   , "canopy interception rate for rain"              , "mm s{-1}"    )
@@ -1273,9 +1236,9 @@ contains
               call add_to_output(NoahmpIO%QMELTXY    , "QMELT"   , "snow melt due to phase change"                  , "mm s{-1}"    )
               call add_to_output(NoahmpIO%PONDINGXY  , "PONDING" , "total surface ponding per time step"            , "mm s{-1}"    )
               call add_to_output(NoahmpIO%FPICEXY    , "FPICE"   , "snow fraction in precipitation"                 , ""            )
-              call add_to_output(NoahmpIO%ACC_QINSURXY,"ACC_QINSUR","accumuated water flux to soil within soil timestep","mm s{-1}" )
-              call add_to_output(NoahmpIO%ACC_QSEVAXY, "ACC_QSEVA" ,"accumulated soil surface evap rate within soil timestep","mm s{-1}")
-              call add_to_output(NoahmpIO%ACC_ETRANIXY,"ACC_ETRANI","accumualted transpiration rate within soil timestep", "mm s{-1}", "SOIL")
+              call add_to_output(NoahmpIO%ACC_QINSURXY,"ACC_QINSUR","accumuated water flux to soil within soil timestep","m/s*dt_soil/dt_main" )
+              call add_to_output(NoahmpIO%ACC_QSEVAXY, "ACC_QSEVA" ,"accumulated soil surface evap rate within soil timestep","m/s*dt_soil/dt_main")
+              call add_to_output(NoahmpIO%ACC_ETRANIXY,"ACC_ETRANI","accumualted transpiration rate within soil timestep", "m/s*dt_soil/dt_main", "SOIL")
               call add_to_output(NoahmpIO%ACC_DWATERXY,"ACC_DWATER","accumulated snow,soil,canopy water change within soil timestep", "mm")
               call add_to_output(NoahmpIO%ACC_PRCPXY , "ACC_PRCP", "accumulated precipitation within soil timestep", "mm")
               call add_to_output(NoahmpIO%ACC_ECANXY , "ACC_ECAN", "accumulated net canopy evaporation within soil timestep", "mm")
@@ -1299,7 +1262,7 @@ contains
               call add_to_output(NoahmpIO%FORCPLSM   , "FORCPLSM", "lowest model P into LSM"                                , "Pa"      )
               call add_to_output(NoahmpIO%FORCZLSM   , "FORCZLSM", "lowest model Z into LSM"                                , "m"       )
               call add_to_output(NoahmpIO%FORCWLSM   , "FORCWLSM", "lowest model wind speed into LSM"                       , "m s{-1}" )
-          endif
+            endif
         ! Irrigation
             IF (NoahmpIO%IOPT_IRR > 0) THEN
               call add_to_output(NoahmpIO%IRNUMSI    , "IRNUMSI" , "Sprinkler irrigation count"             , "-"                   )
@@ -1399,10 +1362,10 @@ subroutine lsm_restart()
   
   print*, 'Write restart at '//NoahmpIO%olddate(1:13)
 
-  call prepare_restart_file (trim(NoahmpIO%outdir), version, NoahmpIO%igrid, NoahmpIO%llanduse,    &
+  call prepare_restart_file (trim(NoahmpIO%outdir), version, NoahmpIO%igrid, NoahmpIO%llanduse,       &
                              NoahmpIO%olddate, NoahmpIO%startdate, NoahmpIO%ixfull, NoahmpIO%jxfull,  &
                              NoahmpIO%ixpar, NoahmpIO%jxpar, NoahmpIO%xstartpar, NoahmpIO%ystartpar,  &                               
-                             NoahmpIO%nsoil, NoahmpIO%nsnow, NoahmpIO%num_urban_hi, NoahmpIO%dx,      &
+                             NoahmpIO%nsoil, NoahmpIO%nsnow, NoahmpIO%max_urban_dim, NoahmpIO%dx,     &
                              NoahmpIO%dy, NoahmpIO%truelat1, NoahmpIO%truelat2, NoahmpIO%mapproj,     &
                              NoahmpIO%lat1, NoahmpIO%lon1, NoahmpIO%cen_lon, NoahmpIO%iswater, NoahmpIO%ivgtyp)
   
@@ -1473,21 +1436,21 @@ subroutine lsm_restart()
      call add_to_restart(NoahmpIO%IRFIVOL   , "IRFIVOL")
   ENDIF
   ! below for opt_run = 5
-  call add_to_restart(NoahmpIO%SMOISEQ   , "SMOISEQ"  , layers="SOIL"  )
-  call add_to_restart(NoahmpIO%AREAXY    , "AREAXY"     )
-  call add_to_restart(NoahmpIO%SMCWTDXY  , "SMCWTDXY"   )
-  call add_to_restart(NoahmpIO%DEEPRECHXY, "DEEPRECHXY" )
-  call add_to_restart(NoahmpIO%QSLATXY   , "QSLATXY"    )
-  call add_to_restart(NoahmpIO%QRFSXY    , "QRFSXY"     )
-  call add_to_restart(NoahmpIO%QSPRINGSXY, "QSPRINGSXY" )
-  call add_to_restart(NoahmpIO%RECHXY    , "RECHXY"     )
-  call add_to_restart(NoahmpIO%QRFXY     , "QRFXY"      )
-  call add_to_restart(NoahmpIO%QSPRINGXY , "QSPRINGXY"  )
-  call add_to_restart(NoahmpIO%FDEPTHXY , "FDEPTHXY"  )
+  call add_to_restart(NoahmpIO%SMOISEQ     , "SMOISEQ"  , layers="SOIL"  )
+  call add_to_restart(NoahmpIO%AREAXY      , "AREAXY"     )
+  call add_to_restart(NoahmpIO%SMCWTDXY    , "SMCWTDXY"   )
+  call add_to_restart(NoahmpIO%DEEPRECHXY  , "DEEPRECHXY" )
+  call add_to_restart(NoahmpIO%QSLATXY     , "QSLATXY"    )
+  call add_to_restart(NoahmpIO%QRFSXY      , "QRFSXY"     )
+  call add_to_restart(NoahmpIO%QSPRINGSXY  , "QSPRINGSXY" )
+  call add_to_restart(NoahmpIO%RECHXY      , "RECHXY"     )
+  call add_to_restart(NoahmpIO%QRFXY       , "QRFXY"      )
+  call add_to_restart(NoahmpIO%QSPRINGXY   , "QSPRINGXY"  )
+  call add_to_restart(NoahmpIO%FDEPTHXY    , "FDEPTHXY"  )
   call add_to_restart(NoahmpIO%RIVERCONDXY , "RIVERCONDXY"  )
-  call add_to_restart(NoahmpIO%RIVERBEDXY , "RIVERBEDXY"  )
-  call add_to_restart(NoahmpIO%EQZWT , "EQZWT"  )
-  call add_to_restart(NoahmpIO%PEXPXY , "PEXPXY"  )
+  call add_to_restart(NoahmpIO%RIVERBEDXY  , "RIVERBEDXY"  )
+  call add_to_restart(NoahmpIO%EQZWT       , "EQZWT"  )
+  call add_to_restart(NoahmpIO%PEXPXY      , "PEXPXY"  )
 
   IF(NoahmpIO%SF_URBAN_PHYSICS > 0 )  THEN  ! any urban model
 
@@ -1506,9 +1469,9 @@ subroutine lsm_restart()
       call add_to_restart(     NoahmpIO%HI_URB2D  ,      "HI_URB2D", layers="URBN")
       call add_to_restart(     NoahmpIO%LF_URB2D  ,      "LF_URB2D", layers="URBN")
 
-  ENDIF
+!  ENDIF
          
-  IF(NoahmpIO%SF_URBAN_PHYSICS == 1 ) THEN  ! single layer urban model
+!  IF(NoahmpIO%SF_URBAN_PHYSICS == 1 ) THEN  ! single layer urban model
          
       call add_to_restart(    NoahmpIO%CMR_SFCDIF ,     "CMR_SFCDIF" )
       call add_to_restart(    NoahmpIO%CHR_SFCDIF ,     "CHR_SFCDIF" )
@@ -1540,9 +1503,9 @@ subroutine lsm_restart()
       call add_to_restart(NoahmpIO%FLXHUMB_URB2D  , "FLXHUMB_URB2D" )
       call add_to_restart(NoahmpIO%FLXHUMG_URB2D  , "FLXHUMG_URB2D" )
 
-  ENDIF
+!  ENDIF
 
-  IF(NoahmpIO%SF_URBAN_PHYSICS == 2 .or. NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEP or BEM urban models
+!  IF(NoahmpIO%SF_URBAN_PHYSICS == 2 .or. NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEP or BEM urban models
          
       call add_to_restart(    NoahmpIO%TRB_URB4D  ,     "TRB_URB4D", layers="URBN" )
       call add_to_restart(    NoahmpIO%TW1_URB4D  ,     "TW1_URB4D", layers="URBN" )
@@ -1553,9 +1516,9 @@ subroutine lsm_restart()
       call add_to_restart(    NoahmpIO%SFR_URB3D  ,     "SFR_URB3D", layers="URBN" )
       call add_to_restart(    NoahmpIO%SFG_URB3D  ,     "SFG_URB3D", layers="URBN" )
 
-  ENDIF
+!  ENDIF
 
-  IF(NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEM urban model
+!  IF(NoahmpIO%SF_URBAN_PHYSICS == 3) THEN  ! BEM urban model
          
       call add_to_restart(   NoahmpIO%TLEV_URB3D  ,    "TLEV_URB3D", layers="URBN" )
       call add_to_restart(   NoahmpIO%QLEV_URB3D  ,    "QLEV_URB3D", layers="URBN" )
@@ -1648,10 +1611,10 @@ SUBROUTINE CALC_DECLIN ( NOWDATE, LATITUDE, LONGITUDE, COSZ, JULIAN, &
 
 !-----CALCULATE LONGITUDE OF THE SUN FROM VERNAL EQUINOX:
 
-   IF(JULIAN.GE.80.)SXLONG=DPD*(JULIAN-80.)*DEGRAD
-   IF(JULIAN.LT.80.)SXLONG=DPD*(JULIAN+285.)*DEGRAD
-   ARG=SINOB*SIN(SXLONG)
-   DECLIN=ASIN(ARG)
+   IF(JULIAN >= 80.0) SXLONG = DPD*(JULIAN-80.0)*DEGRAD
+   IF(JULIAN <  80.0) SXLONG = DPD*(JULIAN+285.0)*DEGRAD
+   ARG    = SINOB * SIN(SXLONG)
+   DECLIN = ASIN(ARG)
 
    TLOCTIM = REAL(IHOUR) + REAL(IMINUTE)/60.0 + REAL(ISECOND)/3600.0 + LONGITUDE/15.0 ! LOCAL TIME IN HOURS
    TLOCTIM = AMOD(TLOCTIM+24.0, 24.0)
