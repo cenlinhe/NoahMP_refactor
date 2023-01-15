@@ -1776,7 +1776,7 @@ contains
       layer_bottom(isoil) = layer_top(isoil) + dzs(isoil)
     end do
 	
-    call get_netcdf_soillevel("TSLB", ncid, soildummy, units,  xstart, xend, ystart, yend, FATAL, ierr)
+    call get_netcdf_soillevel("TSLB", ncid, nsoil, soildummy, units,  xstart, xend, ystart, yend, FATAL, ierr)
     
     write(*, '("layer_bottom(1:nsoil) = ", 4F9.4)') layer_bottom(1:nsoil)
     write(*, '("layer_top(1:nsoil)    = ", 4F9.4)') layer_top(1:nsoil)
