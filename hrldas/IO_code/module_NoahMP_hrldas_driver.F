@@ -392,7 +392,10 @@ contains
         call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRSIVOL" , NoahmpIO%IRSIVOL  )
         call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRMIVOL" , NoahmpIO%IRMIVOL  )
         call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRFIVOL" , NoahmpIO%IRFIVOL  )
+        call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRELOSS" , NoahmpIO%IRELOSS  )
+        call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "IRRSPLH" , NoahmpIO%IRRSPLH  )
      ENDIF
+
     ! below for opt_run = 5
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "SMOISEQ"   , NoahmpIO%SMOISEQ    )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "AREAXY"    , NoahmpIO%AREAXY     )
@@ -1268,11 +1271,11 @@ contains
               call add_to_output(NoahmpIO%IRNUMSI    , "IRNUMSI" , "Sprinkler irrigation count"             , "-"                   )
               call add_to_output(NoahmpIO%IRNUMMI    , "IRNUMMI" , "Micro irrigation count"                 , "-"                   )
               call add_to_output(NoahmpIO%IRNUMFI    , "IRNUMFI" , "Flood irrigation count"                 , "-"                   )
-              call add_to_output(NoahmpIO%IRELOSS    , "IRELOSS" , "Sprinkler Evaporation"                  , "mm"                  )
+              call add_to_output(NoahmpIO%IRELOSS    , "IRELOSS" , "Accumulated sprinkler Evaporation"      , "mm"                  )
               call add_to_output(NoahmpIO%IRSIVOL    , "IRSIVOL" , "Sprinkler irrigation amount"            , "mm"                  )
               call add_to_output(NoahmpIO%IRMIVOL    , "IRMIVOL" , "Micro irrigation amount"                , "mm"                  )
               call add_to_output(NoahmpIO%IRFIVOL    , "IRFIVOL" , "Flood irrigation amount"                , "mm"                  )
-              call add_to_output(NoahmpIO%IRRSPLH    , "IRRSPLH" , "Latent heating due to sprinkler"        , "W m{-2}"             )
+              call add_to_output(NoahmpIO%IRRSPLH    , "IRRSPLH" , "Accumulated latent heating due to sprinkler", "J m{-2}"         )
             ENDIF
         ! MMF groundwater  model
 	    IF(NoahmpIO%IOPT_RUNSUB == 5) THEN
@@ -1434,6 +1437,8 @@ subroutine lsm_restart()
      call add_to_restart(NoahmpIO%IRSIVOL   , "IRSIVOL") 
      call add_to_restart(NoahmpIO%IRMIVOL   , "IRMIVOL")
      call add_to_restart(NoahmpIO%IRFIVOL   , "IRFIVOL")
+     call add_to_restart(NoahmpIO%IRELOSS   , "IRELOSS")
+     call add_to_restart(NoahmpIO%IRRSPLH   , "IRRSPLH")
   ENDIF
   ! below for opt_run = 5
   call add_to_restart(NoahmpIO%SMOISEQ     , "SMOISEQ"  , layers="SOIL"  )
