@@ -28,7 +28,9 @@ contains
     real(kind=kind_noahmp)           :: LeafAreaIndSunlit         ! sunlit leaf area index [m2/m2]
     real(kind=kind_noahmp)           :: LeafAreaIndShade          ! shaded leaf area index [m2/m2]
     real(kind=kind_noahmp)           :: ResistanceLeafBoundary    ! leaf boundary layer resistance [s/m]
+    real(kind=kind_noahmp)           :: ThicknessSnowSoilLayer    ! temporary snow/soil layer thickness [m]
 
+!-----------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
@@ -37,6 +39,7 @@ contains
               NumSnowLayerNeg => noahmp%config%domain%NumSnowLayerNeg ,&
               IndicatorIceSfc => noahmp%config%domain%IndicatorIceSfc  &
              )
+!-----------------------------------------------------------------------
 
     ! special treatment for glacier point output
     if ( IndicatorIceSfc == -1 ) then ! land ice point
@@ -161,12 +164,18 @@ contains
     NoahmpIO%SNOWENERGY(I,J) = 0.0
     NoahmpIO%SOILENERGY(I,J) = 0.0
     do LoopInd = NumSnowLayerNeg+1, NumSoilLayer
+       if ( LoopInd == NumSnowLayerNeg+1 ) then
+          ThicknessSnowSoilLayer = -noahmp%config%domain%DepthSnowSoilLayer(LoopInd)
+       else
+          ThicknessSnowSoilLayer = noahmp%config%domain%DepthSnowSoilLayer(LoopInd-1) - &
+                                   noahmp%config%domain%DepthSnowSoilLayer(LoopInd)
+       endif
        if ( LoopInd >= 1 ) then
-          NoahmpIO%SOILENERGY(I,J) = NoahmpIO%SOILENERGY(I,J) + noahmp%config%domain%ThicknessSnowSoilLayer(LoopInd) * &
+          NoahmpIO%SOILENERGY(I,J) = NoahmpIO%SOILENERGY(I,J) + ThicknessSnowSoilLayer * &
                                      noahmp%energy%state%HeatCapacSoilSnow(LoopInd) * &
                                      (noahmp%energy%state%TemperatureSoilSnow(LoopInd) - 273.16) * 0.001
        else
-          NoahmpIO%SNOWENERGY(I,J) = NoahmpIO%SNOWENERGY(I,J) + noahmp%config%domain%ThicknessSnowSoilLayer(LoopInd) * &
+          NoahmpIO%SNOWENERGY(I,J) = NoahmpIO%SNOWENERGY(I,J) + ThicknessSnowSoilLayer * &
                                      noahmp%energy%state%HeatCapacSoilSnow(LoopInd) * &
                                      (noahmp%energy%state%TemperatureSoilSnow(LoopInd) - 273.16) * 0.001
        endif
