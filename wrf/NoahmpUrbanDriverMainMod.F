@@ -390,9 +390,12 @@ JLOOP : DO J = jts, jte
 
 ILOOP : DO I = its, ite
 
-
-  IF( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == 31 .or. &
-      IVGTYP(I,J) == 32 .or. IVGTYP(I,J) == 33 ) THEN
+  IF( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
+      IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
+      IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
+      IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
+      IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
+      IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
 
     UTYPE_URB = UTYPE_URB2D(I,J) !urban type (low, high or industrial)
 
@@ -406,7 +409,7 @@ ILOOP : DO I = its, ite
     SSGD_URB  = 0.8*SWDOWN(I,J)                           ! [W/m/m]     
     SSGQ_URB  = SSG_URB-SSGD_URB                          ! [W/m/m]
     LLG_URB   = GLW(I,J)                                  ! [W/m/m]
-    RAIN_URB  = RAINBL(I,J)                               ! [mm]       
+    RAIN_URB  = RAINBL(I,J) / DT * 3600.0                 ! [mm/hr]       
     RHOO_URB  = (P8W3D(I,KTS+1,J)+P8W3D(I,KTS,J))*0.5 / (287.04 * TA_URB * (1.0+ 0.61 * QA_URB)) ![kg/m/m/m] 
     ZA_URB    = 0.5*DZ8W(I,1,J)                           ! [m]         
     DELT_URB  = DT                                        ! [sec]

@@ -53,12 +53,12 @@ contains
               SoilMoisture           => noahmp%water%state%SoilMoisture             ,& ! inout, total glacier water [m3/m3]
               PondSfcThinSnwMelt     => noahmp%water%state%PondSfcThinSnwMelt       ,& ! inout, surface ponding [mm] from snowmelt when thin snow has no layer
               WaterHeadSfc           => noahmp%water%state%WaterHeadSfc             ,& ! inout, surface water head [mm)]
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on glacier/soil surface [mm/s]
+              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! inout, water input on glacier/soil surface [m/s]
               FrostSnowSfcIce        => noahmp%water%flux%FrostSnowSfcIce           ,& ! inout, snow surface frost rate [mm/s]
               SublimSnowSfcIce       => noahmp%water%flux%SublimSnowSfcIce          ,& ! inout, snow surface sublimation rate [mm/s]
               GlacierExcessFlow      => noahmp%water%flux%GlacierExcessFlow         ,& ! inout, glacier snow excess flow [mm/s]
               SnowDepthIncr          => noahmp%water%flux%SnowDepthIncr             ,& ! out,   snow depth increasing rate [m/s] due to snowfall
-              EvapSoilNet            => noahmp%water%flux%EvapSoilNet               ,& ! out,   net direct glacier evaporation [mm/s]
+              EvapGroundNet          => noahmp%water%flux%EvapGroundNet             ,& ! out,   net direct ground evaporation [mm/s]
               RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out,   surface runoff [mm/s]
               RunoffSubsurface       => noahmp%water%flux%RunoffSubsurface          ,& ! out,   subsurface runoff [mm/s]
               SnowBotOutflow         => noahmp%water%flux%SnowBotOutflow            ,& ! out,   total water (snowmelt + rain through pack) out of snowpack bottom [mm/s]
@@ -84,7 +84,7 @@ contains
     ! compute soil/snow surface evap/dew rate based on energy flux
     VaporizeGrd        = max(HeatLatentGrd/LatHeatVapGrd, 0.0)       ! positive part of ground latent heat; Barlage change to ground v3.6
     CondenseVapGrd     = abs(min(HeatLatentGrd/LatHeatVapGrd, 0.0))  ! negative part of ground latent heat
-    EvapSoilNet        = VaporizeGrd - CondenseVapGrd
+    EvapGroundNet      = VaporizeGrd - CondenseVapGrd
 
     ! snow height increase
     SnowDepthIncr      = SnowfallGround / SnowfallDensity
@@ -137,8 +137,8 @@ contains
     endif
 
     if ( OptGlacierTreatment == 2 ) then
-       EvapSoilNet   = VaporizeGrd - CondenseVapGrd
-       HeatLatentGrd = EvapSoilNet * LatHeatVapGrd
+       EvapGroundNet = VaporizeGrd - CondenseVapGrd
+       HeatLatentGrd = EvapGroundNet * LatHeatVapGrd
     endif
 
     if ( maxval(SoilIce) < 0.0001 ) then

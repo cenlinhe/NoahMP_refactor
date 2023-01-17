@@ -33,11 +33,11 @@ contains
               ThicknessSnowSoilLayer => noahmp%config%domain%ThicknessSnowSoilLayer ,& ! in,  thickness of snow/soil layers [m]
               SoilMoisture           => noahmp%water%state%SoilMoisture             ,& ! in,  total soil water content [m3/m3]
               SoilImpervFrac         => noahmp%water%state%SoilImpervFrac           ,& ! in,  impervious fraction due to frozen soil
-              SoilSfcInflow          => noahmp%water%flux%SoilSfcInflow             ,& ! in,  water input on soil surface [mm/s]
+              SoilSfcInflowMean      => noahmp%water%flux%SoilSfcInflowMean         ,& ! in,  water input on soil surface [m/s]
               SoilMoistureSat        => noahmp%water%param%SoilMoistureSat          ,& ! in,  saturated value of soil moisture [m3/m3]
               SoilSaturateFrac       => noahmp%water%state%SoilSaturateFrac         ,& ! out, fractional saturated area for soil moisture
-              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out, surface runoff [mm/s]
-              InfilRateSfc           => noahmp%water%flux%InfilRateSfc               & ! out, infiltration rate at surface [mm/s]
+              RunoffSurface          => noahmp%water%flux%RunoffSurface             ,& ! out, surface runoff [m/s]
+              InfilRateSfc           => noahmp%water%flux%InfilRateSfc               & ! out, infiltration rate at surface [m/s]
              )
 ! ----------------------------------------------------------------------
 
@@ -56,9 +56,9 @@ contains
     SoilSaturateFrac = max(0.01, SoilMoistureTmp)**4.0  ! BATS
 
     ! compute surface runoff and infiltration m/s
-    if ( SoilSfcInflow > 0.0 ) then
-       RunoffSurface = SoilSfcInflow * ((1.0-SoilImpervFrac(1)) * SoilSaturateFrac + SoilImpervFrac(1))
-       InfilRateSfc  = SoilSfcInflow - RunoffSurface 
+    if ( SoilSfcInflowMean > 0.0 ) then
+       RunoffSurface = SoilSfcInflowMean * ((1.0-SoilImpervFrac(1)) * SoilSaturateFrac + SoilImpervFrac(1))
+       InfilRateSfc  = SoilSfcInflowMean - RunoffSurface 
     endif
 
     end associate

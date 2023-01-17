@@ -39,17 +39,17 @@
  ISCROP                    =  2
  EBLFOREST                 = 13
  NATURAL                   =  5
- LCZ_1   = 31
- LCZ_2   = 32
- LCZ_3   = 33
- LCZ_4   = 34
- LCZ_5   = 35
- LCZ_6   = 36
- LCZ_7   = 37
- LCZ_8   = 38
- LCZ_9   = 39
- LCZ_10   = 40
- LCZ_11   = 41
+ LCZ_1   = 51
+ LCZ_2   = 52
+ LCZ_3   = 53
+ LCZ_4   = 54
+ LCZ_5   = 55
+ LCZ_6   = 56
+ LCZ_7   = 57
+ LCZ_8   = 58
+ LCZ_9   = 59
+ LCZ_10  = 60
+ LCZ_11  = 61
 
  !---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
  !          1      2      3      4      5      6      7      8      9      10     11     12     13     14     15     16     17     18     19     20     21     22     23     24     25     26    27
@@ -66,6 +66,8 @@
  MFSNO =  4.00,  3.00,  3.00,  3.00,  4.00,  4.00,  2.00,  2.00,  2.00,  2.00,  1.00,  1.00,  1.00,  1.00,  1.00,  3.00,  3.00,  3.00,  3.00,  3.50,  3.50,  3.50,  3.50,  2.50,  3.50,  3.50,  3.50,
 ! C. He 12/17/2020: optimized snow cover factor (m) in SCF formulation to replace original constant 2.5*z0,z0=0.002m, based on evaluation with SNOTEL SWE and MODIS SCF, surface albedo
  SCFFAC= 0.042, 0.014, 0.014, 0.014, 0.026, 0.026, 0.020, 0.018, 0.016, 0.020, 0.008, 0.008, 0.008, 0.008, 0.008, 0.030, 0.020, 0.020, 0.016, 0.030, 0.030, 0.030, 0.030, 0.030, 0.030, 0.030, 0.030,  
+! C. He 12/23/2022: bring canopy heat capacity parameter from hard-coded to table value here.
+ CBIOM =  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02,  0.02, 
 
  ! Row 1:  Vis
  ! Row 2:  Near IR
@@ -199,17 +201,17 @@
  ISCROP                    = 12
  EBLFOREST                 =  2
  NATURAL                   = 14
- LCZ_1   = 31
- LCZ_2   = 32
- LCZ_3   = 33
- LCZ_4   = 34
- LCZ_5   = 35
- LCZ_6   = 36
- LCZ_7   = 37
- LCZ_8   = 38
- LCZ_9   = 39
- LCZ_10   = 40
- LCZ_11   = 41
+ LCZ_1   = 51
+ LCZ_2   = 52
+ LCZ_3   = 53
+ LCZ_4   = 54
+ LCZ_5   = 55
+ LCZ_6   = 56
+ LCZ_7   = 57
+ LCZ_8   = 58
+ LCZ_9   = 59
+ LCZ_10  = 60
+ LCZ_11  = 61
  !---------------------------------------------------------------------------------------------------------------------------------------------------------------------
  !          1       2       3       4       5       6       7       8       9      10      11      12      13      14      15      16      17      18      19      20
  !---------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -225,6 +227,8 @@
  MFSNO =  1.00,   1.00,   1.00,   1.00,   1.00,   2.00,   2.00,   2.00,   2.00,   2.00,   3.00,   3.00,   4.00,   4.00,   2.50,   3.00,   3.00,   3.50,   3.50,   3.50,
 ! C. He 12/17/2020: optimized snow cover factor (m) in SCF formulation to replace original constant 2.5*z0,z0=0.002m, based on evaluation with SNOTEL SWE and MODIS SCF, surface albedo
  SCFFAC = 0.008, 0.008,  0.008,  0.008,  0.008,  0.016,  0.016,  0.020,  0.020,  0.020,  0.020,  0.014,  0.042,  0.026,  0.030,  0.016,  0.030,  0.030,  0.030,  0.030,
+! C. He 12/23/2022: bring canopy heat capacity parameter from hard-coded to table value here.
+ CBIOM =  0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,   0.02,
 
  ! Row 1:  Vis
  ! Row 2:  Near IR
@@ -380,12 +384,13 @@
   C4_SNOWCOMPACT = 0.04   !snow desctructive metamorphism compaction parameter2 [1/k] cenlin
   C5_SNOWCOMPACT = 2.0    !snow desctructive metamorphism compaction parameter3  cenlin
   DM_SNOWCOMPACT = 100.0  !upper Limit on destructive metamorphism compaction [kg/m3] cenlin
-  ETA0_SNOWCOMPACT = 0.8e+6 !snow viscosity coefficient [kg-s/m2], Anderson1979: 0.52e6~1.38e6 cenlin
+  ETA0_SNOWCOMPACT = 1.33e+6 !snow viscosity coefficient [kg-s/m2], Anderson1979: 0.52e6~1.38e6
+                             !C.He: 1.33e+6 optimized based on SNOTEL obs (He et al. 2021 JGR)
   SNLIQMAXFRAC   = 0.4    !maximum liquid water fraction in snow cenlin
   SWEMAXGLA    = 5000.0 ! Maximum SWE allowed at glaciers (mm)  cenlin
   WSLMAX = 5000.0      ! maximum lake water storage (mm)  cenlin
   ROUS = 0.20   ! specific yield [-] for Niu et al. 2007 groundwater scheme (OptRunoffSubsurface=1)
-  CMIC = 0.20   ! microprore content (0.0-1.0), 0.0: close to free drainage
+  CMIC = 0.80   ! microprore content (0.0-1.0), 0.0: close to free drainage
   SNOWDEN_MAX = 120.0  ! maximum fresh snowfall density (kg/m3)
   CLASS_ALB_REF = 0.55 ! reference snow albedo in CLASS scheme
   CLASS_SNO_AGE = 3600.0  ! snow aging e-folding time (s) in CLASS albedo scheme
@@ -398,12 +403,12 @@
 &noahmp_irrigation_parameters
 IRR_FRAC   = 0.10       ! irrigation Fraction
 IRR_HAR    = 20         ! number of days before harvest date to stop irrigation 
-IRR_LAI    = 0.50       ! Minimum lai to trigger irrigation
-IRR_MAD    = 0.60       ! management allowable deficit (0-1)
-FILOSS     = 0.10       ! fraction of flood irrigation loss (0-1) 
+IRR_LAI    = 0.10       ! Minimum lai to trigger irrigation
+IRR_MAD    = 0.60       ! management allowable deficit (0.0-1.0)
+FILOSS     = 0.50       ! flood irrigation loss fraction (0.0-0.99) 
 SPRIR_RATE = 6.40       ! mm/h, sprinkler irrigation rate
 MICIR_RATE = 1.38       ! mm/h, micro irrigation rate
-FIRTFAC    = 1.00       ! flood application rate factor
+FIRTFAC    = 1.20       ! flood application rate factor
 IR_RAIN    = 1.00       ! maximum precipitation [mm/hr] to stop irrigation trigger
 /
 

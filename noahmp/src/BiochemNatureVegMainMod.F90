@@ -47,6 +47,8 @@ contains
               WoodMass               => noahmp%biochem%state%WoodMass               ,& ! inout, mass of wood (incl. woody roots) [g/m2]
               CarbonMassDeepSoil     => noahmp%biochem%state%CarbonMassDeepSoil     ,& ! inout, stable carbon in deep soil [g/m2]
               CarbonMassShallowSoil  => noahmp%biochem%state%CarbonMassShallowSoil  ,& ! inout, short-lived carbon in shallow soil [g/m2]
+              LeafAreaIndex          => noahmp%energy%state%LeafAreaIndex           ,& ! inout, leaf area index
+              StemAreaIndex          => noahmp%energy%state%StemAreaIndex           ,& ! inout, stem area index
               GrossPriProduction     => noahmp%biochem%flux%GrossPriProduction      ,& ! out,   net instantaneous assimilation [g/m2/s C]
               NetPriProductionTot    => noahmp%biochem%flux%NetPriProductionTot     ,& ! out,   net primary productivity [g/m2/s C]
               NetEcoExchange         => noahmp%biochem%flux%NetEcoExchange          ,& ! out,   net ecosystem exchange [g/m2/s CO2]
@@ -54,8 +56,6 @@ contains
               RespirationSoilOrg     => noahmp%biochem%flux%RespirationSoilOrg      ,& ! out,   soil organic respiration [g/m2/s C]
               CarbonMassSoilTot      => noahmp%biochem%state%CarbonMassSoilTot      ,& ! out,   total soil carbon [g/m2 C]
               CarbonMassLiveTot      => noahmp%biochem%state%CarbonMassLiveTot      ,& ! out,   total living carbon ([g/m2 C]
-              LeafAreaIndex          => noahmp%energy%state%LeafAreaIndex           ,& ! out,   leaf area index
-              StemAreaIndex          => noahmp%energy%state%StemAreaIndex           ,& ! out,   stem area index
               SoilWaterRootZone      => noahmp%water%state%SoilWaterRootZone        ,& ! out,   root zone soil water
               SoilWaterStress        => noahmp%water%state%SoilWaterStress          ,& ! out,   water stress coeficient (1. for wilting)
               LeafAreaPerMass        => noahmp%biochem%state%LeafAreaPerMass         & ! out,   leaf area per unit mass [m2/g]

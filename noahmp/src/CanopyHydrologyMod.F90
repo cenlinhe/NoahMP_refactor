@@ -100,12 +100,13 @@ contains
     if ( CanopyIce <= 1.0e-6 ) CanopyIce = 0.0
 
     ! wetted fraction of canopy
-    if ( CanopyIce > 0.0 ) then
+    if ( (CanopyIce > 0.0) .and. (CanopyIce >= CanopyLiqWater) ) then
        CanopyWetFrac = max(0.0,CanopyIce) / max(CanopyIceMax,1.0e-06)
     else
        CanopyWetFrac = max(0.0,CanopyLiqWater) / max(CanopyLiqWaterMax,1.0e-06)
     endif
     CanopyWetFrac    = min(CanopyWetFrac, 1.0) ** 0.667
+    CanopyTotalWater = CanopyLiqWater + CanopyIce
 
     ! phase change
     ! canopy ice melting
@@ -113,7 +114,7 @@ contains
        MeltCanopyIce     = min( CanopyIce/MainTimeStep, (TemperatureCanopy-ConstFreezePoint) * ConstHeatCapacIce * &
                                 CanopyIce / ConstDensityIce / (MainTimeStep*ConstLatHeatFusion) )
        CanopyIce         = max( 0.0, CanopyIce - MeltCanopyIce*MainTimeStep )
-       CanopyLiqWater    = max( 0.0, CanopyLiqWater + MeltCanopyIce*MainTimeStep )
+       CanopyLiqWater    = max( 0.0, CanopyTotalWater - CanopyIce )
        TemperatureCanopy = CanopyWetFrac*ConstFreezePoint + (1.0 - CanopyWetFrac)*TemperatureCanopy
     endif
 
@@ -122,7 +123,7 @@ contains
        RefrzCanopyLiq    = min( CanopyLiqWater/MainTimeStep, (ConstFreezePoint-TemperatureCanopy) * ConstHeatCapacWater * &
                                 CanopyLiqWater / ConstDensityWater / (MainTimeStep*ConstLatHeatFusion) )
        CanopyLiqWater    = max( 0.0, CanopyLiqWater - RefrzCanopyLiq*MainTimeStep )
-       CanopyIce         = max( 0.0, CanopyIce + RefrzCanopyLiq*MainTimeStep )
+       CanopyIce         = max( 0.0, CanopyTotalWater - CanopyLiqWater )
        TemperatureCanopy = CanopyWetFrac*ConstFreezePoint + (1.0 - CanopyWetFrac)*TemperatureCanopy
     endif
 

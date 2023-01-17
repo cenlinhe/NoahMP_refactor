@@ -3,7 +3,7 @@ module SurfaceEnergyFluxVegetatedMod
 !!! Compute surface energy fluxes and budget for vegetated surface
 !!! Use newton-raphson iteration to solve for vegetation and ground temperatures
 !!! Surface energy balance:
-!!! Canopy level: -RadSwAbsVeg + RadLwNetCanopy + HeatSensibleCanopy + HeatLatentCanEvap + HeatLatentCanTransp = 0
+!!! Canopy level: -RadSwAbsVeg + RadLwNetCanopy + HeatSensibleCanopy + HeatLatentCanEvap + HeatLatentCanTransp + HeatCanStorageChg = 0
 !!! Ground level: -RadSwAbsGrd + RadLwNetVegGrd + HeatSensibleVegGrd + HeatLatentVegGrd + HeatGroundVegGrd = 0
 
   use Machine
@@ -68,6 +68,7 @@ contains
     real(kind=kind_noahmp)                :: LeafAreaIndShdEff       ! shaded leaf area index, one-sided [m2/m2],effective
     real(kind=kind_noahmp)                :: TempTmp                 ! temporary temperature
     real(kind=kind_noahmp)                :: TempUnitConv            ! Kelvin to degree Celsius with limit -50 to +50
+    real(kind=kind_noahmp)                :: HeatCapacCan            ! canopy heat capacity [J/m2/K]
 ! local statement function
     TempUnitConv(TempTmp) = min(50.0, max(-50.0, (TempTmp - ConstFreezePoint)))
 
@@ -94,6 +95,7 @@ contains
               CanopyIce               => noahmp%water%state%CanopyIce                ,& ! in,    canopy intercepted ice [mm]
               HeightCanopyTop         => noahmp%energy%param%HeightCanopyTop         ,& ! in,    top of canopy [m]
               ZilitinkevichCoeff      => noahmp%energy%param%ZilitinkevichCoeff      ,& ! in,    Zilitinkevich Coefficient for exchange coefficient calculation
+              HeatCapacCanFac         => noahmp%energy%param%HeatCapacCanFac         ,& ! in,    canopy biomass heat capacity parameter [m]
               RadSwAbsVeg             => noahmp%energy%flux%RadSwAbsVeg              ,& ! in,    solar radiation absorbed by vegetation [W/m2]
               RadSwAbsGrd             => noahmp%energy%flux%RadSwAbsGrd              ,& ! in,    solar radiation absorbed by ground [W/m2]
               HeatPrecipAdvCanopy     => noahmp%energy%flux%HeatPrecipAdvCanopy      ,& ! in,    precipitation advected heat - vegetation net [W/m2]
@@ -162,6 +164,7 @@ contains
               HeatSensibleVegGrd      => noahmp%energy%flux%HeatSensibleVegGrd       ,& ! out,   vegetated ground sensible heat flux [W/m2] (+ to atm)
               HeatLatentVegGrd        => noahmp%energy%flux%HeatLatentVegGrd         ,& ! out,   ground evaporation heat flux [W/m2] (+ to atm)
               HeatLatentCanTransp     => noahmp%energy%flux%HeatLatentCanTransp      ,& ! out,   canopy transpiration heat flux [W/m2] (+ to atm)
+              HeatCanStorageChg       => noahmp%energy%flux%HeatCanStorageChg        ,& ! out,   canopy heat storage change [W/m2]
               HeatGroundVegGrd        => noahmp%energy%flux%HeatGroundVegGrd          & ! out,   vegetated ground heat [W/m2] (+ to soil/snow)
              )
 ! ----------------------------------------------------------------------
@@ -282,7 +285,7 @@ contains
        TranspHeatCoeff   = (1.0 - ExchCoeffEtFrac) * ExchCoeffLhTransp * DensityAirRefHeight * &
                            ConstHeatCapacAir / PsychConstCanopy
 
-       ! evaluate surface fluxes with current temperature and solve for dts
+       ! evaluate surface fluxes with current temperature and solve for temperature change
        TemperatureCanopyAir = TempShGhTmp + ExchCoeffShFrac * TemperatureCanopy                        ! canopy air T.
        PressureVaporCanAir  = VapPresLhTot + ExchCoeffEtFrac * VapPresSatCanopy                        ! canopy air e
        RadLwNetCanopy       = VegFrac * (LwCoeffAir + LwCoeffCan * TemperatureCanopy**4)
@@ -297,15 +300,22 @@ contains
        else
           HeatLatentCanEvap = min(CanopyIce*LatHeatVapCanopy/MainTimeStep, HeatLatentCanEvap)
        endif
+       ! canopy heat capacity
+       HeatCapacCan         = HeatCapacCanFac*VegAreaIndTmp*ConstHeatCapacWater + CanopyLiqWater*ConstHeatCapacWater/ConstDensityWater + &
+                              CanopyIce*ConstHeatCapacIce/ConstDensityIce      ! [J/m2/K]
+       ! compute vegetation temperature change
        EnergyResTmp         = RadSwAbsVeg - RadLwNetCanopy - HeatSensibleCanopy - &
                               HeatLatentCanEvap - HeatLatentCanTransp + HeatPrecipAdvCanopy
        FluxTotCoeff         = VegFrac * (4.0*LwCoeffCan*TemperatureCanopy**3 + ShCoeff + &
-                                        (LhCoeff+TranspHeatCoeff)*VapPresSatCanTempD)                  ! volumetric heat capacity
+                                        (LhCoeff+TranspHeatCoeff)*VapPresSatCanTempD) + HeatCapacCan/MainTimeStep     ! volumetric heat capacity
        TemperatureCanChg    = EnergyResTmp / FluxTotCoeff
+       ! update fluxes with temperature change
        RadLwNetCanopy       = RadLwNetCanopy + VegFrac * 4.0 * LwCoeffCan * TemperatureCanopy**3 * TemperatureCanChg
        HeatSensibleCanopy   = HeatSensibleCanopy + VegFrac * ShCoeff * TemperatureCanChg
        HeatLatentCanEvap    = HeatLatentCanEvap + VegFrac * LhCoeff * VapPresSatCanTempD * TemperatureCanChg
        HeatLatentCanTransp  = HeatLatentCanTransp  + VegFrac * TranspHeatCoeff * VapPresSatCanTempD * TemperatureCanChg
+       HeatCanStorageChg    = TemperatureCanChg * HeatCapacCan / MainTimeStep   ! canopy heat storage change [W/m2]
+       ! update vegetation temperature
        TemperatureCanopy    = TemperatureCanopy + TemperatureCanChg
       !TemperatureCanopyAir = TempShGhTmp + ExchCoeffShFrac * TemperatureCanopy                        ! canopy air T; update here for consistency
 

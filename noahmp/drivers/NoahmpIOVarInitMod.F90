@@ -51,7 +51,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, EPS1, EPS2, EPS3, EPS4, EPS5
     namelist / noahmp_usgs_veg_categories /   VEG_DATASET_DESCRIPTION, NVEG
     namelist / noahmp_usgs_parameters     /   ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL,                 &
@@ -59,7 +59,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, SAI_JAN, SAI_FEB, SAI_MAR, SAI_APR, SAI_MAY,                           &
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
@@ -71,7 +71,7 @@ contains
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
-                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN,           &
+                                              NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, SAI_JAN, SAI_FEB, SAI_MAR, SAI_APR, SAI_MAY,                           &
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
@@ -217,6 +217,7 @@ contains
     allocate( NoahmpIO%RC_TABLE    (MVT) )
     allocate( NoahmpIO%MFSNO_TABLE (MVT) )
     allocate( NoahmpIO%SCFFAC_TABLE(MVT) )
+    allocate( NoahmpIO%CBIOM_TABLE (MVT) )
     allocate( NoahmpIO%SAIM_TABLE  (MVT,12) )
     allocate( NoahmpIO%LAIM_TABLE  (MVT,12) )
     allocate( NoahmpIO%SLA_TABLE   (MVT) )
@@ -390,6 +391,7 @@ contains
     NoahmpIO%RC_TABLE           = -1.0e36
     NoahmpIO%MFSNO_TABLE        = -1.0e36
     NoahmpIO%SCFFAC_TABLE       = -1.0e36
+    NoahmpIO%CBIOM_TABLE        = -1.0e36
     NoahmpIO%RHOL_TABLE         = -1.0e36
     NoahmpIO%RHOS_TABLE         = -1.0e36
     NoahmpIO%TAUL_TABLE         = -1.0e36
@@ -695,6 +697,7 @@ contains
     NoahmpIO%RC_TABLE     (1:NVEG) = RC     (1:NVEG)
     NoahmpIO%MFSNO_TABLE  (1:NVEG) = MFSNO  (1:NVEG)
     NoahmpIO%SCFFAC_TABLE (1:NVEG) = SCFFAC (1:NVEG)
+    NoahmpIO%CBIOM_TABLE  (1:NVEG) = CBIOM  (1:NVEG)
     NoahmpIO%XL_TABLE     (1:NVEG) = XL     (1:NVEG)
     NoahmpIO%CWPVT_TABLE  (1:NVEG) = CWPVT  (1:NVEG)
     NoahmpIO%C3PSN_TABLE  (1:NVEG) = C3PSN  (1:NVEG)
@@ -924,6 +927,10 @@ contains
     endif
     read(15,noahmp_irrigation_parameters)
     close(15)
+    if ( (FILOSS < 0.0) .or. (FILOSS > 0.99) ) then
+       write(*,'("WARNING: FILOSS should be >=0.0 and <=0.99")')
+       stop "STOP in NoahMP_irrigation_parameters"
+    endif
 
     ! assign values
     NoahmpIO%IRR_FRAC_TABLE   = IRR_FRAC
@@ -1202,30 +1209,20 @@ contains
     integer                 :: spinup_loops     = 0
     integer                 :: sf_urban_physics = 0
     integer                 :: use_wudapt_lcz   = 0  ! add for LCZ urban
-    integer                 :: num_urban_ndm    = 1
-    integer                 :: num_urban_ng     = 1
-    integer                 :: num_urban_nwr    = 1
-    integer                 :: num_urban_ngb    = 1
-    integer                 :: num_urban_nf     = 1
-    integer                 :: num_urban_nz     = 1
-    integer                 :: num_urban_nbui   = 1
+    integer                 :: num_urban_ndm    = 2
+    integer                 :: num_urban_ng     = 10
+    integer                 :: num_urban_nwr    = 10
+    integer                 :: num_urban_ngb    = 10
+    integer                 :: num_urban_nf     = 10
+    integer                 :: num_urban_nz     = 18
+    integer                 :: num_urban_nbui   = 15
     integer                 :: num_urban_hi     = 15 
-    real(kind=kind_noahmp)  :: urban_atmosphere_thickness = 2.0
- 
-    ! new urban var for green roof and solar panel
     integer                 :: num_urban_ngr    = 10  ! = ngr_u in bep_bem.F
-    integer                 :: urban_map_zgrd   = 1
+    integer                 :: noahmp_output    = 0
+    real(kind=kind_noahmp)  :: urban_atmosphere_thickness = 2.0
+    real(kind=kind_noahmp)  :: soil_timestep    = 0.0   ! soil timestep (default=0: same as main noahmp timestep)
 
     ! derived urban dimensions
-    integer                 :: urban_map_zrd
-    integer                 :: urban_map_zwd
-    integer                 :: urban_map_gd
-    integer                 :: urban_map_zd
-    integer                 :: urban_map_zdf
-    integer                 :: urban_map_bd
-    integer                 :: urban_map_wd
-    integer                 :: urban_map_gbd
-    integer                 :: urban_map_fbd
     character(len=256)      :: forcing_name_T  = "T2D"
     character(len=256)      :: forcing_name_Q  = "Q2D"
     character(len=256)      :: forcing_name_U  = "U2D"
@@ -1280,9 +1277,9 @@ contains
 #ifdef WRF_HYDRO
          finemesh,finemesh_factor,forc_typ, snow_assim , GEO_STATIC_FLNM, HRLDAS_ini_typ, &
 #endif
-         indir, nsoil, soil_thick_input, forcing_timestep, noah_timestep,                 &
+         indir, nsoil, soil_thick_input, forcing_timestep, noah_timestep, soil_timestep,  &
          start_year, start_month, start_day, start_hour, start_min,                       &
-         outdir, skip_first_output,                                                       &
+         outdir, skip_first_output, noahmp_output,                                        &
          restart_filename_requested, restart_frequency_hours, output_timestep,            &
          spinup_loops,                                                                    &
          forcing_name_T,forcing_name_Q,forcing_name_U,forcing_name_V,forcing_name_P,      &
@@ -1297,7 +1294,7 @@ contains
          tile_drainage_option,soil_data_option, pedotransfer_option, crop_option,         &
          sf_urban_physics,use_wudapt_lcz,num_urban_hi,urban_atmosphere_thickness,         &
          num_urban_ndm,num_urban_ng,num_urban_nwr ,num_urban_ngb ,                        &
-         num_urban_nf ,num_urban_nz,num_urban_nbui,                                       &
+         num_urban_nf ,num_urban_nz,num_urban_nbui,num_urban_ngr ,                        &
          split_output_count,                                                              & 
          khour, kday, zlvl, hrldas_setup_file,                                            &
          spatial_filename, agdata_flnm, tdinput_flnm,                                     &
@@ -1311,7 +1308,8 @@ contains
     !---------------------------------------------------------------
     NoahmpIO%nsoil                   = -999
     NoahmpIO%soil_thick_input        = -999
-    NoahmpIO%dtbl                    = -999
+    NoahmpIO%DTBL                    = -999.0
+    NoahmpIO%soiltstep               = -999.0
     NoahmpIO%start_year              = -999
     NoahmpIO%start_month             = -999
     NoahmpIO%start_day               = -999
@@ -1319,12 +1317,13 @@ contains
     NoahmpIO%start_min               = -999
     NoahmpIO%khour                   = -999
     NoahmpIO%kday                    = -999
-    NoahmpIO%zlvl                    = -999
-    NoahmpIO%forcing_timestep        = -999
+    NoahmpIO%zlvl                    = -999.0
+    NoahmpIO%forcing_timestep        = -999.0
     NoahmpIO%noah_timestep           = -999
     NoahmpIO%output_timestep         = -999
     NoahmpIO%restart_frequency_hours = -999
     NoahmpIO%spinup_loops            = 0
+    NoahmpIO%noahmp_output           = 0
 
     !---------------------------------------------------------------
     ! read namelist.input
@@ -1340,7 +1339,8 @@ contains
     endif
     close(30)
   
-    NoahmpIO%dtbl            = real(noah_timestep)
+    NoahmpIO%DTBL            = real(noah_timestep)
+    NoahmpIO%soiltstep       = soil_timestep
     NoahmpIO%num_soil_layers = nsoil      ! because surface driver uses the long form
     NoahmpIO%NSOIL           = nsoil
 
@@ -1516,6 +1516,7 @@ contains
     NoahmpIO%start_hour                        = start_hour
     NoahmpIO%start_min                         = start_min
     NoahmpIO%outdir                            = outdir
+    NoahmpIO%noahmp_output                     = noahmp_output
     NoahmpIO%restart_filename_requested        = restart_filename_requested
     NoahmpIO%restart_frequency_hours           = restart_frequency_hours
     NoahmpIO%output_timestep                   = output_timestep
@@ -1532,16 +1533,6 @@ contains
     NoahmpIO%num_urban_hi                      = num_urban_hi
     NoahmpIO%urban_atmosphere_thickness        = urban_atmosphere_thickness
     NoahmpIO%num_urban_ngr                     = num_urban_ngr
-    NoahmpIO%urban_map_zgrd                    = urban_map_zgrd
-    NoahmpIO%urban_map_zrd                     = urban_map_zrd
-    NoahmpIO%urban_map_zwd                     = urban_map_zwd
-    NoahmpIO%urban_map_gd                      = urban_map_gd
-    NoahmpIO%urban_map_zd                      = urban_map_zd
-    NoahmpIO%urban_map_zdf                     = urban_map_zdf
-    NoahmpIO%urban_map_bd                      = urban_map_bd
-    NoahmpIO%urban_map_wd                      = urban_map_wd
-    NoahmpIO%urban_map_gbd                     = urban_map_gbd
-    NoahmpIO%urban_map_fbd                     = urban_map_fbd
     NoahmpIO%forcing_name_T                    = forcing_name_T
     NoahmpIO%forcing_name_Q                    = forcing_name_Q
     NoahmpIO%forcing_name_U                    = forcing_name_U
@@ -1592,6 +1583,7 @@ contains
               NSOIL   =>  NoahmpIO%NSOIL    ,&
               NSNOW   =>  NoahmpIO%NSNOW     &
              )
+
     allocate ( NoahmpIO%COSZEN       (XSTART:XEND,YSTART:YEND) )            ! cosine zenith angle
     allocate ( NoahmpIO%XLAT         (XSTART:XEND,YSTART:YEND) )            ! latitude [radians] 
     allocate ( NoahmpIO%DZ8W         (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! thickness of atmo layers [m]
@@ -1603,19 +1595,15 @@ contains
     allocate ( NoahmpIO%TMN          (XSTART:XEND,YSTART:YEND) )            ! deep soil temperature [K]
     allocate ( NoahmpIO%XLAND        (XSTART:XEND,YSTART:YEND) )            ! =2 ocean; =1 land/seaice
     allocate ( NoahmpIO%XICE         (XSTART:XEND,YSTART:YEND) )            ! fraction of grid that is seaice
-
     allocate ( NoahmpIO%T_PHY        (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D atmospheric temperature valid at mid-levels [K]
     allocate ( NoahmpIO%QV_CURR      (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D water vapor mixing ratio [kg/kg_dry]
     allocate ( NoahmpIO%U_PHY        (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D U wind component [m/s]
     allocate ( NoahmpIO%V_PHY        (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D V wind component [m/s]
-    
     allocate ( NoahmpIO%SWDOWN       (XSTART:XEND,YSTART:YEND) )            ! solar down at surface [W m-2]
     allocate ( NoahmpIO%SWDDIR       (XSTART:XEND,YSTART:YEND) )            ! solar down at surface [W m-2] for new urban solar panel
     allocate ( NoahmpIO%SWDDIF       (XSTART:XEND,YSTART:YEND) )            ! solar down at surface [W m-2] for new urban solar panel
     allocate ( NoahmpIO%GLW          (XSTART:XEND,YSTART:YEND) )            ! longwave down at surface [W m-2]
-
     allocate ( NoahmpIO%P8W          (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D pressure, valid at interface [Pa]
-    
     allocate ( NoahmpIO%RAINBL       (XSTART:XEND,YSTART:YEND) )            ! total precipitation entering land model [mm] per time step
     allocate ( NoahmpIO%SNOWBL       (XSTART:XEND,YSTART:YEND) )            ! snow entering land model [mm] per time step
     allocate ( NoahmpIO%RAINBL_tmp   (XSTART:XEND,YSTART:YEND) )            ! precipitation entering land model [mm]
@@ -1626,6 +1614,12 @@ contains
     allocate ( NoahmpIO%SNOWNCV      (XSTART:XEND,YSTART:YEND) )            ! non-covective snow forcing (subset of rainncv) [mm]
     allocate ( NoahmpIO%GRAUPELNCV   (XSTART:XEND,YSTART:YEND) )            ! non-convective graupel forcing (subset of rainncv) [mm]
     allocate ( NoahmpIO%HAILNCV      (XSTART:XEND,YSTART:YEND) )            ! non-convective hail forcing (subset of rainncv) [mm]
+    allocate ( NoahmpIO%MP_RAINC     (XSTART:XEND,YSTART:YEND) )            ! convective precip forcing [mm]
+    allocate ( NoahmpIO%MP_RAINNC    (XSTART:XEND,YSTART:YEND) )            ! non-convective precip forcing [mm]
+    allocate ( NoahmpIO%MP_SHCV      (XSTART:XEND,YSTART:YEND) )            ! shallow conv. precip forcing [mm]
+    allocate ( NoahmpIO%MP_SNOW      (XSTART:XEND,YSTART:YEND) )            ! non-covective snow (subset of rainnc) [mm]
+    allocate ( NoahmpIO%MP_GRAUP     (XSTART:XEND,YSTART:YEND) )            ! non-convective graupel (subset of rainnc) [mm]
+    allocate ( NoahmpIO%MP_HAIL      (XSTART:XEND,YSTART:YEND) )            ! non-convective hail (subset of rainnc) [mm]
 
     allocate ( NoahmpIO%bexp_3d      (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! C-H B exponent
     allocate ( NoahmpIO%smcdry_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Dry
@@ -1638,9 +1632,7 @@ contains
     allocate ( NoahmpIO%quartz_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil quartz content
     allocate ( NoahmpIO%refdk_2D     (XSTART:XEND,YSTART:YEND) )            ! Reference Soil Conductivity
     allocate ( NoahmpIO%refkdt_2D    (XSTART:XEND,YSTART:YEND) )            ! Soil Infiltration Parameter
-    
     allocate ( NoahmpIO%soilcomp     (XSTART:XEND,1:2*NSOIL,YSTART:YEND) )  ! Soil sand and clay content [fraction]
-
     allocate ( NoahmpIO%soilcl1      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
     allocate ( NoahmpIO%soilcl2      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
     allocate ( NoahmpIO%soilcl3      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
@@ -1681,12 +1673,10 @@ contains
     allocate ( NoahmpIO%UDRUNOFF     (XSTART:XEND,YSTART:YEND) )            ! accumulated sub-surface runoff [m]
     allocate ( NoahmpIO%ALBEDO       (XSTART:XEND,YSTART:YEND) )            ! total grid albedo []
     allocate ( NoahmpIO%SNOWC        (XSTART:XEND,YSTART:YEND) )            ! snow cover fraction []
-    
     allocate ( NoahmpIO%SMOISEQ      (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! eq volumetric soil moisture [m3/m3]
     allocate ( NoahmpIO%SMOIS        (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! volumetric soil moisture [m3/m3]
     allocate ( NoahmpIO%SH2O         (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! volumetric liquid soil moisture [m3/m3]
     allocate ( NoahmpIO%TSLB         (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! soil temperature [K]
-    
     allocate ( NoahmpIO%SNOW         (XSTART:XEND,YSTART:YEND) )            ! snow water equivalent [mm]
     allocate ( NoahmpIO%SNOWH        (XSTART:XEND,YSTART:YEND) )            ! physical snow depth [m]
     allocate ( NoahmpIO%CANWAT       (XSTART:XEND,YSTART:YEND) )            ! total canopy water + ice [mm]
@@ -1717,12 +1707,10 @@ contains
     allocate ( NoahmpIO%SMCWTDXY     (XSTART:XEND,YSTART:YEND) )            ! soil moisture below the bottom of the column (m3m-3)
     allocate ( NoahmpIO%DEEPRECHXY   (XSTART:XEND,YSTART:YEND) )            ! recharge to the water table when deep (m)
     allocate ( NoahmpIO%RECHXY       (XSTART:XEND,YSTART:YEND) )            ! recharge to the water table (diagnostic) (m)
-
     allocate ( NoahmpIO%TSNOXY       (XSTART:XEND,-NSNOW+1:0,    YSTART:YEND) )  ! snow temperature [K]
     allocate ( NoahmpIO%ZSNSOXY      (XSTART:XEND,-NSNOW+1:NSOIL,YSTART:YEND) )  ! snow layer depth [m]
     allocate ( NoahmpIO%SNICEXY      (XSTART:XEND,-NSNOW+1:0,    YSTART:YEND) )  ! snow layer ice [mm]
     allocate ( NoahmpIO%SNLIQXY      (XSTART:XEND,-NSNOW+1:0,    YSTART:YEND) )  ! snow layer liquid water [mm]
-    
     allocate ( NoahmpIO%LFMASSXY     (XSTART:XEND,YSTART:YEND) )            ! leaf mass [g/m2]
     allocate ( NoahmpIO%RTMASSXY     (XSTART:XEND,YSTART:YEND) )            ! mass of fine roots [g/m2]
     allocate ( NoahmpIO%STMASSXY     (XSTART:XEND,YSTART:YEND) )            ! stem mass [g/m2]
@@ -1764,8 +1752,8 @@ contains
     allocate ( NoahmpIO%GPPXY        (XSTART:XEND,YSTART:YEND) )            ! gross primary assimilation [g/m2/s C]
     allocate ( NoahmpIO%NPPXY        (XSTART:XEND,YSTART:YEND) )            ! net primary productivity [g/m2/s C]
     allocate ( NoahmpIO%FVEGXY       (XSTART:XEND,YSTART:YEND) )            ! Noah-MP vegetation fraction [-]
-    allocate ( NoahmpIO%RUNSFXY      (XSTART:XEND,YSTART:YEND) )            ! surface runoff [mm/s]
-    allocate ( NoahmpIO%RUNSBXY      (XSTART:XEND,YSTART:YEND) )            ! subsurface runoff [mm/s]
+    allocate ( NoahmpIO%RUNSFXY      (XSTART:XEND,YSTART:YEND) )            ! surface runoff [mm per soil timestep]
+    allocate ( NoahmpIO%RUNSBXY      (XSTART:XEND,YSTART:YEND) )            ! subsurface runoff [mm per soil timestep]
     allocate ( NoahmpIO%ECANXY       (XSTART:XEND,YSTART:YEND) )            ! evaporation of intercepted water (mm/s)
     allocate ( NoahmpIO%EDIRXY       (XSTART:XEND,YSTART:YEND) )            ! soil surface evaporation rate (mm/s]
     allocate ( NoahmpIO%ETRANXY      (XSTART:XEND,YSTART:YEND) )            ! transpiration rate (mm/s)
@@ -1846,7 +1834,7 @@ contains
     allocate ( NoahmpIO%EFLXBXY      (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%SOILENERGY   (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%SNOWENERGY   (XSTART:XEND,YSTART:YEND) )
-    allocate ( NoahmpIO%CANHSXY      (XSTART:XEND,YSTART:YEND) )
+    allocate ( NoahmpIO%CANHSXY      (XSTART:XEND,YSTART:YEND) )            ! canopy heat storage change [W/m2]
     allocate ( NoahmpIO%ACC_DWATERXY (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%ACC_PRCPXY   (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%ACC_ECANXY   (XSTART:XEND,YSTART:YEND) )
@@ -1898,9 +1886,6 @@ contains
        allocate ( NoahmpIO%rn_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%ts_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%HRANG          (XSTART:XEND,                 YSTART:YEND) )  !
-       allocate ( NoahmpIO%DECLIN                                                    )  !
-       allocate ( NoahmpIO%GMT                                                       )  !
-       allocate ( NoahmpIO%JULDAY                                                    )  !
        allocate ( NoahmpIO%frc_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%utype_urb2d    (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%lp_urb2d       (XSTART:XEND,                 YSTART:YEND) )  !
@@ -1931,7 +1916,6 @@ contains
        allocate ( NoahmpIO%trl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
        allocate ( NoahmpIO%tbl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
        allocate ( NoahmpIO%tgl_urb3d      (XSTART:XEND, nsoil,          YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%psim_urb2d     (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%psih_urb2d     (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%u10_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
@@ -1941,7 +1925,6 @@ contains
        allocate ( NoahmpIO%th2_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%q2_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%ust_urb2d      (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%dzr            (             nsoil                      ) )  !
        allocate ( NoahmpIO%dzb            (             nsoil                      ) )  !
        allocate ( NoahmpIO%dzg            (             nsoil                      ) )  !
@@ -1955,11 +1938,9 @@ contains
        allocate ( NoahmpIO%flxhumr_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%flxhumb_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%flxhumg_urb2d  (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%chs            (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%chs2           (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%cqs2           (XSTART:XEND,                 YSTART:YEND) )  ! 
-
        allocate ( NoahmpIO%mh_urb2d       (XSTART:XEND,                 YSTART:YEND) )  !
        allocate ( NoahmpIO%stdh_urb2d     (XSTART:XEND,                 YSTART:YEND) )  !
        allocate ( NoahmpIO%lf_urb2d       (XSTART:XEND, 4,              YSTART:YEND) )  !
@@ -2090,6 +2071,12 @@ contains
     NoahmpIO%SNOWNCV         = undefined_real
     NoahmpIO%GRAUPELNCV      = undefined_real
     NoahmpIO%HAILNCV         = undefined_real
+    NoahmpIO%MP_RAINC        = 0.0
+    NoahmpIO%MP_RAINNC       = 0.0
+    NoahmpIO%MP_SHCV         = 0.0
+    NoahmpIO%MP_SNOW         = 0.0
+    NoahmpIO%MP_GRAUP        = 0.0
+    NoahmpIO%MP_HAIL         = 0.0
     NoahmpIO%TSK             = undefined_real
     NoahmpIO%QFX             = undefined_real
     NoahmpIO%SMSTAV          = undefined_real
@@ -2137,7 +2124,7 @@ contains
     NoahmpIO%LAI             = undefined_real
     NoahmpIO%LAI_tmp         = undefined_real
     NoahmpIO%XSAIXY          = undefined_real
-    NoahmpIO%TAUSSXY         = undefined_real
+    NoahmpIO%TAUSSXY         = 0.0
     NoahmpIO%XLONG           = undefined_real
     NoahmpIO%SEAICE          = undefined_real
     NoahmpIO%SMCWTDXY        = undefined_real
@@ -2194,6 +2181,7 @@ contains
     NoahmpIO%CHV2XY          = undefined_real
     NoahmpIO%CHB2XY          = undefined_real
     NoahmpIO%RS              = undefined_real
+    NoahmpIO%CANHSXY         = undefined_real
     ! additional output
     NoahmpIO%PAHXY           = undefined_real
     NoahmpIO%PAHGXY          = undefined_real
@@ -2215,7 +2203,6 @@ contains
     NoahmpIO%QMELTCXY        = undefined_real
     NoahmpIO%QSNBOTXY        = undefined_real
     NoahmpIO%QMELTXY         = undefined_real
-    NoahmpIO%PONDINGXY       = 0.0
     NoahmpIO%FPICEXY         = undefined_real
     NoahmpIO%RAINLSM         = undefined_real
     NoahmpIO%SNOWLSM         = undefined_real
@@ -2224,14 +2211,14 @@ contains
     NoahmpIO%FORCPLSM        = undefined_real
     NoahmpIO%FORCZLSM        = undefined_real
     NoahmpIO%FORCWLSM        = undefined_real
+    NoahmpIO%EFLXBXY         = undefined_real
+    NoahmpIO%SOILENERGY      = undefined_real
+    NoahmpIO%SNOWENERGY      = undefined_real
+    NoahmpIO%PONDINGXY       = 0.0
     NoahmpIO%ACC_SSOILXY     = 0.0
     NoahmpIO%ACC_QINSURXY    = 0.0
     NoahmpIO%ACC_QSEVAXY     = 0.0
     NoahmpIO%ACC_ETRANIXY    = 0.0
-    NoahmpIO%EFLXBXY         = undefined_real
-    NoahmpIO%SOILENERGY      = 0.0
-    NoahmpIO%SNOWENERGY      = 0.0
-    NoahmpIO%CANHSXY         = undefined_real
     NoahmpIO%ACC_DWATERXY    = 0.0
     NoahmpIO%ACC_PRCPXY      = 0.0
     NoahmpIO%ACC_ECANXY      = 0.0
@@ -2287,7 +2274,7 @@ contains
     NoahmpIO%IRRSPLH         = 0.0
     NoahmpIO%LOCTIM          = undefined_real
  
-    if (NoahmpIO%SF_URBAN_PHYSICS > 0 )then  ! any urban model
+    if ( NoahmpIO%SF_URBAN_PHYSICS > 0 )then  ! any urban model
       NoahmpIO%HRANG         = undefined_real
       NoahmpIO%DECLIN        = undefined_real
       NoahmpIO%sh_urb2d      = undefined_real
@@ -2409,10 +2396,13 @@ contains
       NoahmpIO%lfg_urb3d     = undefined_real
     endif
 
-    NoahmpIO%XLAND           = 1.0   ! water = 2.0, land = 1.0
-    NoahmpIO%XICE            = 0.0   ! fraction of grid that is seaice
-    NoahmpIO%XICE_THRESHOLD  = 0.5   ! fraction of grid determining seaice (from WRF)
-    NoahmpIO%SLOPETYP        =  1
+    NoahmpIO%XLAND             = 1.0      ! water = 2.0, land = 1.0
+    NoahmpIO%XICE              = 0.0      ! fraction of grid that is seaice
+    NoahmpIO%XICE_THRESHOLD    = 0.5      ! fraction of grid determining seaice (from WRF)
+    NoahmpIO%SLOPETYP          = 1        ! soil parameter slope type
+    NoahmpIO%soil_update_steps = 1        ! number of model time step to update soil proces
+    NoahmpIO%calculate_soil    = .false.  ! index for if do soil process
+    NoahmpIO%ITIMESTEP         = 0        ! model time step count
 
 #ifdef WRF_HYDRO
     NoahmpIO%infxsrt         = 0.0

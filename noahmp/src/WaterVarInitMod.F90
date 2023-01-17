@@ -178,9 +178,18 @@ contains
     noahmp%water%flux%InterceptCanopySnow          = undefined_real
     noahmp%water%flux%DripCanopySnow               = undefined_real
     noahmp%water%flux%ThroughfallSnow              = undefined_real
-    noahmp%water%flux%EvapSoilNet                  = undefined_real
+    noahmp%water%flux%EvapGroundNet                = undefined_real
     noahmp%water%flux%MeltGroundSnow               = undefined_real
     noahmp%water%flux%WaterToAtmosTotal            = undefined_real
+    noahmp%water%flux%EvapSoilSfcLiqAcc            = undefined_real
+    noahmp%water%flux%SoilSfcInflowAcc             = undefined_real
+    noahmp%water%flux%SfcWaterTotChgAcc            = undefined_real
+    noahmp%water%flux%PrecipTotAcc                 = undefined_real
+    noahmp%water%flux%EvapCanopyNetAcc             = undefined_real
+    noahmp%water%flux%TranspirationAcc             = undefined_real
+    noahmp%water%flux%EvapGroundNetAcc             = undefined_real
+    noahmp%water%flux%EvapSoilSfcLiqMean           = undefined_real
+    noahmp%water%flux%SoilSfcInflowMean            = undefined_real
     noahmp%water%flux%IrrigationRateFlood          = 0.0
     noahmp%water%flux%IrrigationRateMicro          = 0.0
     noahmp%water%flux%IrrigationRateSprinkler      = 0.0
@@ -198,12 +207,18 @@ contains
        allocate( noahmp%water%flux%CompactionSnowTot(-NumSnowLayerMax+1:0) )
     if ( .not. allocated(noahmp%water%flux%TranspWatLossSoil) )     &
        allocate( noahmp%water%flux%TranspWatLossSoil(1:NumSoilLayer) )
+    if ( .not. allocated(noahmp%water%flux%TranspWatLossSoilAcc) )  &
+       allocate( noahmp%water%flux%TranspWatLossSoilAcc(1:NumSoilLayer) )
+    if ( .not. allocated(noahmp%water%flux%TranspWatLossSoilMean) )  &
+       allocate( noahmp%water%flux%TranspWatLossSoilMean(1:NumSoilLayer) )
 
-    noahmp%water%flux%CompactionSnowAging (:)      = undefined_real
-    noahmp%water%flux%CompactionSnowBurden(:)      = undefined_real
-    noahmp%water%flux%CompactionSnowMelt  (:)      = undefined_real
-    noahmp%water%flux%CompactionSnowTot   (:)      = undefined_real
-    noahmp%water%flux%TranspWatLossSoil   (:)      = undefined_real
+    noahmp%water%flux%CompactionSnowAging  (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowBurden (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowMelt   (:)     = undefined_real
+    noahmp%water%flux%CompactionSnowTot    (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoil    (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoilAcc (:)     = undefined_real
+    noahmp%water%flux%TranspWatLossSoilMean(:)     = undefined_real
 
     ! water parameter variables
     noahmp%water%param%DrainSoilLayerInd           = undefined_int
@@ -356,6 +371,16 @@ contains
     noahmp%water%state%WaterHeadSfc                       = NoahmpIO%sfcheadrt  (I,J)
 #endif
 
+    ! water flux variables
+    noahmp%water%flux%EvapSoilSfcLiqAcc                   = NoahmpIO%ACC_QSEVAXY (I,J)
+    noahmp%water%flux%SoilSfcInflowAcc                    = NoahmpIO%ACC_QINSURXY(I,J)
+    noahmp%water%flux%SfcWaterTotChgAcc                   = NoahmpIO%ACC_DWATERXY(I,J)
+    noahmp%water%flux%PrecipTotAcc                        = NoahmpIO%ACC_PRCPXY  (I,J)
+    noahmp%water%flux%EvapCanopyNetAcc                    = NoahmpIO%ACC_ECANXY  (I,J)
+    noahmp%water%flux%TranspirationAcc                    = NoahmpIO%ACC_ETRANXY (I,J)
+    noahmp%water%flux%EvapGroundNetAcc                    = NoahmpIO%ACC_EDIRXY  (I,J)
+    noahmp%water%flux%TranspWatLossSoilAcc(1:NumSoilLayer)= NoahmpIO%ACC_ETRANIXY(I,1:NumSoilLayer,J)
+
     ! water parameter variables
     noahmp%water%param%DrainSoilLayerInd                  = NoahmpIO%DRAIN_LAYER_OPT_TABLE
     noahmp%water%param%CanopyLiqHoldCap                   = NoahmpIO%CH2OP_TABLE(VegType)
@@ -448,9 +473,9 @@ contains
        allocate( SoilSand(1:NumSoilLayer) )
        allocate( SoilClay(1:NumSoilLayer) )
        allocate( SoilOrg (1:NumSoilLayer) )
-       SoilSand(1:4) = 0.01 * NoahmpIO%soilcomp(I,1:4,J)
-       SoilClay(1:4) = 0.01 * NoahmpIO%soilcomp(I,5:8,J)
-       SoilOrg(1:4)  = 0.0
+       SoilSand = 0.01 * NoahmpIO%soilcomp(I,1:NumSoilLayer,J)
+       SoilClay = 0.01 * NoahmpIO%soilcomp(I,(NumSoilLayer+1):(NumSoilLayer*2),J)
+       SoilOrg  = 0.0
        if (noahmp%config%nmlist%OptPedotransfer == 1) &
           call PedoTransfer_SR2006(NoahmpIO,noahmp,SoilSand,SoilClay,SoilOrg)
     endif

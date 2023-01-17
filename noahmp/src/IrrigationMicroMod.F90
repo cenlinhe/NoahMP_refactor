@@ -32,7 +32,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                               &
-              MainTimeStep        => noahmp%config%domain%MainTimeStep      ,& ! in,    noahmp main time step [s]
+              SoilTimeStep        => noahmp%config%domain%SoilTimeStep      ,& ! in,    noahmp soil time step [s]
               DepthSoilLayer      => noahmp%config%domain%DepthSoilLayer    ,& ! in,    depth [m] of layer-bottom from soil surface
               IrrigationFracMicro => noahmp%water%state%IrrigationFracMicro ,& ! in,    fraction of grid under micro irrigation (0 to 1)
               IrriMicroRate       => noahmp%water%param%IrriMicroRate       ,& ! in,    micro irrigation rate [mm/hr]
@@ -47,11 +47,11 @@ contains
     IrriRateTmp = 0.0
 
     ! estimate infiltration rate based on Philips Eq.
-    call IrrigationInfilPhilip(noahmp, MainTimeStep, InfilRateSfc)
+    call IrrigationInfilPhilip(noahmp, SoilTimeStep, InfilRateSfc)
 
     ! irrigation rate of micro irrigation
-    IrriRateTmp         = IrriMicroRate * (1.0/1000.0) * MainTimeStep/ 3600.0                   ! NRCS rate/time step - calibratable
-    IrrigationRateMicro = min(0.5*InfilRateSfc*MainTimeStep, IrrigationAmtMicro, IrriRateTmp)   ! Limit irrigation rate to minimum of 0.5*infiltration rate
+    IrriRateTmp         = IrriMicroRate * (1.0/1000.0) * SoilTimeStep/ 3600.0                   ! NRCS rate/time step - calibratable
+    IrrigationRateMicro = min(0.5*InfilRateSfc*SoilTimeStep, IrrigationAmtMicro, IrriRateTmp)   ! Limit irrigation rate to minimum of 0.5*infiltration rate
                                                                                                 ! and to the NRCS recommended rate, (m)
     IrrigationRateMicro = IrrigationRateMicro * IrrigationFracMicro
 

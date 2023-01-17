@@ -29,6 +29,7 @@ contains
     associate(                                                                       &
               LandUseDataName         => noahmp%config%domain%LandUseDataName       ,& ! in,    landuse data name (USGS or MODIS_IGBP)
               VegType                 => noahmp%config%domain%VegType               ,& ! in,    vegetation type
+              FlagSoilProcess         => noahmp%config%domain%FlagSoilProcess       ,& ! in,    flag to calculate soil processes
               OptIrrigationMethod     => noahmp%config%nmlist%OptIrrigationMethod   ,& ! in,    irrigation method option
               IrriFracThreshold       => noahmp%water%param%IrriFracThreshold       ,& ! in,    irrigation fraction threshold
               IrriStopPrecipThr       => noahmp%water%param%IrriStopPrecipThr       ,& ! in,    maximum precipitation to stop irrigation trigger
@@ -75,18 +76,20 @@ contains
        IrrigationFracFlood     = 1.0
     endif
 
-    ! trigger irrigation
-    if ( (FlagCropland .eqv. .true.) .and. (IrrigationFracGrid >= IrriFracThreshold) .and. &
-         (RainfallRefHeight < (IrriStopPrecipThr/3600.0)) .and. &
-         ((IrrigationAmtSprinkler+IrrigationAmtMicro+IrrigationAmtFlood) == 0.0) ) then
-       call IrrigationTrigger(noahmp)
-    endif
+    ! trigger irrigation only at soil water timestep to be consistent for solving soil water
+    if ( FlagSoilProcess .eqv. .true. ) then
+       if ( (FlagCropland .eqv. .true.) .and. (IrrigationFracGrid >= IrriFracThreshold) .and. &
+            (RainfallRefHeight < (IrriStopPrecipThr/3600.0)) .and. &
+            ((IrrigationAmtSprinkler+IrrigationAmtMicro+IrrigationAmtFlood) == 0.0) ) then
+          call IrrigationTrigger(noahmp)
+       endif
 
-    ! set irrigation off if larger than IrriStopPrecipThr mm/h for this time step and irr triggered last time step
-    if ( (RainfallRefHeight >= (IrriStopPrecipThr/3600.0)) .or. (IrrigationFracGrid < IrriFracThreshold) ) then
-        IrrigationAmtSprinkler = 0.0
-        IrrigationAmtMicro     = 0.0
-        IrrigationAmtFlood     = 0.0
+       ! set irrigation off if larger than IrriStopPrecipThr mm/h for this time step and irr triggered last time step
+       if ( (RainfallRefHeight >= (IrriStopPrecipThr/3600.0)) .or. (IrrigationFracGrid < IrriFracThreshold) ) then
+          IrrigationAmtSprinkler = 0.0
+          IrrigationAmtMicro     = 0.0
+          IrrigationAmtFlood     = 0.0
+       endif
     endif
 
     end associate

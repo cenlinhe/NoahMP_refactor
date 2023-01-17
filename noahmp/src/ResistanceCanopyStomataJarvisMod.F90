@@ -35,8 +35,9 @@ contains
     real(kind=kind_noahmp)           :: ResistanceTemp        ! canopy resistance multiplier
     real(kind=kind_noahmp)           :: RadFac                ! solar radiation factor for resistance
     real(kind=kind_noahmp)           :: SpecHumidityTmp       ! specific humidity [kg/kg]
-    real(kind=kind_noahmp)           :: SpecHumiditySat       ! saturation SpecHumidityTmp
-    real(kind=kind_noahmp)           :: SpecHumSatTempD       ! d(SpecHumiditySat)/d(T)
+    real(kind=kind_noahmp)           :: MixingRatioTmp        ! mixing ratio [kg/kg]
+    real(kind=kind_noahmp)           :: MixingRatioSat        ! saturated mixing ratio [kg/kg]
+    real(kind=kind_noahmp)           :: MixingRatioSatTempD   ! d(MixingRatioSat)/d(T)
 
 ! --------------------------------------------------------------------
     associate(                                                                        &
@@ -53,8 +54,8 @@ contains
               RadPhotoActAbsShade     => noahmp%energy%flux%RadPhotoActAbsShade      ,& ! in,  average absorbed par for shaded leaves [W/m2]
               ResistanceStomataSunlit => noahmp%energy%state%ResistanceStomataSunlit ,& ! out, sunlit leaf stomatal resistance [s/m]
               ResistanceStomataShade  => noahmp%energy%state%ResistanceStomataShade  ,& ! out, shaded leaf stomatal resistance [s/m]
-              PhotosynLeafSunlit      => noahmp%biochem%flux%PhotosynLeafSunlit      ,& ! out, sunlit leaf photosynthesis [umol co2 /m2 /s]
-              PhotosynLeafShade       => noahmp%biochem%flux%PhotosynLeafShade        & ! out, shaded leaf photosynthesis [umol co2 /m2 /s]
+              PhotosynLeafSunlit      => noahmp%biochem%flux%PhotosynLeafSunlit      ,& ! out, sunlit leaf photosynthesis [umol CO2/m2/s]
+              PhotosynLeafShade       => noahmp%biochem%flux%PhotosynLeafShade        & ! out, shaded leaf photosynthesis [umol CO2/m2/s]
              )
 ! ----------------------------------------------------------------------
 
@@ -67,10 +68,10 @@ contains
     if ( IndexShade == 0 ) then
        ResistanceStomataSunlit = 0.0
 
-       ! compute SpecHumidityTmp and SpecHumiditySat
-       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir)
-       SpecHumidityTmp = SpecHumidityTmp / (1.0 + SpecHumidityTmp)   ! convert to mixing ratio [kg/kg]
-       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, SpecHumiditySat, SpecHumSatTempD)
+       ! compute MixingRatioTmp and MixingRatioSat
+       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir) ! specific humidity
+       MixingRatioTmp  = SpecHumidityTmp / (1.0 - SpecHumidityTmp)   ! convert to mixing ratio [kg/kg]
+       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, MixingRatioSat, MixingRatioSatTempD)
 
        ! contribution due to incoming solar radiation
        RadFac          = 2.0 * RadPhotoActAbsSunlit / RadiationStressFac
@@ -82,7 +83,7 @@ contains
        ResistanceTemp = max(ResistanceTemp, 0.0001)
 
        ! contribution due to vapor pressure deficit
-       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, SpecHumiditySat-SpecHumidityTmp))
+       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, MixingRatioSat - MixingRatioTmp))
        ResistanceVapDef = max(ResistanceVapDef, 0.01)
 
        ! determine canopy resistance due to all factors
@@ -97,10 +98,10 @@ contains
     if ( IndexShade == 1 ) then
        ResistanceStomataShade = 0.0
        
-       ! compute SpecHumidityTmp and SpecHumiditySat
-       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir)
-       SpecHumidityTmp = SpecHumidityTmp / (1.0 + SpecHumidityTmp)      ! convert to mixing ratio [kg/kg]
-       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, SpecHumiditySat, SpecHumSatTempD)
+       ! compute MixingRatioTmp and MixingRatioSat
+       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir)  ! specific humidity
+       MixingRatioTmp = SpecHumidityTmp / (1.0 - SpecHumidityTmp)      ! convert to mixing ratio [kg/kg]
+       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, MixingRatioSat, MixingRatioSatTempD)
 
        ! contribution due to incoming solar radiation
        RadFac          = 2.0 * RadPhotoActAbsShade / RadiationStressFac
@@ -112,7 +113,7 @@ contains
        ResistanceTemp = max(ResistanceTemp, 0.0001)
 
        ! contribution due to vapor pressure deficit
-       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, SpecHumiditySat-SpecHumidityTmp))
+       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, MixingRatioSat - MixingRatioTmp))
        ResistanceVapDef = max(ResistanceVapDef, 0.01)
 
        ! determine canopy resistance due to all factors

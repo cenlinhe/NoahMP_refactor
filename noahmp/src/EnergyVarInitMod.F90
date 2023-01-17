@@ -257,6 +257,9 @@ contains
     noahmp%energy%flux%HeatSensibleSfc              = undefined_real
     noahmp%energy%flux%RadPhotoActAbsCan            = undefined_real
     noahmp%energy%flux%RadLwEmitSfc                 = undefined_real
+    noahmp%energy%flux%HeatCanStorageChg            = undefined_real
+    noahmp%energy%flux%HeatGroundTotAcc             = undefined_real
+    noahmp%energy%flux%HeatGroundTotMean            = undefined_real
     noahmp%energy%flux%HeatLatentIrriEvap           = 0.0
  
     if ( .not. allocated(noahmp%energy%flux%RadSwAbsVegDir) )      &
@@ -346,6 +349,7 @@ contains
     noahmp%energy%param%ResistanceSnowSfc           = undefined_real
     noahmp%energy%param%VegFracAnnMax               = undefined_real
     noahmp%energy%param%VegFracGreen                = undefined_real
+    noahmp%energy%param%HeatCapacCanFac             = undefined_real
     
     if ( .not. allocated(noahmp%energy%param%LeafAreaIndexMon) )   &
        allocate( noahmp%energy%param%LeafAreaIndexMon(1:12) )
@@ -433,6 +437,14 @@ contains
     noahmp%energy%state%TemperatureSoilSnow(1:NumSoilLayer)       = NoahmpIO%TSLB    (I,1:NumSoilLayer,J)
     noahmp%energy%state%PressureAtmosCO2                          = NoahmpIO%CO2_TABLE * noahmp%forcing%PressureAirRefHeight
     noahmp%energy%state%PressureAtmosO2                           = NoahmpIO%O2_TABLE  * noahmp%forcing%PressureAirRefHeight
+    ! vegetation treatment for USGS land types (playa, lava, sand to bare)
+    if ( (VegType == 25) .or. (VegType == 26) .or. (VegType == 27) ) then
+       noahmp%energy%state%VegFrac       = 0.0
+       noahmp%energy%state%LeafAreaIndex = 0.0
+    endif
+
+    ! energy flux variables
+    noahmp%energy%flux%HeatGroundTotAcc                           = NoahmpIO%ACC_SSOILXY(I,J)
 
     ! energy parameter variables
     noahmp%energy%param%SoilHeatCapacity                          = NoahmpIO%CSOIL_TABLE
@@ -482,6 +494,7 @@ contains
     noahmp%energy%param%AirTempOptimTransp                        = NoahmpIO%TOPT_TABLE  (VegType)
     noahmp%energy%param%VaporPresDeficitFac                       = NoahmpIO%HS_TABLE    (VegType)
     noahmp%energy%param%LeafDimLength                             = NoahmpIO%DLEAF_TABLE (VegType)
+    noahmp%energy%param%HeatCapacCanFac                           = NoahmpIO%CBIOM_TABLE (VegType)
     noahmp%energy%param%LeafAreaIndexMon (1:12)                   = NoahmpIO%LAIM_TABLE  (VegType,1:12)
     noahmp%energy%param%StemAreaIndexMon (1:12)                   = NoahmpIO%SAIM_TABLE  (VegType,1:12)
     noahmp%energy%param%ReflectanceLeaf  (1:NumSWRadBand)         = NoahmpIO%RHOL_TABLE  (VegType,1:NumSWRadBand)

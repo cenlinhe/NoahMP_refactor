@@ -70,6 +70,8 @@ contains
     noahmp%forcing%RadLwDownRefHeight      = NoahmpIO%GLW      (I,J)
     noahmp%forcing%RadSwDownRefHeight      = NoahmpIO%SWDOWN   (I,J)
     noahmp%forcing%TemperatureSoilBottom   = NoahmpIO%TMN      (I,J)
+    ! treat different precipitation types
+    PrecipTotalRefHeight                   = NoahmpIO%RAINBL   (I,J) / NoahmpIO%DTBL                ! convert precip unit from mm/timestep to mm/s
     noahmp%forcing%PrecipConvRefHeight     = NoahmpIO%MP_RAINC (I,J) / NoahmpIO%DTBL
     noahmp%forcing%PrecipNonConvRefHeight  = NoahmpIO%MP_RAINNC(I,J) / NoahmpIO%DTBL
     noahmp%forcing%PrecipShConvRefHeight   = NoahmpIO%MP_SHCV  (I,J) / NoahmpIO%DTBL
@@ -77,7 +79,6 @@ contains
     noahmp%forcing%PrecipGraupelRefHeight  = NoahmpIO%MP_GRAUP (I,J) / NoahmpIO%DTBL
     noahmp%forcing%PrecipHailRefHeight     = NoahmpIO%MP_HAIL  (I,J) / NoahmpIO%DTBL
     ! treat other precipitation (e.g. fog) contained in total precipitation
-    PrecipTotalRefHeight                   = NoahmpIO%RAINBL   (I,J) / NoahmpIO%DTBL                ! convert precip unit from mm/timestep to mm/s
     PrecipOtherRefHeight                   = PrecipTotalRefHeight - noahmp%forcing%PrecipConvRefHeight - &
                                              noahmp%forcing%PrecipNonConvRefHeight - noahmp%forcing%PrecipShConvRefHeight
     PrecipOtherRefHeight                   = max(0.0, PrecipOtherRefHeight)

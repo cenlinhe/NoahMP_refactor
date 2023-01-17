@@ -81,6 +81,9 @@ contains
               RadSwDownRefHeight      => noahmp%forcing%RadSwDownRefHeight           ,& ! in,    downward shortwave radiation [W/m2] at reference height
               OptSnowSoilTempTime     => noahmp%config%nmlist%OptSnowSoilTempTime    ,& ! in,    options for snow/soil temperature time scheme
               FlagCropland            => noahmp%config%domain%FlagCropland           ,& ! in,    flag to identify croplands
+              FlagSoilProcess         => noahmp%config%domain%FlagSoilProcess        ,& ! in,    flag to determine if calculating soil processes
+              NumSoilTimeStep         => noahmp%config%domain%NumSoilTimeStep        ,& ! in,    number of time step for calculating soil processes
+              SoilTimeStep            => noahmp%config%domain%SoilTimeStep           ,& ! in,    soil process timestep [s]
               IrriFracThreshold       => noahmp%water%param%IrriFracThreshold        ,& ! in,    irrigation fraction parameter
               IrrigationFracGrid      => noahmp%water%state%IrrigationFracGrid       ,& ! in,    total input irrigation fraction
               LeafAreaIndEff          => noahmp%energy%state%LeafAreaIndEff          ,& ! in,    leaf area index, after burying by snow
@@ -98,6 +101,7 @@ contains
               PressureVaporCanAir     => noahmp%energy%state%PressureVaporCanAir     ,& ! inout, canopy air vapor pressure [Pa]
               ExchCoeffMomSfc         => noahmp%energy%state%ExchCoeffMomSfc         ,& ! inout, exchange coefficient [m/s] for momentum, surface, grid mean
               ExchCoeffShSfc          => noahmp%energy%state%ExchCoeffShSfc          ,& ! inout, exchange coefficient [m/s] for heat, surface, grid mean
+              HeatGroundTotAcc        => noahmp%energy%flux%HeatGroundTotAcc         ,& ! inout, accumulated total ground heat flux per soil timestep [W/m2 * dt_soil/dt_main]
               SnowDepth               => noahmp%water%state%SnowDepth                ,& ! inout, snow depth [m]
               RoughLenMomSfcToAtm     => noahmp%energy%state%RoughLenMomSfcToAtm     ,& ! out,   roughness length, momentum, surface, sent to coupled model
               WindStressEwSfc         => noahmp%energy%state%WindStressEwSfc         ,& ! out,   wind stress: east-west [N/m2] grid mean
@@ -156,6 +160,9 @@ contains
               HeatLatentCanTransp     => noahmp%energy%flux%HeatLatentCanTransp      ,& ! out,   canopy transpiration heat flux [W/m2] (+ to atm)
               HeatGroundVegGrd        => noahmp%energy%flux%HeatGroundVegGrd         ,& ! out,   vegetated ground heat [W/m2] (+ to soil/snow)
               HeatGroundBareGrd       => noahmp%energy%flux%HeatGroundBareGrd        ,& ! out,   bare ground heat flux [W/m2] (+ to soil/snow)
+              HeatCanStorageChg       => noahmp%energy%flux%HeatCanStorageChg        ,& ! out,   canopy heat storage change [W/m2]
+              HeatFromSoilBot         => noahmp%energy%flux%HeatFromSoilBot          ,& ! out,   energy influx from soil bottom [J/m2] during soil timestep
+              HeatGroundTotMean       => noahmp%energy%flux%HeatGroundTotMean        ,& ! out,   mean ground heat flux during soil timestep [W/m2]
               PhotosynTotal           => noahmp%biochem%flux%PhotosynTotal           ,& ! out,   total leaf photosynthesis [umol co2 /m2 /s]
               PhotosynLeafSunlit      => noahmp%biochem%flux%PhotosynLeafSunlit      ,& ! out,   sunlit leaf photosynthesis [umol co2 /m2 /s]
               PhotosynLeafShade       => noahmp%biochem%flux%PhotosynLeafShade        & ! out,   shaded leaf photosynthesis [umol co2 /m2 /s]
@@ -182,6 +189,7 @@ contains
     ExchCoeffShUndCan   = 0.0
     ExchCoeffSh2mVeg    = 0.0
     HeatPrecipAdvSfc    = 0.0
+    HeatCanStorageChg   = 0.0
 
     ! wind speed at reference height: ur >= 1
     WindSpdRefHeight = max(sqrt(WindEastwardRefHeight**2.0 + WindNorthwardRefHeight**2.0), 1.0)
@@ -304,8 +312,13 @@ contains
     RadPhotoActAbsCan = RadPhotoActAbsSunlit * LeafAreaIndSunlit + RadPhotoActAbsShade * LeafAreaIndShade
     PhotosynTotal     = PhotosynLeafSunlit   * LeafAreaIndSunlit + PhotosynLeafShade   * LeafAreaIndShade
 
-    ! compute snow and soil layer temperature
-    call SoilSnowTemperatureMain(noahmp)
+    ! compute snow and soil layer temperature at soil timestep
+    HeatFromSoilBot = 0.0
+    HeatGroundTotAcc = HeatGroundTotAcc + HeatGroundTot
+    if ( FlagSoilProcess .eqv. .true. ) then
+       HeatGroundTotMean = HeatGroundTotAcc / NumSoilTimeStep
+       call SoilSnowTemperatureMain(noahmp)
+    endif ! FlagSoilProcess
 
     ! adjusting suface temperature based on snow condition
     if ( OptSnowSoilTempTime == 2 ) then

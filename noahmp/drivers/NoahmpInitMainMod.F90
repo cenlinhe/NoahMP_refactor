@@ -31,9 +31,8 @@ contains
                                                    its, ite, jts, jte, kts, kte
     integer                                     :: errflag,i,j,itf,jtf,ns
     logical                                     :: restart, allowed_to_read
-
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: ZSOIL      ! Depth of the soil layer bottom (m) from
-    !                                                           the surface (negative)
+    logical                                     :: urbanpt_flag       ! added to identify urban pixels by accounting for LCZ
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: ZSOIL      ! Depth of the soil layer bottom (m) from the surface (negative)
     real(kind=kind_noahmp)                      :: BEXP, SMCMAX, PSISAT
     real(kind=kind_noahmp)                      :: FK, masslai, masssai
     real(kind=kind_noahmp), parameter           :: BLIM  = 5.5
@@ -180,18 +179,18 @@ contains
           enddo
        endif
    
-       ! Check if snow/snowh are consistent and cap SWE at 5000mm;
-       !  the Noah-MP code does it internally but if we don't do it here, problems ensue
+       ! Check if snow/snowh are consistent and cap SWE at 2000mm
+       ! the Noah-MP code does it internally but if we don't do it here, problems ensue
        do J = jts,jtf
           do I = its,itf
-             if ( SNOW(i,j) > 0. .AND. SNOWH(i,j) == 0. .OR. SNOWH(i,j) > 0. .AND. SNOW(i,j) == 0.) then
+             if ( SNOW(i,j) > 0.0 .AND. SNOWH(i,j) == 0.0 .OR. SNOWH(i,j) > 0.0 .AND. SNOW(i,j) == 0.0 ) then
                write(err_message,*)"problem with initial snow fields: snow/snowh>0 while snowh/snow=0 at i,j" &
                                      ,i,j,snow(i,j),snowh(i,j)
                call wrf_message(err_message)
              endif
-             if ( SNOW( i,j ) > 5000. ) then
-               SNOWH(I,J) = SNOWH(I,J) * 5000. / SNOW(I,J)      ! SNOW in mm and SNOWH in m
-               SNOW (I,J) = 5000.                               ! cap SNOW at 5000, maintain density
+             if ( SNOW( i,j ) > 2000.0 ) then
+               SNOWH(I,J) = SNOWH(I,J) * 2000.0 / SNOW(I,J)      ! SNOW in mm and SNOWH in m
+               SNOW (I,J) = 2000.0                               ! cap SNOW at 2000, maintain density
              endif
           enddo
        enddo
@@ -300,9 +299,19 @@ contains
               areaxy     (I,J) = (DX * DY) / ( MSFTX(I,J) * MSFTY(I,J) )
            endif
 
+           ! add urban flag to include LCZ
+           urbanpt_flag = .false.
+           if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
+                IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+               urbanpt_flag = .true.
+           endif
+
            if(IVGTYP(I,J) == NoahmpIO%ISBARREN_TABLE .OR. IVGTYP(I,J) == NoahmpIO%ISICE_TABLE .OR. &
-             (NoahmpIO%SF_URBAN_PHYSICS == 0 .AND. IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE)     .OR. &
-              IVGTYP(I,J) == NoahmpIO%ISWATER_TABLE ) then
+             (NoahmpIO%SF_URBAN_PHYSICS == 0 .AND. urbanpt_flag) .OR. IVGTYP(I,J) == NoahmpIO%ISWATER_TABLE ) then
              lai        (I,J) = 0.0
              xsaixy     (I,J) = 0.0
              lfmassxy   (I,J) = 0.0

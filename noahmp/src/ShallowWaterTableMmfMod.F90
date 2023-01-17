@@ -35,7 +35,7 @@ contains
 ! --------------------------------------------------------------------
     associate(                                                                       &
               NumSoilLayer           => noahmp%config%domain%NumSoilLayer           ,& ! in,    number of soil layers
-              MainTimeStep           => noahmp%config%domain%MainTimeStep           ,& ! in,    noahmp main time step [s]
+              SoilTimeStep           => noahmp%config%domain%SoilTimeStep           ,& ! in,    noahmp soil timestep [s]
               DepthSoilLayer         => noahmp%config%domain%DepthSoilLayer         ,& ! in,    depth of soil layer-bottom [m]
               ThicknessSnowSoilLayer => noahmp%config%domain%ThicknessSnowSoilLayer ,& ! in,    thickness of snow/soil layers [m]
               SoilMoistureEqui       => noahmp%water%state%SoilMoistureEqui         ,& ! in,    equilibrium soil water  content [m3/m3]
@@ -118,7 +118,7 @@ contains
              ! SoilMoistureToWT  = SoilMoistureToWT - (SoilMoistureEqui(NumSoilLayer)-SoilMoisture(NumSoilLayer))
              ! DrainSoilBot      = DrainSoilBot - 1000 * &
              !                     (SoilMoistureEqui(NumSoilLayer) - SoilMoisture(NumSoilLayer)) * &
-             !                     ThicknessSnowSoilLayer(NumSoilLayer) / MainTimeStep
+             !                     ThicknessSnowSoilLayer(NumSoilLayer) / SoilTimeStep
              ! SoilMoisture(NumSoilLayer) = SoilMoistureEqui(NumSoilLayer)
 
              ! adjust water table depth in the ficticious layer below

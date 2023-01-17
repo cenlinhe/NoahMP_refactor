@@ -25,6 +25,21 @@ module EnergyVarType
     real(kind=kind_noahmp) :: HeatPrecipAdvVegGrd         ! precipitation advected heat - vegetated ground net [W/m2]
     real(kind=kind_noahmp) :: HeatPrecipAdvBareGrd        ! precipitation advected heat - bare ground net [W/m2]
     real(kind=kind_noahmp) :: HeatPrecipAdvSfc            ! precipitation advected heat - total [W/m2]
+    real(kind=kind_noahmp) :: HeatSensibleCanopy          ! canopy sensible heat flux [W/m2]     (+ to atm)
+    real(kind=kind_noahmp) :: HeatLatentCanEvap           ! canopy evaporation heat flux [W/m2]  (+ to atm)
+    real(kind=kind_noahmp) :: HeatSensibleVegGrd          ! vegetated ground sensible heat flux [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatSensibleSfc             ! total sensible heat [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatLatentVegGrd            ! vegetated ground latent heat flux [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatLatentCanTransp         ! canopy transpiration latent heat flux [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatGroundVegGrd            ! vegetated ground heat flux [W/m2] (+ to soil/snow)
+    real(kind=kind_noahmp) :: HeatSensibleBareGrd         ! bare ground sensible heat flux [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatLatentBareGrd           ! bare ground latent heat flux [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: HeatGroundBareGrd           ! bare ground heat flux [W/m2] (+ to soil/snow)
+    real(kind=kind_noahmp) :: HeatGroundTot               ! total ground heat flux [W/m2] (+ to soil/snow)
+    real(kind=kind_noahmp) :: HeatGroundTotMean           ! total ground heat flux [W/m2] averaged over soil timestep
+    real(kind=kind_noahmp) :: HeatFromSoilBot             ! energy influx from soil bottom [W/m2]
+    real(kind=kind_noahmp) :: HeatCanStorageChg           ! canopy heat storage change [W/m2]
+    real(kind=kind_noahmp) :: HeatGroundTotAcc            ! accumulated total ground heat flux per soil timestep [W/m2 * dt_soil/dt_main] (+ to soil/snow)
     real(kind=kind_noahmp) :: RadPhotoActAbsSunlit        ! absorbed photosyn. active radiation for sunlit leaves [W/m2]
     real(kind=kind_noahmp) :: RadPhotoActAbsShade         ! absorbed photosyn. active radiation  for shaded leaves [W/m2]
     real(kind=kind_noahmp) :: RadSwAbsVeg                 ! solar radiation absorbed by vegetation [W/m2]
@@ -34,23 +49,11 @@ module EnergyVarType
     real(kind=kind_noahmp) :: RadSwReflVeg                ! reflected solar radiation by vegetation [W/m2]
     real(kind=kind_noahmp) :: RadSwReflGrd                ! reflected solar radiation by ground [W/m2]
     real(kind=kind_noahmp) :: RadLwNetCanopy              ! canopy net longwave radiation [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatSensibleCanopy          ! canopy sensible heat flux [W/m2]     (+ to atm)
-    real(kind=kind_noahmp) :: HeatLatentCanEvap           ! canopy evaporation heat flux [W/m2]  (+ to atm)
-    real(kind=kind_noahmp) :: RadLwNetVegGrd              ! vegetated ground net longwave radiation [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatSensibleVegGrd          ! vegetated ground sensible heat flux [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatLatentVegGrd            ! vegetated ground latent heat flux [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatLatentCanTransp         ! canopy transpiration latent heat flux [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatGroundVegGrd            ! vegetated ground heat flux [W/m2] (+ to soil/snow)
-    real(kind=kind_noahmp) :: RadLwNetBareGrd             ! bare ground net longwave rad [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatSensibleBareGrd         ! bare ground sensible heat flux [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatLatentBareGrd           ! bare ground latent heat flux [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatGroundBareGrd           ! bare ground heat flux [W/m2] (+ to soil/snow)
-    real(kind=kind_noahmp) :: HeatGroundTot               ! total ground heat flux [W/m2] (+ to soil/snow)
-    real(kind=kind_noahmp) :: HeatFromSoilBot             ! energy influx from soil bottom [W/m2]
     real(kind=kind_noahmp) :: RadLwNetSfc                 ! total net longwave radiation [W/m2] (+ to atm)
-    real(kind=kind_noahmp) :: HeatSensibleSfc             ! total sensible heat [W/m2] (+ to atm)
     real(kind=kind_noahmp) :: RadPhotoActAbsCan           ! total photosyn. active energy [W/m2] absorbed by canopy
     real(kind=kind_noahmp) :: RadLwEmitSfc                ! emitted outgoing longwave radiation [W/m2]
+    real(kind=kind_noahmp) :: RadLwNetVegGrd              ! vegetated ground net longwave radiation [W/m2] (+ to atm)
+    real(kind=kind_noahmp) :: RadLwNetBareGrd             ! bare ground net longwave rad [W/m2] (+ to atm)
 
     real(kind=kind_noahmp), allocatable, dimension(:) :: RadSwAbsVegDir        ! solar flux absorbed by veg per unit direct flux
     real(kind=kind_noahmp), allocatable, dimension(:) :: RadSwAbsVegDif        ! solar flux absorbed by veg per unit diffuse flux
@@ -275,6 +278,7 @@ module EnergyVarType
     real(kind=kind_noahmp) :: ResistanceSnowSfc           ! surface resistance for snow [s/m]
     real(kind=kind_noahmp) :: VegFracGreen                ! green vegetation fraction
     real(kind=kind_noahmp) :: VegFracAnnMax               ! annual maximum vegetation fraction
+    real(kind=kind_noahmp) :: HeatCapacCanFac             ! canopy biomass heat capacity parameter [m]
 
     real(kind=kind_noahmp), allocatable, dimension(:) :: LeafAreaIndexMon      ! monthly leaf area index, one-sided
     real(kind=kind_noahmp), allocatable, dimension(:) :: StemAreaIndexMon      ! monthly stem area index, one-sided

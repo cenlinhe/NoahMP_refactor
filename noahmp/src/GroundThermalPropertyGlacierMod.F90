@@ -44,6 +44,10 @@ contains
              )
 ! ----------------------------------------------------------------------
 
+    ! initialize
+    HeatCapacSoilSnow    = 0.0
+    ThermConductSoilSnow = 0.0
+
     ! compute snow thermal conductivity and heat capacity
     call SnowThermalProperty(noahmp)
     do LoopInd = NumSnowLayerNeg+1, 0

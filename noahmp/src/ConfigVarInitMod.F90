@@ -54,6 +54,8 @@ contains
     noahmp%config%domain%FlagCropland                = .false.
     noahmp%config%domain%FlagDynamicCrop             = .false.
     noahmp%config%domain%FlagDynamicVeg              = .false.
+    noahmp%config%domain%FlagSoilProcess             = .false.
+    noahmp%config%domain%NumSoilTimeStep             = undefined_int
     noahmp%config%domain%NumSnowLayerMax             = undefined_int
     noahmp%config%domain%NumSnowLayerNeg             = undefined_int
     noahmp%config%domain%NumSoilLayer                = undefined_int
@@ -74,6 +76,7 @@ contains
     noahmp%config%domain%NumDayInYear                = undefined_int
     noahmp%config%domain%RunoffSlopeType             = undefined_int
     noahmp%config%domain%MainTimeStep                = undefined_real
+    noahmp%config%domain%SoilTimeStep                = undefined_real
     noahmp%config%domain%GridSize                    = undefined_real
     noahmp%config%domain%DayJulianInYear             = undefined_real
     noahmp%config%domain%CosSolarZenithAngle         = undefined_real
@@ -130,12 +133,15 @@ contains
     noahmp%config%domain%NumSWRadBand                = 2
     noahmp%config%domain%SoilColor                   = 4
     noahmp%config%domain%NumCropGrowStage            = 8
+    noahmp%config%domain%FlagSoilProcess             = NoahmpIO%calculate_soil
+    noahmp%config%domain%NumSoilTimeStep             = NoahmpIO%soil_update_steps
     noahmp%config%domain%NumSnowLayerMax             = NoahmpIO%NSNOW
     noahmp%config%domain%NumSnowLayerNeg             = NoahmpIO%ISNOWXY(I,J)
     noahmp%config%domain%NumSoilLayer                = NoahmpIO%NSOIL
     noahmp%config%domain%GridIndexI                  = NoahmpIO%I
     noahmp%config%domain%GridIndexJ                  = NoahmpIO%J
     noahmp%config%domain%MainTimeStep                = NoahmpIO%DTBL
+    noahmp%config%domain%SoilTimeStep                = NoahmpIO%DTBL * NoahmpIO%soil_update_steps
     noahmp%config%domain%GridSize                    = NoahmpIO%DX
     noahmp%config%domain%LandUseDataName             = NoahmpIO%LLANDUSE
     noahmp%config%domain%VegType                     = NoahmpIO%IVGTYP(I,J)
