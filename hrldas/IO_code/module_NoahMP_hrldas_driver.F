@@ -125,9 +125,9 @@ contains
 #ifdef WRF_HYDRO
     if(finemesh .ne. 0) then
          NoahmpIO%xstart = (wrfits-1)*finemesh_factor + 1
-         NoahmpIO%xend = (wrfite-1)*finemesh_factor
+         NoahmpIO%xend   = (wrfite-1)*finemesh_factor
          NoahmpIO%ystart = (wrfjts-1)*finemesh_factor + 1
-         NoahmpIO%yend = (wrfjte-1)*finemesh_factor
+         NoahmpIO%yend   = (wrfjte-1)*finemesh_factor
          call CPL_LAND_INIT(xstart,xend, ystart,yend)
          ix_tmp = NoahmpIO%xend - NoahmpIO%xstart + 1
          jx_tmp = NoahmpIO%yend - NoahmpIO%ystart + 1
@@ -525,12 +525,12 @@ contains
 
      IF(NoahmpIO%SF_URBAN_PHYSICS > 0 ) THEN  !urban
         
-        CALL urban_param_init(NoahmpIO%DZR, NoahmpIO%DZB, NoahmpIO%DZG, NoahmpIO%num_soil_layers, &
+        CALL urban_param_init(NoahmpIO%DZR, NoahmpIO%DZB, NoahmpIO%DZG, NoahmpIO%NSOIL, &
                               NoahmpIO%sf_urban_physics, NoahmpIO%use_wudapt_lcz, NoahmpIO%IRI_URBAN) ! cenlin added
 
         CALL urban_var_init(NoahmpIO%ISURBAN, NoahmpIO%TSK, NoahmpIO%TSLB, NoahmpIO%TMN,                              & !urban
                             NoahmpIO%IVGTYP, NoahmpIO%ims,NoahmpIO%ime,NoahmpIO%jms,NoahmpIO%jme,                        & !urban
-                            NoahmpIO%kms,NoahmpIO%kme,NoahmpIO%num_soil_layers, NoahmpIO%LCZ_1_TABLE,                 & !urban  
+                            NoahmpIO%kms,NoahmpIO%kme,NoahmpIO%NSOIL, NoahmpIO%LCZ_1_TABLE,                 & !urban  
                             NoahmpIO%LCZ_2_TABLE,NoahmpIO%LCZ_3_TABLE,NoahmpIO%LCZ_4_TABLE,NoahmpIO%LCZ_5_TABLE,      & !urban
                             NoahmpIO%LCZ_6_TABLE,NoahmpIO%LCZ_7_TABLE,NoahmpIO%LCZ_8_TABLE,NoahmpIO%LCZ_9_TABLE,      & !urban
                             NoahmpIO%LCZ_10_TABLE, NoahmpIO%LCZ_11_TABLE,.true.,NoahmpIO%sf_urban_physics,         & !urban
@@ -670,12 +670,12 @@ contains
 
         if (NoahmpIO%SF_URBAN_PHYSICS > 0 ) then  !urban
 
-                 CALL urban_param_init(NoahmpIO%DZR,NoahmpIO%DZB,NoahmpIO%DZG,NoahmpIO%num_soil_layers,    &
+                 CALL urban_param_init(NoahmpIO%DZR,NoahmpIO%DZB,NoahmpIO%DZG,NoahmpIO%NSOIL,    &
                                        NoahmpIO%sf_urban_physics,NoahmpIO%use_wudapt_lcz,NoahmpIO%IRI_URBAN) ! cenlin added
 
                  CALL urban_var_init(NoahmpIO%ISURBAN, NoahmpIO%TSK, NoahmpIO%TSLB, NoahmpIO%TMN,                                & !urban
                                     NoahmpIO%IVGTYP, NoahmpIO%ims,NoahmpIO%ime,NoahmpIO%jms,NoahmpIO%jme,                        & !urban
-                                    NoahmpIO%kms,NoahmpIO%kme,NoahmpIO%num_soil_layers, NoahmpIO%LCZ_1_TABLE,                    & !urban  
+                                    NoahmpIO%kms,NoahmpIO%kme,NoahmpIO%NSOIL, NoahmpIO%LCZ_1_TABLE,                              & !urban  
                                     NoahmpIO%LCZ_2_TABLE,NoahmpIO%LCZ_3_TABLE,NoahmpIO%LCZ_4_TABLE,NoahmpIO%LCZ_5_TABLE,         & !urban
                                     NoahmpIO%LCZ_6_TABLE,NoahmpIO%LCZ_7_TABLE,NoahmpIO%LCZ_8_TABLE,NoahmpIO%LCZ_9_TABLE,         & !urban
                                     NoahmpIO%LCZ_10_TABLE, NoahmpIO%LCZ_11_TABLE,.true.,NoahmpIO%sf_urban_physics,               & !urban
@@ -1006,7 +1006,7 @@ contains
 
          IF(NoahmpIO%SF_URBAN_PHYSICS > 0 ) THEN  !urban
          
-            call noahmp_urban(NoahmpIO, NoahmpIO%sf_urban_physics, NoahmpIO%NUM_SOIL_LAYERS, NoahmpIO%IVGTYP,   & ! IN : Model configuration 
+            call noahmp_urban(NoahmpIO, NoahmpIO%sf_urban_physics, NoahmpIO%NSOIL, NoahmpIO%IVGTYP,             & ! IN : Model configuration 
                             NoahmpIO%ITIMESTEP, NoahmpIO%DTBL, NoahmpIO%COSZEN, NoahmpIO%XLAT,                  & ! IN : Time/Space-related
                             NoahmpIO%T_PHY, NoahmpIO%QV_CURR, NoahmpIO%U_PHY, NoahmpIO%V_PHY, NoahmpIO%SWDOWN,  & ! IN : Forcing
                             NoahmpIO%SWDDIR, NoahmpIO%SWDDIF,                                                   &
@@ -1071,7 +1071,7 @@ contains
 
                !gmm update wtable from lateral flow and shed water to rivers
                CALL WTABLE_MMF_NOAHMP(NoahmpIO,                                             &
-                                  NoahmpIO%NUM_SOIL_LAYERS, NoahmpIO%XLAND, NoahmpIO%XICE,  & 
+                                  NoahmpIO%NSOIL, NoahmpIO%XLAND, NoahmpIO%XICE,            & 
                                   NoahmpIO%XICE_THRESHOLD, NoahmpIO%ISICE,                  &
                                   NoahmpIO%ISLTYP, NoahmpIO%SMOISEQ, NoahmpIO%DZS,          &       
                                   NoahmpIO%WTDDT, NoahmpIO%FDEPTHXY, NoahmpIO%AREAXY,       &

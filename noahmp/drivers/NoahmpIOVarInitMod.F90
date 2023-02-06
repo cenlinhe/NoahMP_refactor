@@ -1,6 +1,6 @@
 module NoahmpIOVarInitMod
 
-!!! Initialize Noah-MP input/output variables (2D forcing, namelist, table, static)
+!!! Initialize Noah-MP input/output variables
 !!! Input/Output variables should be first defined in NoahmpIOVarType.F90
 
 ! ------------------------ Code history -----------------------------------

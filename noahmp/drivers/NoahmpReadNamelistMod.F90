@@ -178,7 +178,6 @@ contains
   
     NoahmpIO%DTBL            = real(noah_timestep)
     NoahmpIO%soiltstep       = soil_timestep
-    NoahmpIO%num_soil_layers = nsoil      ! because surface driver uses the long form
     NoahmpIO%NSOIL           = nsoil
 
     !---------------------------------------------------------------------

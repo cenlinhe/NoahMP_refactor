@@ -24,7 +24,6 @@ module NoahmpIOVarType
     integer                                                ::  ITIMESTEP           ! timestep number
     integer                                                ::  YR                  ! 4-digit year
     integer                                                ::  NSOIL               ! number of soil layers
-    integer                                                ::  NUM_SOIL_LAYERS     ! number of soil layers
     integer                                                ::  ICE                 ! Sea-ice point
     integer                                                ::  ISICE               ! land cover category for ice
     integer                                                ::  ISURBAN             ! land cover category for urban
