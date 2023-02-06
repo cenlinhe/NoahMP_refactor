@@ -143,22 +143,22 @@ contains
     !  Initialize namelist variables to dummy values, so we can tell
     !  if they have not been set properly.
     !---------------------------------------------------------------
-    NoahmpIO%nsoil                   = -999
-    NoahmpIO%soil_thick_input        = -999
-    NoahmpIO%DTBL                    = -999.0
-    NoahmpIO%soiltstep               = -999.0
-    NoahmpIO%start_year              = -999
-    NoahmpIO%start_month             = -999
-    NoahmpIO%start_day               = -999
-    NoahmpIO%start_hour              = -999
-    NoahmpIO%start_min               = -999
-    NoahmpIO%khour                   = -999
-    NoahmpIO%kday                    = -999
-    NoahmpIO%zlvl                    = -999.0
-    NoahmpIO%forcing_timestep        = -999.0
-    NoahmpIO%noah_timestep           = -999
-    NoahmpIO%output_timestep         = -999
-    NoahmpIO%restart_frequency_hours = -999
+    NoahmpIO%nsoil                   = undefined_int
+    NoahmpIO%soil_thick_input        = undefined_real
+    NoahmpIO%DTBL                    = undefined_real
+    NoahmpIO%soiltstep               = undefined_real
+    NoahmpIO%start_year              = undefined_int
+    NoahmpIO%start_month             = undefined_int
+    NoahmpIO%start_day               = undefined_int
+    NoahmpIO%start_hour              = undefined_int
+    NoahmpIO%start_min               = undefined_int
+    NoahmpIO%khour                   = undefined_int
+    NoahmpIO%kday                    = undefined_int
+    NoahmpIO%zlvl                    = undefined_real
+    NoahmpIO%forcing_timestep        = undefined_int
+    NoahmpIO%noah_timestep           = undefined_int
+    NoahmpIO%output_timestep         = undefined_int
+    NoahmpIO%restart_frequency_hours = undefined_int
     NoahmpIO%spinup_loops            = 0
     NoahmpIO%noahmp_output           = 0
 

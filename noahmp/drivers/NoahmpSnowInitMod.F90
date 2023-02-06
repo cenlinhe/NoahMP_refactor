@@ -1,9 +1,6 @@
-module NoahmpSnowinitMod
+module NoahmpSnowInitMod
 
-!--------------------------------------------------------------------------
 !  Module to initialize Noah-MP Snow variables
-!  P. Valayamkunnath C. He & refactor team (April 08 2022)
-!--------------------------------------------------------------------------
 
   use Machine
   use NoahmpIOVarType
@@ -12,44 +9,44 @@ module NoahmpSnowinitMod
   
 contains
 
-  subroutine NoahmpSnowinitMain(NoahmpIO)
+  subroutine NoahmpSnowInitMain(NoahmpIO)
 
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SNOW_INIT
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (April 08 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ------------------------------------------------------------------------- 
 
     implicit none 
     
     type(NoahmpIO_type)    :: NoahmpIO
     
-! Local variables:
-!   DZSNO   holds the thicknesses of the various snow layers.
-!   DZSNOSO holds the thicknesses of the various soil/snow layers.
+! local variables
     integer                                                               :: I,J,IZ,itf,jtf
     real(kind=kind_noahmp),   dimension(-NoahmpIO%NSNOW+1:             0) :: DZSNO
     real(kind=kind_noahmp),   dimension(-NoahmpIO%NSNOW+1:NoahmpIO%NSOIL) :: DZSNSO    
-    
-    associate(ims      => NoahmpIO%ims,      &
-              ime      => NoahmpIO%ime,      & 
-              jms      => NoahmpIO%jms,      &
-              jme      => NoahmpIO%jme,      & 
-              its      => NoahmpIO%its,      &
-              ite      => NoahmpIO%ite,      & 
-              jts      => NoahmpIO%jts,      &
-              jte      => NoahmpIO%jte,      &
-              NSNOW    => NoahmpIO%NSNOW,    &
-              NSOIL    => NoahmpIO%NSOIL,    &
-              ZSOIL    => NoahmpIO%ZSOIL,    &
-              SWE      => NoahmpIO%SNOW,     & 
-              TGXY     => NoahmpIO%TGXY,     & 
-              SNODEP   => NoahmpIO%SNOWH,    &
-              ZSNSOXY  => NoahmpIO%ZSNSOXY,  & 
-              TSNOXY   => NoahmpIO%TSNOXY,   &
-              SNICEXY  => NoahmpIO%SNICEXY,  &
-              SNLIQXY  => NoahmpIO%SNLIQXY,  &
-              ISNOWXY  => NoahmpIO%ISNOWXY   &
+
+!------------------------------------------------------------------------------------------    
+    associate(                               ,&
+               ims      => NoahmpIO%ims      ,&
+               ime      => NoahmpIO%ime      ,& 
+               jms      => NoahmpIO%jms      ,&
+               jme      => NoahmpIO%jme      ,& 
+               its      => NoahmpIO%its      ,&
+               ite      => NoahmpIO%ite      ,& 
+               jts      => NoahmpIO%jts      ,&
+               jte      => NoahmpIO%jte      ,&
+               NSNOW    => NoahmpIO%NSNOW    ,&
+               NSOIL    => NoahmpIO%NSOIL    ,&
+               ZSOIL    => NoahmpIO%ZSOIL    ,&
+               SWE      => NoahmpIO%SNOW     ,& 
+               TGXY     => NoahmpIO%TGXY     ,& 
+               SNODEP   => NoahmpIO%SNOWH    ,&
+               ZSNSOXY  => NoahmpIO%ZSNSOXY  ,& 
+               TSNOXY   => NoahmpIO%TSNOXY   ,&
+               SNICEXY  => NoahmpIO%SNICEXY  ,&
+               SNLIQXY  => NoahmpIO%SNLIQXY  ,&
+               ISNOWXY  => NoahmpIO%ISNOWXY   &
              )
 !------------------------------------------------------------------------------------------
 !   Initialize snow arrays for Noah-MP LSM, based in input SNOWDEP, NSNOW
@@ -126,9 +123,9 @@ contains
        enddo
     enddo
 
-    endassociate
+    end associate
     
-  end subroutine NoahmpSnowinitMain
+  end subroutine NoahmpSnowInitMain
 
-end module NoahmpSnowinitMod
+end module NoahmpSnowInitMod
 

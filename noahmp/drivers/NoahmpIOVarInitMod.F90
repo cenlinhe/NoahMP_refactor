@@ -484,14 +484,15 @@ contains
     ! Initialize variables with default values 
     !-------------------------------------------------------------------
     
-    NoahmpIO%ICE             = 0
+    NoahmpIO%ICE             = undefined_int
+    NoahmpIO%IVGTYP          = undefined_int
+    NoahmpIO%ISLTYP          = undefined_int
+    NoahmpIO%ISNOWXY         = undefined_int
     NoahmpIO%COSZEN          = undefined_real
     NoahmpIO%XLAT            = undefined_real
     NoahmpIO%DZ8W            = undefined_real
     NoahmpIO%DZS             = undefined_real
     NoahmpIO%ZSOIL           = undefined_real
-    NoahmpIO%IVGTYP          = undefined_int
-    NoahmpIO%ISLTYP          = undefined_int
     NoahmpIO%SOILCL1         = undefined_real
     NoahmpIO%SOILCL2         = undefined_real
     NoahmpIO%SOILCL3         = undefined_real
@@ -520,12 +521,7 @@ contains
     NoahmpIO%SNOWNCV         = undefined_real
     NoahmpIO%GRAUPELNCV      = undefined_real
     NoahmpIO%HAILNCV         = undefined_real
-    NoahmpIO%MP_RAINC        = 0.0
-    NoahmpIO%MP_RAINNC       = 0.0
-    NoahmpIO%MP_SHCV         = 0.0
-    NoahmpIO%MP_SNOW         = 0.0
-    NoahmpIO%MP_GRAUP        = 0.0
-    NoahmpIO%MP_HAIL         = 0.0
+    NoahmpIO%QSFC            = undefined_real
     NoahmpIO%TSK             = undefined_real
     NoahmpIO%QFX             = undefined_real
     NoahmpIO%SMSTAV          = undefined_real
@@ -536,14 +532,8 @@ contains
     NoahmpIO%SNOW            = undefined_real
     NoahmpIO%SNOWH           = undefined_real
     NoahmpIO%CANWAT          = undefined_real
-    NoahmpIO%ACSNOM          = 0.0
-    NoahmpIO%ACSNOW          = 0.0
-    NoahmpIO%QSFC            = undefined_real
-    NoahmpIO%SFCRUNOFF       = 0.0
-    NoahmpIO%UDRUNOFF        = 0.0
     NoahmpIO%SMOISEQ         = undefined_real
     NoahmpIO%ALBEDO          = undefined_real
-    NoahmpIO%ISNOWXY         = undefined_int
     NoahmpIO%TVXY            = undefined_real
     NoahmpIO%TGXY            = undefined_real
     NoahmpIO%CANICEXY        = undefined_real
@@ -573,12 +563,9 @@ contains
     NoahmpIO%LAI             = undefined_real
     NoahmpIO%LAI_tmp         = undefined_real
     NoahmpIO%XSAIXY          = undefined_real
-    NoahmpIO%TAUSSXY         = 0.0
     NoahmpIO%XLONG           = undefined_real
     NoahmpIO%SEAICE          = undefined_real
     NoahmpIO%SMCWTDXY        = undefined_real
-    NoahmpIO%DEEPRECHXY      = 0.0
-    NoahmpIO%RECHXY          = 0.0
     NoahmpIO%ZSNSOXY         = undefined_real
     NoahmpIO%GRDFLX          = undefined_real
     NoahmpIO%HFX             = undefined_real
@@ -631,6 +618,23 @@ contains
     NoahmpIO%CHB2XY          = undefined_real
     NoahmpIO%RS              = undefined_real
     NoahmpIO%CANHSXY         = undefined_real
+    NoahmpIO%CHSTARXY        = undefined_real
+    NoahmpIO%Z0              = undefined_real
+    NoahmpIO%ZNT             = undefined_real
+    NoahmpIO%TAUSSXY         = 0.0
+    NoahmpIO%DEEPRECHXY      = 0.0
+    NoahmpIO%RECHXY          = 0.0
+    NoahmpIO%ACSNOM          = 0.0
+    NoahmpIO%ACSNOW          = 0.0
+    NoahmpIO%MP_RAINC        = 0.0
+    NoahmpIO%MP_RAINNC       = 0.0
+    NoahmpIO%MP_SHCV         = 0.0
+    NoahmpIO%MP_SNOW         = 0.0
+    NoahmpIO%MP_GRAUP        = 0.0
+    NoahmpIO%MP_HAIL         = 0.0
+    NoahmpIO%SFCRUNOFF       = 0.0
+    NoahmpIO%UDRUNOFF        = 0.0
+
     ! additional output
     NoahmpIO%PAHXY           = undefined_real
     NoahmpIO%PAHGXY          = undefined_real
@@ -674,6 +678,7 @@ contains
     NoahmpIO%ACC_ETRANXY     = 0.0
     NoahmpIO%ACC_EDIRXY      = 0.0
 
+    ! MMF Groundwater
     NoahmpIO%TERRAIN         = undefined_real
     NoahmpIO%GVFMIN          = undefined_real
     NoahmpIO%GVFMAX          = undefined_real
@@ -691,9 +696,8 @@ contains
     NoahmpIO%QSPRINGXY       = undefined_real
     NoahmpIO%QSLATXY         = undefined_real
     NoahmpIO%QLATXY          = undefined_real
-    NoahmpIO%CHSTARXY        = undefined_real
-    NoahmpIO%Z0              = undefined_real
-    NoahmpIO%ZNT             = undefined_real
+
+    ! crop model
     NoahmpIO%PGSXY           = undefined_int
     NoahmpIO%CROPCAT         = undefined_int
     NoahmpIO%PLANTING        = undefined_real
@@ -722,8 +726,12 @@ contains
     NoahmpIO%IRFIVOL         = 0.0
     NoahmpIO%IRRSPLH         = 0.0
     NoahmpIO%LOCTIM          = undefined_real
- 
-    if ( NoahmpIO%SF_URBAN_PHYSICS > 0 )then  ! any urban model
+
+    ! urban model 
+    if ( NoahmpIO%SF_URBAN_PHYSICS > 0 ) then
+      NoahmpIO%JULDAY        = undefined_int
+      NoahmpIO%IRI_URBAN     = undefined_int
+      NoahmpIO%utype_urb2d   = undefined_int
       NoahmpIO%HRANG         = undefined_real
       NoahmpIO%DECLIN        = undefined_real
       NoahmpIO%sh_urb2d      = undefined_real
@@ -732,10 +740,7 @@ contains
       NoahmpIO%rn_urb2d      = undefined_real
       NoahmpIO%ts_urb2d      = undefined_real
       NoahmpIO%GMT           = undefined_real
-      NoahmpIO%JULDAY        = undefined_int
-      NoahmpIO%IRI_URBAN     = undefined_int
       NoahmpIO%frc_urb2d     = undefined_real
-      NoahmpIO%utype_urb2d   = undefined_int
       NoahmpIO%lp_urb2d      = undefined_real
       NoahmpIO%lb_urb2d      = undefined_real
       NoahmpIO%hgt_urb2d     = undefined_real

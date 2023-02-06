@@ -55,9 +55,7 @@ contains
     integer                             :: J
     integer                             :: K
     integer                             :: JMONTH, JDAY
-    LOGICAL                             :: IPRINT = .false.     ! debug printout
     real(kind=kind_noahmp)              :: SOLAR_TIME 
-    real(kind=kind_noahmp), parameter   :: undefined_value = -1.E36
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: SAND
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: CLAY
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: ORGM
@@ -122,7 +120,7 @@ contains
        if(NoahmpIO%ITIMESTEP == 1)then
           do I=NoahmpIO%its,NoahmpIO%ite
              if((NoahmpIO%XLAND(I,J)-1.5) >= 0.)then          ! Open water case
-                if(NoahmpIO%XICE(I,J) == 1. .AND. IPRINT) print*,' sea-ice at water point, I=',I,'J=',J
+                if(NoahmpIO%XICE(I,J) == 1.0) print*,' sea-ice at water point, I=',I,'J=',J
                 NoahmpIO%SMSTAV(I,J) = 1.0
                 NoahmpIO%SMSTOT(I,J) = 1.0
                 do K = 1, NoahmpIO%NSOIL

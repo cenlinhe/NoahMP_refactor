@@ -15,19 +15,19 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: PEDOTRANSFER_SR2006
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
 
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
-    type(noahmp_type),   intent(inout) :: noahmp
+    type(noahmp_type)  , intent(inout) :: noahmp
 
     real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Sand
     real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Clay
     real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Orgm
 
-    ! local
+! local
     integer                                                 :: k
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500t
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500
@@ -48,6 +48,7 @@ contains
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: dwsat  
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: quartz 
 
+! ------------------------------------------------------------------------------
     associate(                                                               & 
               sr2006_theta_1500t_a  =>  NoahmpIO%sr2006_theta_1500t_a_TABLE ,& 
               sr2006_theta_1500t_b  =>  NoahmpIO%sr2006_theta_1500t_b_TABLE ,&
@@ -90,9 +91,9 @@ contains
               sr2006_smcmax_a       =>  NoahmpIO%sr2006_smcmax_a_TABLE      ,&
               sr2006_smcmax_b       =>  NoahmpIO%sr2006_smcmax_b_TABLE       &
              ) 
+! -------------------------------------------------------------------------------
 
-    !-------------------------------------------------------------------------
-
+    ! initialize
     smcmax  = 0.0
     smcref  = 0.0
     smcwlt  = 0.0
@@ -173,16 +174,14 @@ contains
     dksat  = 1930.0 * (smcmax - theta_33) ** (3.0 - 1.0/bexp)
     quartz = Sand
     
-! Units conversion
-    
+    ! Units conversion
     psisat = max(0.1, psisat)               ! arbitrarily impose a limit of 0.1kpa
     psisat = 0.101997 * psisat              ! convert kpa to m
     dksat  = dksat / 3600000.0              ! convert mm/h to m/s
     dwsat  = dksat * psisat * bexp / smcmax ! units should be m*m/s
     smcdry = smcwlt
   
-! Introducing somewhat arbitrary limits (based on NoahmpTable soil) to prevent bad things
-  
+    ! Introducing somewhat arbitrary limits (based on NoahmpTable soil) to prevent bad things
     smcmax = max(0.32 ,min(smcmax,  0.50 ))
     smcref = max(0.17 ,min(smcref,smcmax ))
     smcwlt = max(0.01 ,min(smcwlt,smcref ))
