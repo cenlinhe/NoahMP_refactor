@@ -10,7 +10,9 @@ OBJS = NoahmpGroundwaterInitMod.o \
        NoahmpInitMainMod.o \
        NoahmpDriverMainMod.o \
        NoahmpIOVarType.o \
-       NoahmpIOVarInitMod.o
+       NoahmpIOVarInitMod.o \
+       NoahmpReadTableMod.o \
+       NoahmpReadNamelistMod.o
 
 all:	$(OBJS)
 
@@ -27,6 +29,8 @@ clean:
 
 NoahmpIOVarType.o:          ../utility/Machine.o
 NoahmpIOVarInitMod.o:       ../utility/Machine.o NoahmpIOVarType.o
+NoahmpReadTableMod.o:       ../utility/Machine.o NoahmpIOVarType.o
+NoahmpReadNamelistMod.o:    ../utility/Machine.o NoahmpIOVarType.o
 NoahmpGroundwaterInitMod.o: ../../hrldas/Utility_routines/module_domain.o \
                             ../utility/Machine.o NoahmpIOVarType.o ../src/GroundWaterMmfMod.o 
 NoahmpSnowInitMod.o:        ../utility/Machine.o NoahmpIOVarType.o

@@ -1,7 +1,9 @@
 module module_NoahMP_hrldas_driver
 
   USE NoahmpIOVarType
-  USE NoahmpIOVarInitMod, only : ReadNoahmpTable, ReadNamelist, NoahmpIOVarInitDefault
+  USE NoahmpIOVarInitMod
+  USE NoahmpReadNamelistMod
+  USE NoahmpReadTableMod
   USE module_hrldas_netcdf_io
   USE NoahmpInitMainMod
   USE NoahmpGroundwaterInitMod
@@ -74,7 +76,7 @@ contains
 !  read in input data from table and initial file
 !---------------------------------------------------------------------
    
-    call ReadNamelist(NoahmpIO)
+    call NoahmpReadNamelist(NoahmpIO)
 
 
 !C.He: add for urban update in WRFv4.3
@@ -210,7 +212,7 @@ contains
 !  read in Noah-MP Parameters from MPTABLE
 !---------------------------------------------------------------------
 
-  call ReadNoahmpTable(NoahmpIO)
+  call NoahmpReadTable(NoahmpIO)
 
 #ifdef WRF_HYDRO
    allocate( greenfrac   (NoahmpIO%XSTART:NoahmpIO%XEND,NoahmpIO%YSTART:NoahmpIO%YEND))

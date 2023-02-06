@@ -41,6 +41,8 @@ OBJS = \
         ../../noahmp/drivers/NoahmpSnowInitMod.o \
         ../../noahmp/drivers/NoahmpIOVarType.o \
         ../../noahmp/drivers/NoahmpIOVarInitMod.o \
+        ../../noahmp/drivers/NoahmpReadNamelistMod.o \
+        ../../noahmp/drivers/NoahmpReadTableMod.o \
         ../../noahmp/utility/Machine.o \
         ../../noahmp/utility/CheckNanMod.o \
         ../../noahmp/src/ConstantDefineMod.o \
