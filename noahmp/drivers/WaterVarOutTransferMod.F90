@@ -1,11 +1,10 @@
-module WaterVarOutMod
+module WaterVarOutTransferMod
 
 !!! Transfer column (1-D) Noah-MP water variables to 2D NoahmpIO for output
-!!! Water variables should be first defined in WaterVarType.F90
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -16,7 +15,7 @@ module WaterVarOutMod
 
 contains
 
-!=== Transfer model states to output=====
+!=== Transfer model states to output =====
 
   subroutine WaterVarOutTransfer(noahmp, NoahmpIO)
 
@@ -150,4 +149,4 @@ contains
 
   end subroutine WaterVarOutTransfer
 
-end module WaterVarOutMod
+end module WaterVarOutTransferMod

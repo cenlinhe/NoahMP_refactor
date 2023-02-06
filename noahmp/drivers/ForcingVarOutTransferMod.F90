@@ -1,11 +1,10 @@
-module ForcingVarOutMod
+module ForcingVarOutTransferMod
 
 !!! Transfer column (1-D) Noah-MP forcing variables to 2D NoahmpIO for output
-!!! Forcing variables should be first defined in ForcingVarType.F90
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -16,7 +15,7 @@ module ForcingVarOutMod
 
 contains
 
-!=== Transfer model states to output=====
+!=== Transfer model states to output =====
 
   subroutine ForcingVarOutTransfer(noahmp, NoahmpIO)
 
@@ -39,4 +38,4 @@ contains
 
   end subroutine ForcingVarOutTransfer
 
-end module ForcingVarOutMod
+end module ForcingVarOutTransferMod

@@ -43,6 +43,17 @@ OBJS = \
         ../../noahmp/drivers/NoahmpIOVarInitMod.o \
         ../../noahmp/drivers/NoahmpReadNamelistMod.o \
         ../../noahmp/drivers/NoahmpReadTableMod.o \
+        ../../noahmp/drivers/ConfigVarOutTransferMod.o \
+        ../../noahmp/drivers/ForcingVarOutTransferMod.o \
+        ../../noahmp/drivers/EnergyVarOutTransferMod.o \
+        ../../noahmp/drivers/WaterVarOutTransferMod.o \
+        ../../noahmp/drivers/BiochemVarOutTransferMod.o \
+        ../../noahmp/drivers/ConfigVarInTransferMod.o \
+        ../../noahmp/drivers/ForcingVarInTransferMod.o \
+        ../../noahmp/drivers/EnergyVarInTransferMod.o \
+        ../../noahmp/drivers/WaterVarInTransferMod.o \
+        ../../noahmp/drivers/BiochemVarInTransferMod.o \
+        ../../noahmp/drivers/PedoTransferSR2006.o \
         ../../noahmp/utility/Machine.o \
         ../../noahmp/utility/CheckNanMod.o \
         ../../noahmp/src/ConstantDefineMod.o \
@@ -146,7 +157,6 @@ OBJS = \
         ../../noahmp/src/IrrigationPrepareMod.o \
         ../../noahmp/src/BalanceErrorCheckMod.o \
         ../../noahmp/src/GeneralInitMod.o \
-        ../../noahmp/src/PedoTransferSR2006.o \
         ../../noahmp/src/GroundWaterMmfMod.o \
         ../../noahmp/src/BalanceErrorCheckGlacierMod.o \
         ../../noahmp/src/EnergyMainGlacierMod.o \
@@ -174,12 +184,7 @@ OBJS = \
         ../../noahmp/src/SurfaceEmissivityGlacierMod.o \
         ../../noahmp/src/SurfaceEnergyFluxGlacierMod.o \
         ../../noahmp/src/SurfaceRadiationGlacierMod.o \
-        ../../noahmp/src/WaterMainGlacierMod.o \
-        ../../noahmp/src/ConfigVarOutMod.o \
-        ../../noahmp/src/ForcingVarOutMod.o \
-        ../../noahmp/src/EnergyVarOutMod.o \
-        ../../noahmp/src/WaterVarOutMod.o \
-        ../../noahmp/src/BiochemVarOutMod.o
+        ../../noahmp/src/WaterMainGlacierMod.o
 
 CMD = hrldas.exe
 all:	$(CMD)

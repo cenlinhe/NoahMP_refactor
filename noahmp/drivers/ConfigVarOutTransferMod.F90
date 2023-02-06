@@ -1,10 +1,10 @@
-module ConfigVarOutMod
+module ConfigVarOutTransferMod
 
 !!! To transfer 1D Noah-MP column Config variables to 2D NoahmpIO for output
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -41,4 +41,4 @@ contains
 
   end subroutine ConfigVarOutTransfer
 
-end module ConfigVarOutMod
+end module ConfigVarOutTransferMod

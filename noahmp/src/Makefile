@@ -107,7 +107,6 @@ OBJS = ConstantDefineMod.o \
        BalanceErrorCheckMod.o \
        GeneralInitMod.o \
        GroundWaterMmfMod.o \
-       PedoTransferSR2006.o \
        BalanceErrorCheckGlacierMod.o \
        EnergyMainGlacierMod.o \
        GeneralInitGlacierMod.o \
@@ -134,12 +133,7 @@ OBJS = ConstantDefineMod.o \
        SurfaceEmissivityGlacierMod.o \
        SurfaceEnergyFluxGlacierMod.o \
        SurfaceRadiationGlacierMod.o \
-       WaterMainGlacierMod.o \
-       ConfigVarOutMod.o \
-       ForcingVarOutMod.o \
-       EnergyVarOutMod.o \
-       WaterVarOutMod.o \
-       BiochemVarOutMod.o
+       WaterMainGlacierMod.o
 
 all:	$(OBJS)
 
@@ -170,17 +164,11 @@ WaterVarType.o:         ../utility/Machine.o
 BiochemVarType.o:       ../utility/Machine.o
 NoahmpVarType.o:        ConfigVarType.o ForcingVarType.o EnergyVarType.o \
                         WaterVarType.o BiochemVarType.o
-PedoTransferSR2006.o:   ../utility/Machine.o ../drivers/NoahmpIOVarType.o
-ConfigVarInitMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-ForcingVarInitMod.o:    ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-EnergyVarInitMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-WaterVarInitMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o PedoTransferSR2006.o
-BiochemVarInitMod.o:    ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-ConfigVarOutMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-ForcingVarOutMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-EnergyVarOutMod.o:      ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-WaterVarOutMod.o:       ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
-BiochemVarOutMod.o:     ../utility/Machine.o ../drivers/NoahmpIOVarType.o NoahmpVarType.o
+ConfigVarInitMod.o:     ../utility/Machine.o NoahmpVarType.o
+ForcingVarInitMod.o:    ../utility/Machine.o NoahmpVarType.o
+EnergyVarInitMod.o:     ../utility/Machine.o NoahmpVarType.o
+WaterVarInitMod.o:      ../utility/Machine.o NoahmpVarType.o
+BiochemVarInitMod.o:    ../utility/Machine.o NoahmpVarType.o
 CanopyHydrologyMod.o:   ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 GroundWaterTopModelMod.o:   ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 IrrigationFloodMod.o:   ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o \

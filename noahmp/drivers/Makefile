@@ -12,7 +12,18 @@ OBJS = NoahmpGroundwaterInitMod.o \
        NoahmpIOVarType.o \
        NoahmpIOVarInitMod.o \
        NoahmpReadTableMod.o \
-       NoahmpReadNamelistMod.o
+       NoahmpReadNamelistMod.o \
+       ConfigVarOutTransferMod.o \
+       ForcingVarOutTransferMod.o \
+       EnergyVarOutTransferMod.o \
+       WaterVarOutTransferMod.o \
+       BiochemVarOutTransferMod.o \
+       ConfigVarInTransferMod.o \
+       ForcingVarInTransferMod.o \
+       EnergyVarInTransferMod.o \
+       WaterVarInTransferMod.o \
+       BiochemVarInTransferMod.o \
+       PedoTransferSR2006.o
 
 all:	$(OBJS)
 
@@ -31,17 +42,36 @@ NoahmpIOVarType.o:          ../utility/Machine.o
 NoahmpIOVarInitMod.o:       ../utility/Machine.o NoahmpIOVarType.o
 NoahmpReadTableMod.o:       ../utility/Machine.o NoahmpIOVarType.o
 NoahmpReadNamelistMod.o:    ../utility/Machine.o NoahmpIOVarType.o
+PedoTransferSR2006.o:       ../utility/Machine.o NoahmpIOVarType.o
+ConfigVarOutTransferMod.o:  ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+ForcingVarOutTransferMod.o: ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+EnergyVarOutTransferMod.o:  ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+WaterVarOutTransferMod.o:   ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+BiochemVarOutTransferMod.o: ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+ConfigVarInTransferMod.o:   ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+ForcingVarInTransferMod.o:  ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+EnergyVarInTransferMod.o:   ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+BiochemVarInTransferMod.o:  ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o
+WaterVarInTransferMod.o:    ../utility/Machine.o NoahmpIOVarType.o ../src/NoahmpVarType.o PedoTransferSR2006.o
 NoahmpGroundwaterInitMod.o: ../../hrldas/Utility_routines/module_domain.o \
                             ../utility/Machine.o NoahmpIOVarType.o ../src/GroundWaterMmfMod.o 
 NoahmpSnowInitMod.o:        ../utility/Machine.o NoahmpIOVarType.o
 NoahmpInitMainMod.o:        ../utility/Machine.o NoahmpIOVarType.o NoahmpSnowInitMod.o \
                             ../../hrldas/Utility_routines/module_wrf_utilities.o
 NoahmpDriverMainMod.o:      ../utility/Machine.o ../src/NoahmpVarType.o NoahmpIOVarType.o \
-                            ../src/ConstantDefineMod.o ../src/ConfigVarInitMod.o \
+                            ../src/ConfigVarInitMod.o \
                             ../src/EnergyVarInitMod.o ../src/ForcingVarInitMod.o \
                             ../src/WaterVarInitMod.o ../src/BiochemVarInitMod.o \
                             ../src/NoahmpMainMod.o ../src/NoahmpMainGlacierMod.o \
-                            ../src/ConfigVarOutMod.o ../src/EnergyVarOutMod.o \
-                            ../src/WaterVarOutMod.o ../src/BiochemVarOutMod.o \
-                            ../src/ForcingVarOutMod.o \
+                            ConfigVarOutTransferMod.o EnergyVarOutTransferMod.o \
+                            WaterVarOutTransferMod.o BiochemVarOutTransferMod.o \
+                            ForcingVarOutTransferMod.o ConfigVarInTransferMod.o \
+                            ForcingVarInTransferMod.o EnergyVarInTransferMod.o \
+                            WaterVarInTransferMod.o BiochemVarInTransferMod.o \
                             ../../hrldas/Utility_routines/module_ra_gfdleta.o
+
+
+
+
+
+

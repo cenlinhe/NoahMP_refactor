@@ -3,11 +3,10 @@ module NoahmpDriverMainMod
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP module: module_sf_noahmpdrv
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (April 08, 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
-  use ConstantDefineMod
   use NoahmpVarType
   use NoahmpIOVarType
   use ConfigVarInitMod
@@ -15,11 +14,16 @@ module NoahmpDriverMainMod
   use ForcingVarInitMod
   use WaterVarInitMod
   use BiochemVarInitMod
-  use ConfigVarOutMod
-  use ForcingVarOutMod
-  use EnergyVarOutMod
-  use WaterVarOutMod
-  use BiochemVarOutMod
+  use ConfigVarInTransferMod
+  use EnergyVarInTransferMod
+  use ForcingVarInTransferMod
+  use WaterVarInTransferMod
+  use BiochemVarInTransferMod
+  use ConfigVarOutTransferMod
+  use ForcingVarOutTransferMod
+  use EnergyVarOutTransferMod
+  use WaterVarOutTransferMod
+  use BiochemVarOutTransferMod
   use NoahmpMainMod
   use NoahmpMainGlacierMod
   use module_ra_gfdleta,  only: cal_mon_day
@@ -33,12 +37,12 @@ module NoahmpDriverMainMod
   
 contains  
 
-  subroutine NoahmpDriverMain (NoahmpIO)
+  subroutine NoahmpDriverMain(NoahmpIO)
   
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: noahmplsm
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (April 08, 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ------------------------------------------------------------------------- 
  
     implicit none 
@@ -154,15 +158,15 @@ contains
           !---------------------------------------------------------------------
 
           call ConfigVarInitDefault  (noahmp)
-          call ConfigVarInitTransfer (noahmp, NoahmpIO)
+          call ConfigVarInTransfer   (noahmp, NoahmpIO)
           call ForcingVarInitDefault (noahmp)
-          call ForcingVarInitTransfer(noahmp, NoahmpIO)
+          call ForcingVarInTransfer  (noahmp, NoahmpIO)
           call EnergyVarInitDefault  (noahmp)
-          call EnergyVarInitTransfer (noahmp, NoahmpIO)
+          call EnergyVarInTransfer   (noahmp, NoahmpIO)
           call WaterVarInitDefault   (noahmp)
-          call WaterVarInitTransfer  (noahmp, NoahmpIO)
+          call WaterVarInTransfer    (noahmp, NoahmpIO)
           call BiochemVarInitDefault (noahmp)
-          call BiochemVarInitTransfer(noahmp, NoahmpIO)
+          call BiochemVarInTransfer  (noahmp, NoahmpIO)
 
           !---------------------------------------------------------------------
           !  hydrological processes for vegetation in urban model
