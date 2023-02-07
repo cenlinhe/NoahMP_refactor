@@ -131,6 +131,11 @@ contains
        noahmp%energy%param%SoilQuartzFrac(SoilLayerIndex)         = NoahmpIO%QUARTZ_TABLE(SoilType(SoilLayerIndex))
     enddo
 
+    ! spatial varying soil input
+    if ( noahmp%config%nmlist%OptSoilProperty == 4 ) then
+       noahmp%energy%param%SoilQuartzFrac(1:NumSoilLayer)         = NoahmpIO%QUARTZ_3D(I,1:NumSoilLayer,J)
+    endif
+
     if ( FlagUrban .eqv. .true. ) noahmp%energy%param%SoilHeatCapacity = 3.0e6
 
     if ( CropType > 0 ) then

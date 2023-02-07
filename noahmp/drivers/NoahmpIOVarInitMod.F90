@@ -22,7 +22,8 @@ contains
     implicit none
 
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
-    
+   
+! ------------------------------------------------- 
     associate(XSTART  =>  NoahmpIO%XSTART   ,&
               XEND    =>  NoahmpIO%XEND     ,&
               YSTART  =>  NoahmpIO%YSTART   ,&
@@ -32,7 +33,9 @@ contains
               NSOIL   =>  NoahmpIO%NSOIL    ,&
               NSNOW   =>  NoahmpIO%NSNOW     &
              )
+! -------------------------------------------------
 
+    ! Input variables
     allocate ( NoahmpIO%COSZEN       (XSTART:XEND,YSTART:YEND) )            ! cosine zenith angle
     allocate ( NoahmpIO%XLAT         (XSTART:XEND,YSTART:YEND) )            ! latitude [radians] 
     allocate ( NoahmpIO%DZ8W         (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! thickness of atmo layers [m]
@@ -70,47 +73,52 @@ contains
     allocate ( NoahmpIO%MP_GRAUP     (XSTART:XEND,YSTART:YEND) )            ! non-convective graupel (subset of rainnc) [mm]
     allocate ( NoahmpIO%MP_HAIL      (XSTART:XEND,YSTART:YEND) )            ! non-convective hail (subset of rainnc) [mm]
 
-    allocate ( NoahmpIO%bexp_3d      (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! C-H B exponent
-    allocate ( NoahmpIO%smcdry_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Dry
-    allocate ( NoahmpIO%smcwlt_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Wilt
-    allocate ( NoahmpIO%smcref_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Reference
-    allocate ( NoahmpIO%smcmax_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil Moisture Limit: Max
-    allocate ( NoahmpIO%dksat_3D     (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Saturated Soil Conductivity
-    allocate ( NoahmpIO%dwsat_3D     (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Saturated Soil Diffusivity
-    allocate ( NoahmpIO%psisat_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Saturated Matric Potential
-    allocate ( NoahmpIO%quartz_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) )    ! Soil quartz content
-    allocate ( NoahmpIO%refdk_2D     (XSTART:XEND,YSTART:YEND) )            ! Reference Soil Conductivity
-    allocate ( NoahmpIO%refkdt_2D    (XSTART:XEND,YSTART:YEND) )            ! Soil Infiltration Parameter
-    allocate ( NoahmpIO%soilcomp     (XSTART:XEND,1:2*NSOIL,YSTART:YEND) )  ! Soil sand and clay content [fraction]
-    allocate ( NoahmpIO%soilcl1      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
-    allocate ( NoahmpIO%soilcl2      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
-    allocate ( NoahmpIO%soilcl3      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
-    allocate ( NoahmpIO%soilcl4      (XSTART:XEND,YSTART:YEND) )            ! Soil texture class with depth
-    allocate ( NoahmpIO%irr_frac_2D  (XSTART:XEND,YSTART:YEND) )            ! irrigation Fraction
-    allocate ( NoahmpIO%irr_har_2D   (XSTART:XEND,YSTART:YEND) )            ! number of days before harvest date to stop irrigation 
-    allocate ( NoahmpIO%irr_lai_2D   (XSTART:XEND,YSTART:YEND) )            ! Minimum lai to trigger irrigation
-    allocate ( NoahmpIO%irr_mad_2D   (XSTART:XEND,YSTART:YEND) )            ! management allowable deficit (0-1)
-    allocate ( NoahmpIO%filoss_2D    (XSTART:XEND,YSTART:YEND) )            ! fraction of flood irrigation loss (0-1) 
-    allocate ( NoahmpIO%sprir_rate_2D(XSTART:XEND,YSTART:YEND) )            ! mm/h, sprinkler irrigation rate
-    allocate ( NoahmpIO%micir_rate_2D(XSTART:XEND,YSTART:YEND) )            ! mm/h, micro irrigation rate
-    allocate ( NoahmpIO%firtfac_2D   (XSTART:XEND,YSTART:YEND) )            ! flood application rate factor
-    allocate ( NoahmpIO%ir_rain_2D   (XSTART:XEND,YSTART:YEND) )            ! maximum precipitation to stop irrigation trigger
-    allocate ( NoahmpIO%bvic_2D      (XSTART:XEND,YSTART:YEND) )            ! VIC model infiltration parameter [-]
-    allocate ( NoahmpIO%axaj_2D      (XSTART:XEND,YSTART:YEND) )            ! Tension water distribution inflection parameter [-]
-    allocate ( NoahmpIO%bxaj_2D      (XSTART:XEND,YSTART:YEND) )            ! Tension water distribution shape parameter [-]
-    allocate ( NoahmpIO%xxaj_2D      (XSTART:XEND,YSTART:YEND) )            ! Free water distribution shape parameter [-]
-    allocate ( NoahmpIO%bdvic_2D     (XSTART:XEND,YSTART:YEND) )            ! DVIC model infiltration parameter [-]
-    allocate ( NoahmpIO%gdvic_2D     (XSTART:XEND,YSTART:YEND) )            ! Mean Capillary Drive (m) for infiltration models
-    allocate ( NoahmpIO%bbvic_2D     (XSTART:XEND,YSTART:YEND) )            ! DVIC heterogeniety parameter for infiltration [-]
-    allocate ( NoahmpIO%KLAT_FAC     (XSTART:XEND,YSTART:YEND) )            ! factor multiplier to hydraulic conductivity
-    allocate ( NoahmpIO%TDSMC_FAC    (XSTART:XEND,YSTART:YEND) )            ! factor multiplier to field capacity
-    allocate ( NoahmpIO%TD_DC        (XSTART:XEND,YSTART:YEND) )            ! drainage coefficient for simple
-    allocate ( NoahmpIO%TD_DCOEF     (XSTART:XEND,YSTART:YEND) )            ! drainge coefficient for Hooghoudt 
-    allocate ( NoahmpIO%TD_DDRAIN    (XSTART:XEND,YSTART:YEND) )            ! depth of drain
-    allocate ( NoahmpIO%TD_RADI      (XSTART:XEND,YSTART:YEND) )            ! tile radius
-    allocate ( NoahmpIO%TD_SPAC      (XSTART:XEND,YSTART:YEND) )            ! tile spacing
+    ! spatial varying parameter map
+    if ( NoahmpIO%IOPT_SOIL > 1 ) then
+       allocate ( NoahmpIO%soilcomp     (XSTART:XEND,1:2*NSOIL,YSTART:YEND))! Soil sand and clay content [fraction]
+       allocate ( NoahmpIO%soilcl1      (XSTART:XEND,YSTART:YEND) )         ! Soil texture class with depth
+       allocate ( NoahmpIO%soilcl2      (XSTART:XEND,YSTART:YEND) )         ! Soil texture class with depth
+       allocate ( NoahmpIO%soilcl3      (XSTART:XEND,YSTART:YEND) )         ! Soil texture class with depth
+       allocate ( NoahmpIO%soilcl4      (XSTART:XEND,YSTART:YEND) )         ! Soil texture class with depth
+    endif
+    if ( NoahmpIO%IOPT_SOIL == 4 ) then
+       allocate ( NoahmpIO%bexp_3d      (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! C-H B exponent
+       allocate ( NoahmpIO%smcdry_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Soil Moisture Limit: Dry
+       allocate ( NoahmpIO%smcwlt_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Soil Moisture Limit: Wilt
+       allocate ( NoahmpIO%smcref_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Soil Moisture Limit: Reference
+       allocate ( NoahmpIO%smcmax_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Soil Moisture Limit: Max
+       allocate ( NoahmpIO%dksat_3D     (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Saturated Soil Conductivity
+       allocate ( NoahmpIO%dwsat_3D     (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Saturated Soil Diffusivity
+       allocate ( NoahmpIO%psisat_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Saturated Matric Potential
+       allocate ( NoahmpIO%quartz_3D    (XSTART:XEND,1:NSOIL,YSTART:YEND) ) ! Soil quartz content
+       allocate ( NoahmpIO%refdk_2D     (XSTART:XEND,YSTART:YEND) )         ! Reference Soil Conductivity
+       allocate ( NoahmpIO%refkdt_2D    (XSTART:XEND,YSTART:YEND) )         ! Soil Infiltration Parameter
+       allocate ( NoahmpIO%irr_frac_2D  (XSTART:XEND,YSTART:YEND) )         ! irrigation Fraction
+       allocate ( NoahmpIO%irr_har_2D   (XSTART:XEND,YSTART:YEND) )         ! number of days before harvest date to stop irrigation 
+       allocate ( NoahmpIO%irr_lai_2D   (XSTART:XEND,YSTART:YEND) )         ! Minimum lai to trigger irrigation
+       allocate ( NoahmpIO%irr_mad_2D   (XSTART:XEND,YSTART:YEND) )         ! management allowable deficit (0-1)
+       allocate ( NoahmpIO%filoss_2D    (XSTART:XEND,YSTART:YEND) )         ! fraction of flood irrigation loss (0-1) 
+       allocate ( NoahmpIO%sprir_rate_2D(XSTART:XEND,YSTART:YEND) )         ! mm/h, sprinkler irrigation rate
+       allocate ( NoahmpIO%micir_rate_2D(XSTART:XEND,YSTART:YEND) )         ! mm/h, micro irrigation rate
+       allocate ( NoahmpIO%firtfac_2D   (XSTART:XEND,YSTART:YEND) )         ! flood application rate factor
+       allocate ( NoahmpIO%ir_rain_2D   (XSTART:XEND,YSTART:YEND) )         ! maximum precipitation to stop irrigation trigger
+       allocate ( NoahmpIO%bvic_2D      (XSTART:XEND,YSTART:YEND) )         ! VIC model infiltration parameter [-]
+       allocate ( NoahmpIO%axaj_2D      (XSTART:XEND,YSTART:YEND) )         ! Tension water distribution inflection parameter [-]
+       allocate ( NoahmpIO%bxaj_2D      (XSTART:XEND,YSTART:YEND) )         ! Tension water distribution shape parameter [-]
+       allocate ( NoahmpIO%xxaj_2D      (XSTART:XEND,YSTART:YEND) )         ! Free water distribution shape parameter [-]
+       allocate ( NoahmpIO%bdvic_2D     (XSTART:XEND,YSTART:YEND) )         ! DVIC model infiltration parameter [-]
+       allocate ( NoahmpIO%gdvic_2D     (XSTART:XEND,YSTART:YEND) )         ! Mean Capillary Drive (m) for infiltration models
+       allocate ( NoahmpIO%bbvic_2D     (XSTART:XEND,YSTART:YEND) )         ! DVIC heterogeniety parameter for infiltration [-]
+       allocate ( NoahmpIO%KLAT_FAC     (XSTART:XEND,YSTART:YEND) )         ! factor multiplier to hydraulic conductivity
+       allocate ( NoahmpIO%TDSMC_FAC    (XSTART:XEND,YSTART:YEND) )         ! factor multiplier to field capacity
+       allocate ( NoahmpIO%TD_DC        (XSTART:XEND,YSTART:YEND) )         ! drainage coefficient for simple
+       allocate ( NoahmpIO%TD_DCOEF     (XSTART:XEND,YSTART:YEND) )         ! drainge coefficient for Hooghoudt 
+       allocate ( NoahmpIO%TD_DDRAIN    (XSTART:XEND,YSTART:YEND) )         ! depth of drain
+       allocate ( NoahmpIO%TD_RADI      (XSTART:XEND,YSTART:YEND) )         ! tile radius
+       allocate ( NoahmpIO%TD_SPAC      (XSTART:XEND,YSTART:YEND) )         ! tile spacing
+    endif
 
-! INOUT (with generic LSM equivalent) (as defined in WRF)
+    ! INOUT (with generic LSM equivalent) (as defined in WRF)
     allocate ( NoahmpIO%TSK          (XSTART:XEND,YSTART:YEND) )            ! surface radiative temperature [K]
     allocate ( NoahmpIO%HFX          (XSTART:XEND,YSTART:YEND) )            ! sensible heat flux [W m-2]
     allocate ( NoahmpIO%QFX          (XSTART:XEND,YSTART:YEND) )            ! latent heat flux [kg s-1 m-2]
@@ -134,7 +142,7 @@ contains
     allocate ( NoahmpIO%EMISS        (XSTART:XEND,YSTART:YEND) )            ! surface bulk emissivity
     allocate ( NoahmpIO%QSFC         (XSTART:XEND,YSTART:YEND) )            ! bulk surface specific humidity
 
-! INOUT (with no Noah LSM equivalent) (as defined in WRF)
+    ! INOUT (with no Noah LSM equivalent) (as defined in WRF)
     allocate ( NoahmpIO%ISNOWXY      (XSTART:XEND,YSTART:YEND) )            ! actual no. of snow layers
     allocate ( NoahmpIO%TVXY         (XSTART:XEND,YSTART:YEND) )            ! vegetation leaf temperature
     allocate ( NoahmpIO%TGXY         (XSTART:XEND,YSTART:YEND) )            ! bulk ground surface temperature
@@ -173,7 +181,7 @@ contains
     allocate ( NoahmpIO%XSAIXY       (XSTART:XEND,YSTART:YEND) )            ! stem area index
     allocate ( NoahmpIO%TAUSSXY      (XSTART:XEND,YSTART:YEND) )            ! snow age factor
 
-! irrigation
+    ! irrigation
     allocate ( NoahmpIO%IRFRACT      (XSTART:XEND,YSTART:YEND) )            ! irrigation fraction
     allocate ( NoahmpIO%SIFRACT      (XSTART:XEND,YSTART:YEND) )            ! sprinkler irrigation fraction
     allocate ( NoahmpIO%MIFRACT      (XSTART:XEND,YSTART:YEND) )            ! micro irrigation fraction
@@ -191,7 +199,7 @@ contains
     allocate ( NoahmpIO%IRRSPLH      (XSTART:XEND,YSTART:YEND) )            ! latent heating from sprinkler evaporation (w/m2)
     allocate ( NoahmpIO%LOCTIM       (XSTART:XEND,YSTART:YEND) )            ! local time
   
-! OUT (with no Noah LSM equivalent) (as defined in WRF)   
+    ! OUT (with no Noah LSM equivalent) (as defined in WRF)   
     allocate ( NoahmpIO%T2MVXY       (XSTART:XEND,YSTART:YEND) )            ! 2m temperature of vegetation part
     allocate ( NoahmpIO%T2MBXY       (XSTART:XEND,YSTART:YEND) )            ! 2m temperature of bare ground part
     allocate ( NoahmpIO%Q2MVXY       (XSTART:XEND,YSTART:YEND) )            ! 2m mixing ratio of vegetation part
@@ -246,7 +254,7 @@ contains
     allocate ( NoahmpIO%GVFMIN       (XSTART:XEND,YSTART:YEND) )            ! annual minimum in vegetation fraction
     allocate ( NoahmpIO%GVFMAX       (XSTART:XEND,YSTART:YEND) )            ! annual maximum in vegetation fraction
 
-! additional output variables
+    ! additional output variables
     allocate ( NoahmpIO%PAHXY        (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%PAHGXY       (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%PAHBXY       (XSTART:XEND,YSTART:YEND) )
@@ -290,10 +298,7 @@ contains
     allocate ( NoahmpIO%ACC_ETRANXY  (XSTART:XEND,YSTART:YEND) )
     allocate ( NoahmpIO%ACC_EDIRXY   (XSTART:XEND,YSTART:YEND) )
 
-!------------------------------------------------------------------------
-! Needed for MMF_RUNOFF (IOPT_RUN = 5); not part of MP driver in WRF
-!------------------------------------------------------------------------
-
+    ! Needed for MMF_RUNOFF (IOPT_RUN = 5); not part of MP driver in WRF
     allocate ( NoahmpIO%MSFTX        (XSTART:XEND,YSTART:YEND) )  ! 
     allocate ( NoahmpIO%MSFTY        (XSTART:XEND,YSTART:YEND) )  ! 
     allocate ( NoahmpIO%EQZWT        (XSTART:XEND,YSTART:YEND) )  ! 
@@ -312,10 +317,7 @@ contains
     allocate ( NoahmpIO%RIVERMASK    (XSTART:XEND,YSTART:YEND) )  ! 
     allocate ( NoahmpIO%NONRIVERXY   (XSTART:XEND,YSTART:YEND) )  ! 
 
-!------------------------------------------------------------------------
-! Needed for crop model (OPT_CROP=1)
-!------------------------------------------------------------------------
-
+    ! Needed for crop model (OPT_CROP=1)
     allocate ( NoahmpIO%PGSXY        (XSTART:XEND,  YSTART:YEND) )
     allocate ( NoahmpIO%CROPCAT      (XSTART:XEND,  YSTART:YEND) )
     allocate ( NoahmpIO%PLANTING     (XSTART:XEND,  YSTART:YEND) )
@@ -323,11 +325,8 @@ contains
     allocate ( NoahmpIO%SEASON_GDD   (XSTART:XEND,  YSTART:YEND) )
     allocate ( NoahmpIO%CROPTYPE     (XSTART:XEND,5,YSTART:YEND) )
 
-!------------------------------------------------------------------------
-! Single- and Multi-layer Urban Models
-!------------------------------------------------------------------------
-
-    if(NoahmpIO%SF_URBAN_PHYSICS > 0 )  then  ! any urban model
+    ! Single- and Multi-layer Urban Models
+    if ( NoahmpIO%SF_URBAN_PHYSICS > 0 )  then  ! any urban model
 
        allocate ( NoahmpIO%sh_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
        allocate ( NoahmpIO%lh_urb2d       (XSTART:XEND,                 YSTART:YEND) )  ! 
@@ -450,8 +449,8 @@ contains
        ! new urban variables greenroof & solar panel for BEM
        allocate ( NoahmpIO%ep_pv_urb3d    (XSTART:XEND,                        YSTART:YEND) )  !
        allocate ( NoahmpIO%t_pv_urb3d     (XSTART:XEND,NoahmpIO%urban_map_zdf ,YSTART:YEND) )  !
-       allocate ( NoahmpIO%trv_urb4d      (XSTART:XEND,NoahmpIO%urban_map_zgrd,YSTART:YEND) ) !
-       allocate ( NoahmpIO%qr_urb4d       (XSTART:XEND,NoahmpIO%urban_map_zgrd,YSTART:YEND) ) !
+       allocate ( NoahmpIO%trv_urb4d      (XSTART:XEND,NoahmpIO%urban_map_zgrd,YSTART:YEND) )  !
+       allocate ( NoahmpIO%qr_urb4d       (XSTART:XEND,NoahmpIO%urban_map_zgrd,YSTART:YEND) )  !
        allocate ( NoahmpIO%qgr_urb3d      (XSTART:XEND,                        YSTART:YEND) )  !
        allocate ( NoahmpIO%tgr_urb3d      (XSTART:XEND,                        YSTART:YEND) )  !
        allocate ( NoahmpIO%drain_urb4d    (XSTART:XEND,NoahmpIO%urban_map_zdf ,YSTART:YEND) )  !
@@ -478,8 +477,6 @@ contains
     allocate (NoahmpIO%ZWATBLE2D  (XSTART:XEND,YSTART:YEND) )
 #endif    
 
-    end associate  
-    
     !-------------------------------------------------------------------
     ! Initialize variables with default values 
     !-------------------------------------------------------------------
@@ -493,11 +490,6 @@ contains
     NoahmpIO%DZ8W            = undefined_real
     NoahmpIO%DZS             = undefined_real
     NoahmpIO%ZSOIL           = undefined_real
-    NoahmpIO%SOILCL1         = undefined_real
-    NoahmpIO%SOILCL2         = undefined_real
-    NoahmpIO%SOILCL3         = undefined_real
-    NoahmpIO%SOILCL4         = undefined_real
-    NoahmpIO%SOILCOMP        = undefined_real
     NoahmpIO%VEGFRA          = undefined_real
     NoahmpIO%TMN             = undefined_real
     NoahmpIO%XLAND           = undefined_real
@@ -727,127 +719,136 @@ contains
     NoahmpIO%IRRSPLH         = 0.0
     NoahmpIO%LOCTIM          = undefined_real
 
+    ! spatial varying soil texture
+    if ( NoahmpIO%IOPT_SOIL > 1 ) then
+       NoahmpIO%SOILCL1      = undefined_real
+       NoahmpIO%SOILCL2      = undefined_real
+       NoahmpIO%SOILCL3      = undefined_real
+       NoahmpIO%SOILCL4      = undefined_real
+       NoahmpIO%SOILCOMP     = undefined_real
+    endif
+
     ! urban model 
     if ( NoahmpIO%SF_URBAN_PHYSICS > 0 ) then
-      NoahmpIO%JULDAY        = undefined_int
-      NoahmpIO%IRI_URBAN     = undefined_int
-      NoahmpIO%utype_urb2d   = undefined_int
-      NoahmpIO%HRANG         = undefined_real
-      NoahmpIO%DECLIN        = undefined_real
-      NoahmpIO%sh_urb2d      = undefined_real
-      NoahmpIO%lh_urb2d      = undefined_real
-      NoahmpIO%g_urb2d       = undefined_real
-      NoahmpIO%rn_urb2d      = undefined_real
-      NoahmpIO%ts_urb2d      = undefined_real
-      NoahmpIO%GMT           = undefined_real
-      NoahmpIO%frc_urb2d     = undefined_real
-      NoahmpIO%lp_urb2d      = undefined_real
-      NoahmpIO%lb_urb2d      = undefined_real
-      NoahmpIO%hgt_urb2d     = undefined_real
-      NoahmpIO%ust           = undefined_real
-      NoahmpIO%cmr_sfcdif    = undefined_real
-      NoahmpIO%chr_sfcdif    = undefined_real
-      NoahmpIO%cmc_sfcdif    = undefined_real
-      NoahmpIO%chc_sfcdif    = undefined_real
-      NoahmpIO%cmgr_sfcdif   = undefined_real
-      NoahmpIO%chgr_sfcdif   = undefined_real
-      NoahmpIO%tr_urb2d      = undefined_real
-      NoahmpIO%tb_urb2d      = undefined_real
-      NoahmpIO%tg_urb2d      = undefined_real
-      NoahmpIO%tc_urb2d      = undefined_real
-      NoahmpIO%qc_urb2d      = undefined_real
-      NoahmpIO%uc_urb2d      = undefined_real
-      NoahmpIO%xxxr_urb2d    = undefined_real
-      NoahmpIO%xxxb_urb2d    = undefined_real
-      NoahmpIO%xxxg_urb2d    = undefined_real
-      NoahmpIO%xxxc_urb2d    = undefined_real
-      NoahmpIO%trl_urb3d     = undefined_real
-      NoahmpIO%tbl_urb3d     = undefined_real
-      NoahmpIO%tgl_urb3d     = undefined_real
-      NoahmpIO%psim_urb2d    = undefined_real
-      NoahmpIO%psih_urb2d    = undefined_real
-      NoahmpIO%u10_urb2d     = undefined_real
-      NoahmpIO%v10_urb2d     = undefined_real
-      NoahmpIO%GZ1OZ0_urb2d  = undefined_real
-      NoahmpIO%AKMS_URB2D    = undefined_real
-      NoahmpIO%th2_urb2d     = undefined_real
-      NoahmpIO%q2_urb2d      = undefined_real
-      NoahmpIO%ust_urb2d     = undefined_real
-      NoahmpIO%dzr           = undefined_real
-      NoahmpIO%dzb           = undefined_real
-      NoahmpIO%dzg           = undefined_real
-      NoahmpIO%cmcr_urb2d    = undefined_real
-      NoahmpIO%tgr_urb2d     = undefined_real
-      NoahmpIO%tgrl_urb3d    = undefined_real
-      NoahmpIO%smr_urb3d     = undefined_real
-      NoahmpIO%drelr_urb2d   = undefined_real
-      NoahmpIO%drelb_urb2d   = undefined_real
-      NoahmpIO%drelg_urb2d   = undefined_real
-      NoahmpIO%flxhumr_urb2d = undefined_real
-      NoahmpIO%flxhumb_urb2d = undefined_real
-      NoahmpIO%flxhumg_urb2d = undefined_real
-      NoahmpIO%chs           = undefined_real
-      NoahmpIO%chs2          = undefined_real
-      NoahmpIO%cqs2          = undefined_real
-      NoahmpIO%mh_urb2d      = undefined_real
-      NoahmpIO%stdh_urb2d    = undefined_real
-      NoahmpIO%lf_urb2d      = undefined_real
-      NoahmpIO%trb_urb4d     = undefined_real
-      NoahmpIO%tw1_urb4d     = undefined_real
-      NoahmpIO%tw2_urb4d     = undefined_real
-      NoahmpIO%tgb_urb4d     = undefined_real
-      NoahmpIO%sfw1_urb3d    = undefined_real
-      NoahmpIO%sfw2_urb3d    = undefined_real
-      NoahmpIO%sfr_urb3d     = undefined_real
-      NoahmpIO%sfg_urb3d     = undefined_real
-      NoahmpIO%hi_urb2d      = undefined_real
-      NoahmpIO%theta_urban   = undefined_real
-      NoahmpIO%u_urban       = undefined_real
-      NoahmpIO%v_urban       = undefined_real
-      NoahmpIO%dz_urban      = undefined_real
-      NoahmpIO%rho_urban     = undefined_real
-      NoahmpIO%p_urban       = undefined_real
-      NoahmpIO%a_u_bep       = undefined_real
-      NoahmpIO%a_v_bep       = undefined_real
-      NoahmpIO%a_t_bep       = undefined_real
-      NoahmpIO%a_q_bep       = undefined_real
-      NoahmpIO%a_e_bep       = undefined_real
-      NoahmpIO%b_u_bep       = undefined_real
-      NoahmpIO%b_v_bep       = undefined_real
-      NoahmpIO%b_t_bep       = undefined_real
-      NoahmpIO%b_q_bep       = undefined_real
-      NoahmpIO%b_e_bep       = undefined_real
-      NoahmpIO%dlg_bep       = undefined_real
-      NoahmpIO%dl_u_bep      = undefined_real
-      NoahmpIO%sf_bep        = undefined_real
-      NoahmpIO%vl_bep        = undefined_real
-      NoahmpIO%tlev_urb3d    = undefined_real
-      NoahmpIO%qlev_urb3d    = undefined_real
-      NoahmpIO%tw1lev_urb3d  = undefined_real
-      NoahmpIO%tw2lev_urb3d  = undefined_real
-      NoahmpIO%tglev_urb3d   = undefined_real
-      NoahmpIO%tflev_urb3d   = undefined_real
-      NoahmpIO%sf_ac_urb3d   = undefined_real
-      NoahmpIO%lf_ac_urb3d   = undefined_real
-      NoahmpIO%cm_ac_urb3d   = undefined_real
-      NoahmpIO%sfvent_urb3d  = undefined_real
-      NoahmpIO%lfvent_urb3d  = undefined_real
-      NoahmpIO%sfwin1_urb3d  = undefined_real
-      NoahmpIO%sfwin2_urb3d  = undefined_real
-      NoahmpIO%ep_pv_urb3d   = undefined_real
-      NoahmpIO%t_pv_urb3d    = undefined_real
-      NoahmpIO%trv_urb4d     = undefined_real
-      NoahmpIO%qr_urb4d      = undefined_real
-      NoahmpIO%qgr_urb3d     = undefined_real
-      NoahmpIO%tgr_urb3d     = undefined_real
-      NoahmpIO%drain_urb4d   = undefined_real
-      NoahmpIO%draingr_urb3d = undefined_real
-      NoahmpIO%sfrv_urb3d    = undefined_real
-      NoahmpIO%lfrv_urb3d    = undefined_real
-      NoahmpIO%dgr_urb3d     = undefined_real
-      NoahmpIO%dg_urb3d      = undefined_real
-      NoahmpIO%lfr_urb3d     = undefined_real
-      NoahmpIO%lfg_urb3d     = undefined_real
+       NoahmpIO%JULDAY        = undefined_int
+       NoahmpIO%IRI_URBAN     = undefined_int
+       NoahmpIO%utype_urb2d   = undefined_int
+       NoahmpIO%HRANG         = undefined_real
+       NoahmpIO%DECLIN        = undefined_real
+       NoahmpIO%sh_urb2d      = undefined_real
+       NoahmpIO%lh_urb2d      = undefined_real
+       NoahmpIO%g_urb2d       = undefined_real
+       NoahmpIO%rn_urb2d      = undefined_real
+       NoahmpIO%ts_urb2d      = undefined_real
+       NoahmpIO%GMT           = undefined_real
+       NoahmpIO%frc_urb2d     = undefined_real
+       NoahmpIO%lp_urb2d      = undefined_real
+       NoahmpIO%lb_urb2d      = undefined_real
+       NoahmpIO%hgt_urb2d     = undefined_real
+       NoahmpIO%ust           = undefined_real
+       NoahmpIO%cmr_sfcdif    = undefined_real
+       NoahmpIO%chr_sfcdif    = undefined_real
+       NoahmpIO%cmc_sfcdif    = undefined_real
+       NoahmpIO%chc_sfcdif    = undefined_real
+       NoahmpIO%cmgr_sfcdif   = undefined_real
+       NoahmpIO%chgr_sfcdif   = undefined_real
+       NoahmpIO%tr_urb2d      = undefined_real
+       NoahmpIO%tb_urb2d      = undefined_real
+       NoahmpIO%tg_urb2d      = undefined_real
+       NoahmpIO%tc_urb2d      = undefined_real
+       NoahmpIO%qc_urb2d      = undefined_real
+       NoahmpIO%uc_urb2d      = undefined_real
+       NoahmpIO%xxxr_urb2d    = undefined_real
+       NoahmpIO%xxxb_urb2d    = undefined_real
+       NoahmpIO%xxxg_urb2d    = undefined_real
+       NoahmpIO%xxxc_urb2d    = undefined_real
+       NoahmpIO%trl_urb3d     = undefined_real
+       NoahmpIO%tbl_urb3d     = undefined_real
+       NoahmpIO%tgl_urb3d     = undefined_real
+       NoahmpIO%psim_urb2d    = undefined_real
+       NoahmpIO%psih_urb2d    = undefined_real
+       NoahmpIO%u10_urb2d     = undefined_real
+       NoahmpIO%v10_urb2d     = undefined_real
+       NoahmpIO%GZ1OZ0_urb2d  = undefined_real
+       NoahmpIO%AKMS_URB2D    = undefined_real
+       NoahmpIO%th2_urb2d     = undefined_real
+       NoahmpIO%q2_urb2d      = undefined_real
+       NoahmpIO%ust_urb2d     = undefined_real
+       NoahmpIO%dzr           = undefined_real
+       NoahmpIO%dzb           = undefined_real
+       NoahmpIO%dzg           = undefined_real
+       NoahmpIO%cmcr_urb2d    = undefined_real
+       NoahmpIO%tgr_urb2d     = undefined_real
+       NoahmpIO%tgrl_urb3d    = undefined_real
+       NoahmpIO%smr_urb3d     = undefined_real
+       NoahmpIO%drelr_urb2d   = undefined_real
+       NoahmpIO%drelb_urb2d   = undefined_real
+       NoahmpIO%drelg_urb2d   = undefined_real
+       NoahmpIO%flxhumr_urb2d = undefined_real
+       NoahmpIO%flxhumb_urb2d = undefined_real
+       NoahmpIO%flxhumg_urb2d = undefined_real
+       NoahmpIO%chs           = undefined_real
+       NoahmpIO%chs2          = undefined_real
+       NoahmpIO%cqs2          = undefined_real
+       NoahmpIO%mh_urb2d      = undefined_real
+       NoahmpIO%stdh_urb2d    = undefined_real
+       NoahmpIO%lf_urb2d      = undefined_real
+       NoahmpIO%trb_urb4d     = undefined_real
+       NoahmpIO%tw1_urb4d     = undefined_real
+       NoahmpIO%tw2_urb4d     = undefined_real
+       NoahmpIO%tgb_urb4d     = undefined_real
+       NoahmpIO%sfw1_urb3d    = undefined_real
+       NoahmpIO%sfw2_urb3d    = undefined_real
+       NoahmpIO%sfr_urb3d     = undefined_real
+       NoahmpIO%sfg_urb3d     = undefined_real
+       NoahmpIO%hi_urb2d      = undefined_real
+       NoahmpIO%theta_urban   = undefined_real
+       NoahmpIO%u_urban       = undefined_real
+       NoahmpIO%v_urban       = undefined_real
+       NoahmpIO%dz_urban      = undefined_real
+       NoahmpIO%rho_urban     = undefined_real
+       NoahmpIO%p_urban       = undefined_real
+       NoahmpIO%a_u_bep       = undefined_real
+       NoahmpIO%a_v_bep       = undefined_real
+       NoahmpIO%a_t_bep       = undefined_real
+       NoahmpIO%a_q_bep       = undefined_real
+       NoahmpIO%a_e_bep       = undefined_real
+       NoahmpIO%b_u_bep       = undefined_real
+       NoahmpIO%b_v_bep       = undefined_real
+       NoahmpIO%b_t_bep       = undefined_real
+       NoahmpIO%b_q_bep       = undefined_real
+       NoahmpIO%b_e_bep       = undefined_real
+       NoahmpIO%dlg_bep       = undefined_real
+       NoahmpIO%dl_u_bep      = undefined_real
+       NoahmpIO%sf_bep        = undefined_real
+       NoahmpIO%vl_bep        = undefined_real
+       NoahmpIO%tlev_urb3d    = undefined_real
+       NoahmpIO%qlev_urb3d    = undefined_real
+       NoahmpIO%tw1lev_urb3d  = undefined_real
+       NoahmpIO%tw2lev_urb3d  = undefined_real
+       NoahmpIO%tglev_urb3d   = undefined_real
+       NoahmpIO%tflev_urb3d   = undefined_real
+       NoahmpIO%sf_ac_urb3d   = undefined_real
+       NoahmpIO%lf_ac_urb3d   = undefined_real
+       NoahmpIO%cm_ac_urb3d   = undefined_real
+       NoahmpIO%sfvent_urb3d  = undefined_real
+       NoahmpIO%lfvent_urb3d  = undefined_real
+       NoahmpIO%sfwin1_urb3d  = undefined_real
+       NoahmpIO%sfwin2_urb3d  = undefined_real
+       NoahmpIO%ep_pv_urb3d   = undefined_real
+       NoahmpIO%t_pv_urb3d    = undefined_real
+       NoahmpIO%trv_urb4d     = undefined_real
+       NoahmpIO%qr_urb4d      = undefined_real
+       NoahmpIO%qgr_urb3d     = undefined_real
+       NoahmpIO%tgr_urb3d     = undefined_real
+       NoahmpIO%drain_urb4d   = undefined_real
+       NoahmpIO%draingr_urb3d = undefined_real
+       NoahmpIO%sfrv_urb3d    = undefined_real
+       NoahmpIO%lfrv_urb3d    = undefined_real
+       NoahmpIO%dgr_urb3d     = undefined_real
+       NoahmpIO%dg_urb3d      = undefined_real
+       NoahmpIO%lfr_urb3d     = undefined_real
+       NoahmpIO%lfg_urb3d     = undefined_real
     endif
 
     NoahmpIO%XLAND             = 1.0      ! water = 2.0, land = 1.0
@@ -865,7 +866,9 @@ contains
     NoahmpIO%qtiledrain      = 0.0
     NoahmpIO%ZWATBLE2D       = 0.0
 #endif 
-    
+   
+    end associate
+ 
   end subroutine NoahmpIOVarInitDefault
 
 end module NoahmpIOVarInitMod
