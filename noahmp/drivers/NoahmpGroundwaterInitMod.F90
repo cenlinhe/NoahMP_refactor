@@ -45,7 +45,7 @@ contains
     real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: SMCEQ,ZSOIL
     real(kind=kind_noahmp), dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: QLAT, QRF
     integer,                dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: LANDMASK     !-1 for water (ice or no ice) and glacial areas, 1 for land where the LSM does its soil moisture calculations  
-    logical :: urbanpt_flag ! added to identify urban pixels by accounting for LCZ
+    logical :: urbanpt_flag ! added to identify urban pixels
 
 ! --------------------------------------------------------------------------------    
     associate(                                       &
@@ -244,14 +244,9 @@ contains
              SMCMAX = NoahmpIO%SMCMAX_TABLE(ISLTYP(I,J))
              SMCWLT = NoahmpIO%SMCWLT_TABLE(ISLTYP(I,J))
                 
-             ! add urban flag to include LCZ
+             ! add urban flag
              urbanpt_flag = .false.
-             if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
-                  IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
-                  IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
-                  IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
-                  IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
-                  IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+             if ( (IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE) .or. (IVGTYP(I,J) > NoahmpIO%URBTYPE_beg) ) THEN
                  urbanpt_flag = .true.
              endif
              !IF(IVGTYP(I,J)== NoahmpIO%ISURBAN_TABLE)THEN

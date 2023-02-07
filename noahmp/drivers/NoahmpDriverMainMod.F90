@@ -148,7 +148,7 @@ contains
           NoahmpIO%LAI  (I,J)                   = 0.01
           cycle ILOOP                                         ! Skip any processing at sea-ice points
        else
-          if((NoahmpIO%XLAND(I,J)-1.5) >= 0.) cycle ILOOP     ! Open water case
+          if((NoahmpIO%XLAND(I,J)-1.5) >= 0.0) cycle ILOOP     ! Open water case
 
           !---------------------------------------------------------------------
           !  initialize Data Types
@@ -171,12 +171,8 @@ contains
           !  irrigate vegetaion only in urban area, MAY-SEP, 9-11pm
           !---------------------------------------------------------------------
           ! need to be separated from main Noah-MP into urban specific module in the future 
-          if(NoahmpIO%IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE  .or. &
-             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE  .or. &
-             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE  .or. &
-             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE  .or. &
-             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE  .or. &
-             NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. NoahmpIO%IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+          if ( (NoahmpIO%IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE) .or. &
+               (NoahmpIO%IVGTYP(I,J) > NoahmpIO%URBTYPE_beg) ) THEN
 
              if(NoahmpIO%SF_URBAN_PHYSICS > 0 .AND. NoahmpIO%IRI_URBAN == 1 ) then
                 SOLAR_TIME = (NoahmpIO%JULIAN - INT(NoahmpIO%JULIAN))*24 + NoahmpIO%XLONG(I,J)/15.0

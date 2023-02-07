@@ -39,6 +39,7 @@
  ISCROP                    =  2
  EBLFOREST                 = 13
  NATURAL                   =  5
+ URBTYPE_beg               = 40 ! land type number above which are urban (e.g., LCZ)
  LCZ_1   = 51
  LCZ_2   = 52
  LCZ_3   = 53
@@ -201,6 +202,7 @@
  ISCROP                    = 12
  EBLFOREST                 =  2
  NATURAL                   = 14
+ URBTYPE_beg               = 40 ! land type number above which are urban (e.g., LCZ)
  LCZ_1   = 51
  LCZ_2   = 52
  LCZ_3   = 53

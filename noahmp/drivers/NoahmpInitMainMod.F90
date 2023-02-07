@@ -31,7 +31,7 @@ contains
                                                    its, ite, jts, jte, kts, kte
     integer                                     :: errflag,i,j,itf,jtf,ns
     logical                                     :: restart, allowed_to_read
-    logical                                     :: urbanpt_flag       ! added to identify urban pixels by accounting for LCZ
+    logical                                     :: urbanpt_flag       ! added to identify urban pixels
     real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL) :: ZSOIL      ! Depth of the soil layer bottom (m) from the surface (negative)
     real(kind=kind_noahmp)                      :: BEXP, SMCMAX, PSISAT
     real(kind=kind_noahmp)                      :: FK, masslai, masssai
@@ -299,14 +299,9 @@ contains
               areaxy     (I,J) = (DX * DY) / ( MSFTX(I,J) * MSFTY(I,J) )
            endif
 
-           ! add urban flag to include LCZ
+           ! add urban flag
            urbanpt_flag = .false.
-           if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) == NoahmpIO%LCZ_1_TABLE .or. &
-                IVGTYP(I,J) == NoahmpIO%LCZ_2_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_3_TABLE .or. &
-                IVGTYP(I,J) == NoahmpIO%LCZ_4_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_5_TABLE .or. &
-                IVGTYP(I,J) == NoahmpIO%LCZ_6_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_7_TABLE .or. &
-                IVGTYP(I,J) == NoahmpIO%LCZ_8_TABLE   .or. IVGTYP(I,J) == NoahmpIO%LCZ_9_TABLE .or. &
-                IVGTYP(I,J) == NoahmpIO%LCZ_10_TABLE  .or. IVGTYP(I,J) == NoahmpIO%LCZ_11_TABLE ) THEN
+           if ( IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE .or. IVGTYP(I,J) > NoahmpIO%URBTYPE_beg ) THEN
                urbanpt_flag = .true.
            endif
 

@@ -27,7 +27,7 @@ contains
     real(kind=kind_noahmp),   dimension(-NoahmpIO%NSNOW+1:NoahmpIO%NSOIL) :: DZSNSO    
 
 !------------------------------------------------------------------------------------------    
-    associate(                               ,&
+    associate(                                &
                ims      => NoahmpIO%ims      ,&
                ime      => NoahmpIO%ime      ,& 
                jms      => NoahmpIO%jms      ,&

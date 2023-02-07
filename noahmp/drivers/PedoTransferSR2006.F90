@@ -37,7 +37,6 @@ contains
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_s33
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_et
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_e                                 
-
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcmax 
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcref 
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcwlt 
@@ -111,7 +110,8 @@ contains
       end if
       if(Orgm(k) <= 0 ) Orgm(k) = 0.0
     end do
-        
+       
+    ! compute soil properties 
     theta_1500t =   sr2006_theta_1500t_a*Sand       &
                   + sr2006_theta_1500t_b*Clay       &
                   + sr2006_theta_1500t_c*Orgm       &
@@ -162,6 +162,7 @@ contains
                   + sr2006_psi_e_b*psi_et         &
                   + sr2006_psi_e_c
     
+    ! assign property values
     smcwlt = theta_1500
     smcref = theta_33
     smcmax = theta_33                     &
@@ -183,9 +184,9 @@ contains
   
     ! Introducing somewhat arbitrary limits (based on NoahmpTable soil) to prevent bad things
     smcmax = max(0.32 ,min(smcmax,  0.50 ))
-    smcref = max(0.17 ,min(smcref,smcmax ))
-    smcwlt = max(0.01 ,min(smcwlt,smcref ))
-    smcdry = max(0.01 ,min(smcdry,smcref ))
+    smcref = max(0.17 ,min(smcref, smcmax))
+    smcwlt = max(0.01 ,min(smcwlt, smcref))
+    smcdry = max(0.01 ,min(smcdry, smcref))
     bexp   = max(2.50 ,min(bexp,    12.0 ))
     psisat = max(0.03 ,min(psisat,  1.00 ))
     dksat  = max(5.e-7,min(dksat,   1.e-5))

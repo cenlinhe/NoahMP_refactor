@@ -43,7 +43,7 @@ contains
     character(len=256)                     :: VEG_DATASET_DESCRIPTION
     logical                                :: file_named
     integer                                :: ierr, IK, IM
-    integer                                :: NVEG, ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL
+    integer                                :: NVEG, ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL, URBTYPE_beg
     integer                                :: LCZ_1, LCZ_2, LCZ_3, LCZ_4, LCZ_5, LCZ_6, LCZ_7, LCZ_8, LCZ_9, LCZ_10, LCZ_11
     real(kind=kind_noahmp), dimension(MVT) :: SAI_JAN, SAI_FEB, SAI_MAR, SAI_APR, SAI_MAY, SAI_JUN, SAI_JUL, SAI_AUG,        &
                                               SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN, LAI_FEB, LAI_MAR, LAI_APR,        &
@@ -55,7 +55,7 @@ contains
                                               NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
                                               XSAMIN, EPS1, EPS2, EPS3, EPS4, EPS5
     namelist / noahmp_usgs_veg_categories /   VEG_DATASET_DESCRIPTION, NVEG
-    namelist / noahmp_usgs_parameters     /   ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL,                 &
+    namelist / noahmp_usgs_parameters     /   ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL, URBTYPE_beg,    &
                                               LCZ_1, LCZ_2, LCZ_3, LCZ_4, LCZ_5, LCZ_6, LCZ_7, LCZ_8, LCZ_9, LCZ_10, LCZ_11, &
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
@@ -67,7 +67,7 @@ contains
                                               LAI_OCT, LAI_NOV, LAI_DEC, RHOL_VIS, RHOL_NIR, RHOS_VIS, RHOS_NIR, TAUL_VIS,   &
                                               TAUL_NIR, TAUS_VIS, TAUS_NIR, EPS1, EPS2, EPS3, EPS4, EPS5
     namelist / noahmp_modis_veg_categories /  VEG_DATASET_DESCRIPTION, NVEG
-    namelist / noahmp_modis_parameters     /  ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL,                 &
+    namelist / noahmp_modis_parameters     /  ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL, URBTYPE_beg,    &
                                               LCZ_1, LCZ_2, LCZ_3, LCZ_4, LCZ_5, LCZ_6, LCZ_7, LCZ_8, LCZ_9, LCZ_10, LCZ_11, &
                                               CH2OP, DLEAF, Z0MVT, HVT, HVB, DEN, RC, MFSNO, SCFFAC, XL, CWPVT, C3PSN, KC25, &
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
@@ -372,6 +372,7 @@ contains
     NoahmpIO%ISCROP_TABLE       = undefined_int
     NoahmpIO%EBLFOREST_TABLE    = undefined_int
     NoahmpIO%NATURAL_TABLE      = undefined_int
+    NoahmpIO%URBTYPE_beg        = undefined_int
     NoahmpIO%LCZ_1_TABLE        = undefined_int
     NoahmpIO%LCZ_2_TABLE        = undefined_int
     NoahmpIO%LCZ_3_TABLE        = undefined_int
@@ -678,6 +679,7 @@ contains
     NoahmpIO%ISCROP_TABLE          = ISCROP
     NoahmpIO%EBLFOREST_TABLE       = EBLFOREST
     NoahmpIO%NATURAL_TABLE         = NATURAL
+    NoahmpIO%URBTYPE_beg           = URBTYPE_beg
     NoahmpIO%LCZ_1_TABLE           = LCZ_1
     NoahmpIO%LCZ_2_TABLE           = LCZ_2
     NoahmpIO%LCZ_3_TABLE           = LCZ_3

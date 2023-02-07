@@ -63,7 +63,7 @@ contains
               WindEastwardRefHeight   => noahmp%forcing%WindEastwardRefHeight        ,& ! in,    wind speed [m/s] in eastward direction at reference height
               WindNorthwardRefHeight  => noahmp%forcing%WindNorthwardRefHeight       ,& ! in,    wind speed [m/s] in northward direction at reference height
               TemperatureAirRefHeight => noahmp%forcing%TemperatureAirRefHeight      ,& ! in,    air temperature [K] at reference height
-              PressureAirSurface      => noahmp%forcing%PressureAirSurface           ,& ! in,    air pressure [Pa] at surface-atmosphere interface
+              PressureAirRefHeight    => noahmp%forcing%PressureAirRefHeight         ,& ! in,    air pressure [Pa] at surface reference height
               ZilitinkevichCoeff      => noahmp%energy%param%ZilitinkevichCoeff      ,& ! in,    Zilitinkevich Coefficient for exchange coefficient calculation
               SnowDepth               => noahmp%water%state%SnowDepth                ,& ! in,    snow depth [m]
               SnowCoverFrac           => noahmp%water%state%SnowCoverFrac            ,& ! in,    snow cover fraction
