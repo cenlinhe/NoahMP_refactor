@@ -130,7 +130,7 @@ contains
     noahmp%energy%state%PsychConstGrd               = undefined_real
     noahmp%energy%state%LatHeatVapGrd               = undefined_real
     noahmp%energy%state%RelHumidityGrd              = undefined_real
-    noahmp%energy%state%SpecHumiditySfcBare         = undefined_real
+    noahmp%energy%state%SpecHumiditySfcMean         = undefined_real
     noahmp%energy%state%SpecHumiditySfc             = undefined_real
     noahmp%energy%state%SpecHumidity2mVeg           = undefined_real
     noahmp%energy%state%SpecHumidity2mBare          = undefined_real

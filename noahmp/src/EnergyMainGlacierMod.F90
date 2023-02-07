@@ -46,8 +46,8 @@ contains
               HeatPrecipAdvBareGrd   => noahmp%energy%flux%HeatPrecipAdvBareGrd  ,& ! in,    precipitation advected heat - bare ground net [W/m2]
               TemperatureSfc         => noahmp%energy%state%TemperatureSfc       ,& ! inout, surface temperature [K]
               TemperatureGrd         => noahmp%energy%state%TemperatureGrd       ,& ! inout, ground temperature [K]
-              SpecHumiditySfcBare    => noahmp%energy%state%SpecHumiditySfcBare  ,& ! inout, specific humidity at bare surface
-              SpecHumiditySfc        => noahmp%energy%state%SpecHumiditySfc      ,& ! inout, specific humidity at surface grid mean
+              SpecHumiditySfc        => noahmp%energy%state%SpecHumiditySfc      ,& ! inout, specific humidity at bare surface
+              SpecHumiditySfcMean    => noahmp%energy%state%SpecHumiditySfcMean  ,& ! inout, specific humidity at surface grid mean
               ExchCoeffMomSfc        => noahmp%energy%state%ExchCoeffMomSfc      ,& ! inout, exchange coefficient [m/s] for momentum, surface, grid mean
               ExchCoeffShSfc         => noahmp%energy%state%ExchCoeffShSfc       ,& ! inout, exchange coefficient [m/s] for heat, surface, grid mean
               SnowDepth              => noahmp%water%state%SnowDepth             ,& ! inout, snow depth [m]
@@ -130,7 +130,7 @@ contains
     TemperatureSfc      = TemperatureGrd
     ExchCoeffMomSfc     = ExchCoeffMomBare
     ExchCoeffShSfc      = ExchCoeffShBare
-    SpecHumiditySfc     = SpecHumiditySfcBare
+    SpecHumiditySfcMean = SpecHumiditySfc
     SpecHumidity2m      = SpecHumidity2mBare
     RoughLenMomSfcToAtm = RoughLenMomGrd
 

@@ -177,8 +177,8 @@ module EnergyVarType
     real(kind=kind_noahmp) :: PsychConstGrd               ! psychrometric constant [Pa/K], ground
     real(kind=kind_noahmp) :: LatHeatVapGrd               ! latent heat of vaporization/subli [J/kg], ground
     real(kind=kind_noahmp) :: RelHumidityGrd              ! raltive humidity in surface soil/snow air space (-)
-    real(kind=kind_noahmp) :: SpecHumiditySfcBare         ! specific humidity at bare surface
-    real(kind=kind_noahmp) :: SpecHumiditySfc             ! specific humidity at surface grid mean
+    real(kind=kind_noahmp) :: SpecHumiditySfc             ! specific humidity at surface (bare or vegetated or urban)
+    real(kind=kind_noahmp) :: SpecHumiditySfcMean         ! specific humidity at surface grid mean
     real(kind=kind_noahmp) :: SpecHumidity2mVeg           ! specific humidity at 2m vegetated
     real(kind=kind_noahmp) :: SpecHumidity2mBare          ! specific humidity at 2m bare ground
     real(kind=kind_noahmp) :: SpecHumidity2m              ! specific humidity at 2m grid mean

@@ -45,7 +45,7 @@ contains
     ! energy state variables
     noahmp%energy%state%LeafAreaIndex                             = NoahmpIO%LAI     (I,J)
     noahmp%energy%state%StemAreaIndex                             = NoahmpIO%XSAIXY  (I,J)
-    noahmp%energy%state%SpecHumiditySfcBare                       = NoahmpIO%QSFC    (I,J)
+    noahmp%energy%state%SpecHumiditySfcMean                       = NoahmpIO%QSFC    (I,J)
     noahmp%energy%state%TemperatureGrd                            = NoahmpIO%TGXY    (I,J)
     noahmp%energy%state%TemperatureCanopy                         = NoahmpIO%TVXY    (I,J)
     noahmp%energy%state%SnowAgeNondim                             = NoahmpIO%TAUSSXY (I,J)

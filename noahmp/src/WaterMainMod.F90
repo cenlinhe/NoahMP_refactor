@@ -75,7 +75,7 @@ contains
               EvapSoilSfcLiqAcc      => noahmp%water%flux%EvapSoilSfcLiqAcc         ,& ! inout, accumulated soil surface evaporation during soil timestep [m/s * dt_soil/dt_main]
               TranspWatLossSoilAcc   => noahmp%water%flux%TranspWatLossSoilAcc      ,& ! inout, accumualted transpiration water loss during soil timestep [m/s * dt_soil/dt_main]
               SpecHumidity2mBare     => noahmp%energy%state%SpecHumidity2mBare      ,& ! out,   bare ground 2-m specific humidity [kg/kg]
-              SpecHumiditySfcBare    => noahmp%energy%state%SpecHumiditySfcBare     ,& ! out,   specific humidity at bare surface [kg/kg]
+              SpecHumiditySfc        => noahmp%energy%state%SpecHumiditySfc         ,& ! out,   specific humidity at surface [kg/kg]
               EvapGroundNet          => noahmp%water%flux%EvapGroundNet             ,& ! out,   net ground (soil/snow) evaporation [mm/s]
               Transpiration          => noahmp%water%flux%Transpiration             ,& ! out,   transpiration rate [mm/s]
               EvapCanopyNet          => noahmp%water%flux%EvapCanopyNet             ,& ! out,   evaporation of intercepted water [mm/s]
@@ -198,8 +198,8 @@ contains
     ! update surface water vapor flux ! urban - jref
     WaterToAtmosTotal = Transpiration + EvapCanopyNet + EvapGroundNet
     if ( (FlagUrban .eqv. .true.) ) then
-       SpecHumiditySfcBare = WaterToAtmosTotal / (DensityAirRefHeight*ExchCoeffShSfc) + SpecHumidityRefHeight
-       SpecHumidity2mBare  = SpecHumiditySfcBare
+       SpecHumiditySfc    = WaterToAtmosTotal / (DensityAirRefHeight*ExchCoeffShSfc) + SpecHumidityRefHeight
+       SpecHumidity2mBare = SpecHumiditySfc
     endif
 
     end associate

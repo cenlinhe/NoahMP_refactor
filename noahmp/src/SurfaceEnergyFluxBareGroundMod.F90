@@ -81,7 +81,7 @@ contains
               RoughLenMomGrd          => noahmp%energy%state%RoughLenMomGrd          ,& ! in,    roughness length, momentum, ground [m]
               LatHeatVapGrd           => noahmp%energy%state%LatHeatVapGrd           ,& ! in,    latent heat of vaporization/subli [J/kg], ground
               PsychConstGrd           => noahmp%energy%state%PsychConstGrd           ,& ! in,    psychrometric constant [Pa/K], ground
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity [kg/kg] at bare surface
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity [kg/kg] at bare surface
               TemperatureGrdBare      => noahmp%energy%state%TemperatureGrdBare      ,& ! inout, bare ground temperature (K)
               ExchCoeffMomBare        => noahmp%energy%state%ExchCoeffMomBare        ,& ! inout, momentum exchange coeff [m/s)], above ZeroPlaneDisp, bare ground
               ExchCoeffShBare         => noahmp%energy%state%ExchCoeffShBare         ,& ! inout, heat exchange coeff [m/s], above ZeroPlaneDisp, bare ground
@@ -174,9 +174,9 @@ contains
        else
           VapPresSatGrdBare = VapPresSatIceTmp
        endif
-       SpecHumiditySfcBare  = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
-                              (PressureAirSurface - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
-       MoistureFluxSfc      = (SpecHumiditySfcBare - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
+       SpecHumiditySfc      = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
+                              (PressureAirRefHeight - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
+       MoistureFluxSfc      = (SpecHumiditySfc - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
 
     enddo loop3 ! end stability iteration
 
@@ -207,14 +207,14 @@ contains
                            (log((2.0+RoughLenShBareGrd)/RoughLenShBareGrd) - MoStabCorrShBare2m)
        if ( ExchCoeffSh2mBare < 1.0e-5 ) then
           TemperatureAir2mBare = TemperatureGrdBare
-          SpecHumidity2mBare   = SpecHumiditySfcBare
+          SpecHumidity2mBare   = SpecHumiditySfc
        else
           TemperatureAir2mBare = TemperatureGrdBare - HeatSensibleBareGrd / &
                                  (DensityAirRefHeight*ConstHeatCapacAir) * 1.0 / ExchCoeffSh2mBare
-          SpecHumidity2mBare   = SpecHumiditySfcBare - HeatLatentBareGrd /  &
+          SpecHumidity2mBare   = SpecHumiditySfc - HeatLatentBareGrd /  &
                                  (LatHeatVapGrd*DensityAirRefHeight) * (1.0/ExchCoeffSh2mBare + ResistanceGrdEvap)
        endif
-       if ( FlagUrban .eqv. .true. ) SpecHumidity2mBare = SpecHumiditySfcBare
+       if ( FlagUrban .eqv. .true. ) SpecHumidity2mBare = SpecHumiditySfc
     endif
 
     ! update ExchCoeffShBare 

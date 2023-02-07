@@ -96,8 +96,8 @@ contains
               TemperatureSfc          => noahmp%energy%state%TemperatureSfc          ,& ! inout, surface temperature [K]
               TemperatureGrd          => noahmp%energy%state%TemperatureGrd          ,& ! inout, ground temperature [K]
               TemperatureCanopy       => noahmp%energy%state%TemperatureCanopy       ,& ! inout, vegetation temperature [K]
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity [kg/kg] at bare surface
-              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity [kg/kg] at surface grid mean
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity [kg/kg] at bare/veg/urban surface
+              SpecHumiditySfcMean     => noahmp%energy%state%SpecHumiditySfcMean     ,& ! inout, specific humidity [kg/kg] at surface grid mean
               PressureVaporCanAir     => noahmp%energy%state%PressureVaporCanAir     ,& ! inout, canopy air vapor pressure [Pa]
               ExchCoeffMomSfc         => noahmp%energy%state%ExchCoeffMomSfc         ,& ! inout, exchange coefficient [m/s] for momentum, surface, grid mean
               ExchCoeffShSfc          => noahmp%energy%state%ExchCoeffShSfc          ,& ! inout, exchange coefficient [m/s] for heat, surface, grid mean
@@ -263,8 +263,8 @@ contains
        ExchCoeffMomSfc     = VegFrac * ExchCoeffMomAbvCan  + (1.0 - VegFrac) * ExchCoeffMomBare     ! better way to average?
        ExchCoeffShSfc      = VegFrac * ExchCoeffShAbvCan   + (1.0 - VegFrac) * ExchCoeffShBare
        SpecHumidity2m      = VegFrac * SpecHumidity2mVeg   + (1.0 - VegFrac) * SpecHumidity2mBare 
-       SpecHumiditySfc     = VegFrac * (PressureVaporCanAir * 0.622 / &
-                             (PressureAirRefHeight - 0.378*PressureVaporCanAir)) + (1.0 - VegFrac) * SpecHumiditySfcBare
+       SpecHumiditySfcMean = VegFrac * (PressureVaporCanAir * 0.622 / &
+                             (PressureAirRefHeight - 0.378*PressureVaporCanAir)) + (1.0 - VegFrac) * SpecHumiditySfc
        RoughLenMomSfcToAtm = RoughLenMomSfc
     else
        WindStressEwSfc         = WindStressEwBare
@@ -281,7 +281,7 @@ contains
        TemperatureSfc          = TemperatureGrd
        ExchCoeffMomSfc         = ExchCoeffMomBare
        ExchCoeffShSfc          = ExchCoeffShBare
-       SpecHumiditySfc         = SpecHumiditySfcBare
+       SpecHumiditySfcMean     = SpecHumiditySfc
        SpecHumidity2m          = SpecHumidity2mBare
        ResistanceStomataSunlit = 0.0
        ResistanceStomataShade  = 0.0

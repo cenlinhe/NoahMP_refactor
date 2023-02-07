@@ -121,7 +121,7 @@ contains
               LatHeatVapCanopy        => noahmp%energy%state%LatHeatVapCanopy        ,& ! in,    latent heat of vaporization/subli [J/kg], canopy
               PsychConstGrd           => noahmp%energy%state%PsychConstGrd           ,& ! in,    psychrometric constant [Pa/K], ground
               RelHumidityGrd          => noahmp%energy%state%RelHumidityGrd          ,& ! in,    raltive humidity in surface soil/snow air space
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity at bare surface
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity at vegetated surface
               PressureVaporCanAir     => noahmp%energy%state%PressureVaporCanAir     ,& ! inout, canopy air vapor pressure [Pa]
               TemperatureCanopyAir    => noahmp%energy%state%TemperatureCanopyAir    ,& ! inout, canopy air temperature [K]
               TemperatureCanopy       => noahmp%energy%state%TemperatureCanopy       ,& ! inout, vegetation temperature [K]
@@ -193,8 +193,6 @@ contains
     else
        VapPresSatGrdVeg = VapPresSatIceTmp
     endif
-    !jref - consistent surface specific humidity for sfcdif3 and sfcdif4
-    SpecHumiditySfcBare = 0.622 * PressureVaporRefHeight / (PressureAirSurface - 0.378*PressureVaporRefHeight)
 
     ! canopy height
     CanopyHeight = HeightCanopyTop
@@ -324,7 +322,7 @@ contains
        ShGrdTmp = DensityAirRefHeight * ConstHeatCapacAir * (TemperatureGrdVeg-TemperatureCanopyAir) / ResistanceShUndCan
 
        ! consistent specific humidity from canopy air vapor pressure
-       SpecHumiditySfcBare = (0.622 * PressureVaporCanAir) / (PressureAirRefHeight - 0.378 * PressureVaporCanAir)
+       SpecHumiditySfc = (0.622 * PressureVaporCanAir) / (PressureAirRefHeight - 0.378 * PressureVaporCanAir)
        if ( LastIter == 1 ) then
           exit loop1
        endif
@@ -396,7 +394,7 @@ contains
     !                       (DensityAirRefHeight*ConstHeatCapacAir*ExchCoeffShAbvCanTmp)                     ! ground flux need fveg
     !PressureVaporCanAir  = PressureVaporRefHeight + (HeatLatentCanEvap+VegFrac*(HeatLatentCanTransp+HeatLatentVegGrd)) / &
     !                       (DensityAirRefHeight*ExchCoeffLhAbvCan*ConstHeatCapacAir/PsychConstGrd)
-    !MoistureFluxSfc      = (SpecHumiditySfcBare-SpecHumidityRefHeight) * DensityAirRefHeight * ExchCoeffLhAbvCan !*ConstHeatCapacAir/PsychConstGrd
+    !MoistureFluxSfc      = (SpecHumiditySfc - SpecHumidityRefHeight) * DensityAirRefHeight * ExchCoeffLhAbvCan !*ConstHeatCapacAir/PsychConstGrd
 
     ! 2m temperature over vegetation ( corrected for low LH exchange coeff values )
     if ( (OptSurfaceDrag == 1) .or. (OptSurfaceDrag == 2) ) then
@@ -406,15 +404,15 @@ contains
        if ( ExchCoeffSh2mVeg < 1.0e-5 ) then
           TemperatureAir2mVeg = TemperatureCanopyAir
          !SpecHumidity2mVeg   = (PressureVaporCanAir*0.622/(PressureAirRefHeight - 0.378*PressureVaporCanAir))
-          SpecHumidity2mVeg   = SpecHumiditySfcBare
+          SpecHumidity2mVeg   = SpecHumiditySfc
        else
           TemperatureAir2mVeg = TemperatureCanopyAir - (HeatSensibleVegGrd + HeatSensibleCanopy/VegFrac) / &
                                 (DensityAirRefHeight * ConstHeatCapacAir) * 1.0 / ExchCoeffSh2mVeg
          !SpecHumidity2mVeg   = (PressureVaporCanAir*0.622/(PressureAirRefHeight - 0.378*PressureVaporCanAir)) - &
          !                      MoistureFluxSfc/(DensityAirRefHeight*FrictionVelVeg)* 1.0/ConstVonKarman * &
          !                      log((2.0+RoughLenShCanopy)/RoughLenShCanopy)
-          SpecHumidity2mVeg   = SpecHumiditySfcBare - ((HeatLatentCanEvap+HeatLatentCanTransp)/VegFrac + HeatLatentVegGrd) / &
-                                                      (LatHeatVapCanopy * DensityAirRefHeight) * 1.0 / ExchCoeffSh2mVeg
+          SpecHumidity2mVeg   = SpecHumiditySfc - ((HeatLatentCanEvap+HeatLatentCanTransp)/VegFrac + HeatLatentVegGrd) / &
+                                                  (LatHeatVapCanopy * DensityAirRefHeight) * 1.0 / ExchCoeffSh2mVeg
        endif
     endif
 

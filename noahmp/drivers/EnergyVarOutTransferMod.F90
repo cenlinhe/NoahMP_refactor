@@ -105,7 +105,7 @@ contains
     ! energy state variables
     NoahmpIO%TSK     (I,J) = noahmp%energy%state%TemperatureRadSfc
     NoahmpIO%EMISS   (I,J) = noahmp%energy%state%EmissivitySfc
-    NoahmpIO%QSFC    (I,J) = noahmp%energy%state%SpecHumiditySfcBare
+    NoahmpIO%QSFC    (I,J) = noahmp%energy%state%SpecHumiditySfcMean
     NoahmpIO%TVXY    (I,J) = noahmp%energy%state%TemperatureCanopy
     NoahmpIO%TGXY    (I,J) = noahmp%energy%state%TemperatureGrd
     NoahmpIO%EAHXY   (I,J) = noahmp%energy%state%PressureVaporCanAir

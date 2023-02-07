@@ -81,7 +81,7 @@ contains
               RoughLenMomGrd          => noahmp%energy%state%RoughLenMomGrd          ,& ! in,    roughness length, momentum, ground [m]
               LatHeatVapGrd           => noahmp%energy%state%LatHeatVapGrd           ,& ! in,    latent heat of vaporization/subli [J/kg], ground
               PsychConstGrd           => noahmp%energy%state%PsychConstGrd           ,& ! in,    psychrometric constant [Pa/K], ground
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity at bare surface
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity at surface
               TemperatureGrdBare      => noahmp%energy%state%TemperatureGrdBare      ,& ! inout, bare ground temperature [K]
               ExchCoeffMomBare        => noahmp%energy%state%ExchCoeffMomBare        ,& ! inout, momentum exchange coeff [m/s], above ZeroPlaneDisp, bare ground
               ExchCoeffShBare         => noahmp%energy%state%ExchCoeffShBare         ,& ! inout, heat exchange coeff [m/s], above ZeroPlaneDisp, bare ground
@@ -175,9 +175,9 @@ contains
        else
           VapPresSatGrdBare = VapPresSatIceTmp
        endif
-       SpecHumiditySfcBare  = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
+       SpecHumiditySfc      = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
                               (PressureAirRefHeight - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
-       MoistureFluxSfc      = (SpecHumiditySfcBare - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
+       MoistureFluxSfc      = (SpecHumiditySfc - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
 
     enddo loop3 ! end stability iteration
 
@@ -190,9 +190,9 @@ contains
           TempTmp             = TempUnitConv(TemperatureGrdBare) ! MB: recalculate VapPresSatGrdBare
           call VaporPressureSaturation(TempTmp, VapPresSatWatTmp, VapPresSatIceTmp, VapPresSatWatTmpD, VapPresSatIceTmpD)
           VapPresSatGrdBare   = VapPresSatIceTmp
-          SpecHumiditySfcBare = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
+          SpecHumiditySfc     = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
                                 (PressureAirRefHeight - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
-          MoistureFluxSfc     = (SpecHumiditySfcBare - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
+          MoistureFluxSfc     = (SpecHumiditySfc - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
           RadLwNetBareGrd     = LwRadCoeff * TemperatureGrdBare**4 - EmissivityGrd * RadLwDownRefHeight
           HeatSensibleBareGrd = ShCoeff * (TemperatureGrdBare - TemperatureAirRefHeight)
           HeatLatentBareGrd   = LhCoeff * (VapPresSatGrdBare*RelHumidityGrd - PressureVaporRefHeight)
@@ -210,11 +210,11 @@ contains
                         (log((2.0+RoughLenShBareGrd)/RoughLenShBareGrd) - MoStabCorrShBare2m)
     if ( ExchCoeffSh2mBare < 1.0e-5 ) then
        TemperatureAir2mBare = TemperatureGrdBare
-       SpecHumidity2mBare   = SpecHumiditySfcBare
+       SpecHumidity2mBare   = SpecHumiditySfc
     else
        TemperatureAir2mBare = TemperatureGrdBare - HeatSensibleBareGrd / &
                               (DensityAirRefHeight*ConstHeatCapacAir) * 1.0 / ExchCoeffSh2mBare
-       SpecHumidity2mBare   = SpecHumiditySfcBare - HeatLatentBareGrd /  &
+       SpecHumidity2mBare   = SpecHumiditySfc - HeatLatentBareGrd /  &
                               (LatHeatVapGrd*DensityAirRefHeight) * (1.0/ExchCoeffSh2mBare + ResistanceGrdEvap)
     endif
 
