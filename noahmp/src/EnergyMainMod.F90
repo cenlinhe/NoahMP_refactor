@@ -76,8 +76,6 @@ contains
     associate(                                                                        &
               PressureAirRefHeight    => noahmp%forcing%PressureAirRefHeight         ,& ! in,    air pressure [Pa] at reference height
               RadLwDownRefHeight      => noahmp%forcing%RadLwDownRefHeight           ,& ! in,    downward longwave radiation [W/m2] at reference height
-              WindEastwardRefHeight   => noahmp%forcing%WindEastwardRefHeight        ,& ! in,    wind speed [m/s] in eastward direction at reference height
-              WindNorthwardRefHeight  => noahmp%forcing%WindNorthwardRefHeight       ,& ! in,    wind speed [m/s] in northward direction at reference height
               RadSwDownRefHeight      => noahmp%forcing%RadSwDownRefHeight           ,& ! in,    downward shortwave radiation [W/m2] at reference height
               OptSnowSoilTempTime     => noahmp%config%nmlist%OptSnowSoilTempTime    ,& ! in,    options for snow/soil temperature time scheme
               FlagCropland            => noahmp%config%domain%FlagCropland           ,& ! in,    flag to identify croplands
@@ -116,7 +114,6 @@ contains
               LeafAreaIndShade        => noahmp%energy%state%LeafAreaIndShade        ,& ! out,   shaded leaf area index, one-sided [m2/m2]
               EmissivitySfc           => noahmp%energy%state%EmissivitySfc           ,& ! out,   surface emissivity
               VegAreaIndEff           => noahmp%energy%state%VegAreaIndEff           ,& ! out,   one-sided leaf+stem area index [m2/m2]
-              WindSpdRefHeight        => noahmp%energy%state%WindSpdRefHeight        ,& ! out,   wind speed [m/s] at reference height
               RoughLenMomSfc          => noahmp%energy%state%RoughLenMomSfc          ,& ! out,   roughness length [m], momentum, surface
               RoughLenMomGrd          => noahmp%energy%state%RoughLenMomGrd          ,& ! out,   roughness length [m], momentum, ground
               WindStressEwVeg         => noahmp%energy%state%WindStressEwVeg         ,& ! out,   wind stress: east-west [N/m2] above canopy
@@ -190,9 +187,6 @@ contains
     ExchCoeffSh2mVeg    = 0.0
     HeatPrecipAdvSfc    = 0.0
     HeatCanStorageChg   = 0.0
-
-    ! wind speed at reference height: ur >= 1
-    WindSpdRefHeight = max(sqrt(WindEastwardRefHeight**2.0 + WindNorthwardRefHeight**2.0), 1.0)
 
     ! vegetated or non-vegetated
     VegAreaIndEff = LeafAreaIndEff + StemAreaIndEff
