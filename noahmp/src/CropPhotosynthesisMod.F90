@@ -24,8 +24,8 @@ contains
 
 ! local variable
     real(kind=kind_noahmp)           :: PhotosynRad      ! photosynthetically active radiation (w/m2) 1 W m-2 = 0.0864 MJ m-2 day-1
-    real(kind=kind_noahmp)           :: Co2AssimMax      ! Maximum CO2 assimulation rate g/co2/s  
-    real(kind=kind_noahmp)           :: Co2AssimTot      ! CO2 Assimilation 
+    real(kind=kind_noahmp)           :: Co2AssimMax      ! Maximum CO2 assimulation rate g CO2/m2/s  
+    real(kind=kind_noahmp)           :: Co2AssimTot      ! CO2 Assimilation g CO2/m2/s
     real(kind=kind_noahmp)           :: TemperatureAirC  ! air temperature degC
     real(kind=kind_noahmp)           :: L1               ! Three Gaussian method
     real(kind=kind_noahmp)           :: L2               ! Three Gaussian method
@@ -48,7 +48,7 @@ contains
               TempMaxCarbonAssimMax => noahmp%biochem%param%TempMaxCarbonAssimMax ,& ! in,  CO2 assim. remain at CarbonAssimRefMax until reaching this temperature [C]
               CarbonAssimRefMax     => noahmp%biochem%param%CarbonAssimRefMax     ,& ! in,  reference maximum CO2 assimilation rate
               LightExtCoeff         => noahmp%biochem%param%LightExtCoeff         ,& ! in,  light extinction coefficient
-              LighUseEfficiency     => noahmp%biochem%param%LighUseEfficiency     ,& ! in,  initial light use efficiency
+              LightUseEfficiency    => noahmp%biochem%param%LightUseEfficiency    ,& ! in,  initial light use efficiency
               CarbonAssimReducFac   => noahmp%biochem%param%CarbonAssimReducFac   ,& ! in,  CO2 assimulation reduction factor(0-1) (caused by e.g.pest,weeds)
               PhotosynCrop          => noahmp%biochem%flux%PhotosynCrop            & ! out, crop photosynthesis [umol co2/m2/s]
              )
@@ -87,9 +87,9 @@ contains
     I1 = max(I1, 1.0e-10)
     I2 = max(I2, 1.0e-10)
     I3 = max(I3, 1.0e-10)
-    A1 = Co2AssimMax * (1 - exp(-LighUseEfficiency * I1 / Co2AssimMax))
-    A2 = Co2AssimMax * (1 - exp(-LighUseEfficiency * I2 / Co2AssimMax)) * 1.6
-    A3 = Co2AssimMax * (1 - exp(-LighUseEfficiency * I3 / Co2AssimMax))
+    A1 = Co2AssimMax * (1 - exp(-LightUseEfficiency * I1 / Co2AssimMax))
+    A2 = Co2AssimMax * (1 - exp(-LightUseEfficiency * I2 / Co2AssimMax)) * 1.6
+    A3 = Co2AssimMax * (1 - exp(-LightUseEfficiency * I3 / Co2AssimMax))
 
     ! compute photosynthesis rate
     if ( LeafAreaIndex <= 0.05 ) then

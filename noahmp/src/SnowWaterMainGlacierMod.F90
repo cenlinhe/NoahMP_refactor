@@ -129,7 +129,7 @@ contains
     endif
 
     ! update snow quantity
-    if ( (SnowDepth <= 1.0e-6) .or. (SnowWaterEquiv <= 1.0e-3) ) then
+    if ( (SnowDepth <= 1.0e-6) .or. (SnowWaterEquiv <= 1.0e-6) ) then
        SnowDepth      = 0.0
        SnowWaterEquiv = 0.0
     endif

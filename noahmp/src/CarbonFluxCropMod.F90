@@ -40,7 +40,7 @@ contains
               StemAreaIndexMin         => noahmp%biochem%param%StemAreaIndexMin         ,& ! in,    minimum stem area index [m2/m2]
               NitrogenConcFoliageMax   => noahmp%biochem%param%NitrogenConcFoliageMax   ,& ! in,    foliage nitrogen concentration when f(n)=1 [%]
               RespMaintQ10             => noahmp%biochem%param%RespMaintQ10             ,& ! in,    change in maintenance respiration for each 10C temp. change
-              RespMaintLeaf25C         => noahmp%biochem%param%RespMaintLeaf25C         ,& ! in,    leaf maintenance respiration at 25C [umol CO2/m**2/s]
+              RespMaintLeaf25C         => noahmp%biochem%param%RespMaintLeaf25C         ,& ! in,    leaf maintenance respiration at 25C [umol CO2/m2/s]
               RespMaintRoot25C         => noahmp%biochem%param%RespMaintRoot25C         ,& ! in,    root maintenance respiration at 25C [umol CO2/kgCH2O/s]
               RespMaintStem25C         => noahmp%biochem%param%RespMaintStem25C         ,& ! in,    stem maintenance respiration at 25C [umol CO2/kgCH2O/s]
               RespMaintGrain25C        => noahmp%biochem%param%RespMaintGrain25C        ,& ! in,    grain maintenance respiration at 25C [umol CO2/kgCH2O/s]

@@ -1,7 +1,7 @@
 module BiochemCropMainMod
 
 !!! Main Biogeochemistry module for dynamic crop (as opposed to natural vegetation)
-!!! currently only include carbon processes (RE Dickinson et al.(1998) and Guo-Yue Niu(2004))
+!!! currently only include carbon processes (RE Dickinson et al.(1998) and Liu et al., 2014))
  
   use Machine
   use NoahmpVarType
@@ -20,7 +20,7 @@ contains
 ! Original Noah-MP subroutine: CARBON_CROP
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
 ! Modified by Xing Liu, 2014
-! Refactered code: P. Valayamkunnath, C. He & refactor team (July 2022)
+! Refactered code: P. Valayamkunnath, C. He & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
         
     implicit none

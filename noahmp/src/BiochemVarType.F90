@@ -105,8 +105,8 @@ module BiochemVarType
 
     integer                :: DatePlanting               ! planting date
     integer                :: DateHarvest                ! harvest date
-    real(kind=kind_noahmp) :: QuantumEfficiency25C       ! quantum efficiency at 25c [umol co2 / umol photon]
-    real(kind=kind_noahmp) :: CarboxylRateMax25C         ! maximum rate of carboxylation at 25c [umol co2/m**2/s]
+    real(kind=kind_noahmp) :: QuantumEfficiency25C       ! quantum efficiency at 25c [umol CO2/umol photon]
+    real(kind=kind_noahmp) :: CarboxylRateMax25C         ! maximum rate of carboxylation at 25c [umol CO2/m2/s]
     real(kind=kind_noahmp) :: CarboxylRateMaxQ10         ! change in maximum rate of carboxylation for every 10-deg C temperature change
     real(kind=kind_noahmp) :: PhotosynPathC3             ! C3 photosynthetic pathway indicator: 0.0 = c4, 1.0 = c3
     real(kind=kind_noahmp) :: SlopeConductToPhotosyn     ! slope of conductance-to-photosynthesis relationship
@@ -120,10 +120,10 @@ module BiochemVarType
     real(kind=kind_noahmp) :: LeafDeathTempCoeffVeg      ! coeficient for leaf temperature stress death [1/s] for generic vegetation
     real(kind=kind_noahmp) :: MicroRespCoeff             ! microbial respiration coefficient [umol co2 /kg c/ s]
     real(kind=kind_noahmp) :: RespMaintQ10               ! change in maintenance respiration for every 10-deg C temperature change
-    real(kind=kind_noahmp) :: RespMaintLeaf25C           ! leaf maintenance respiration at 25C [umol CO2/m**2  /s]
-    real(kind=kind_noahmp) :: RespMaintStem25C           ! stem maintenance respiration at 25C [umol CO2/kg bio/s]
-    real(kind=kind_noahmp) :: RespMaintRoot25C           ! root maintenance respiration at 25C [umol CO2/kg bio/s]
-    real(kind=kind_noahmp) :: RespMaintGrain25C          ! grain maintenance respiration at 25C [umol CO2/kg bio/s]
+    real(kind=kind_noahmp) :: RespMaintLeaf25C           ! leaf maintenance respiration at 25C [umol CO2/m2  /s]
+    real(kind=kind_noahmp) :: RespMaintStem25C           ! stem maintenance respiration at 25C [umol CO2/kg bio/s], bio: C or CH2O
+    real(kind=kind_noahmp) :: RespMaintRoot25C           ! root maintenance respiration at 25C [umol CO2/kg bio/s], bio: C or CH2O
+    real(kind=kind_noahmp) :: RespMaintGrain25C          ! grain maintenance respiration at 25C [umol CO2/kg bio/s], bio: C or CH2O
     real(kind=kind_noahmp) :: GrowthRespFrac             ! fraction of growth respiration 
     real(kind=kind_noahmp) :: TemperaureLeafFreeze       ! characteristic temperature for leaf freezing [K]
     real(kind=kind_noahmp) :: LeafAreaPerBiomass         ! leaf area per living leaf biomass [m2/g]
@@ -140,7 +140,7 @@ module BiochemVarType
     real(kind=kind_noahmp) :: TempMaxCarbonAssimMax      ! CO2 assmilation rate remain at CarbonAssimRefMax until reaching this temperature [C]
     real(kind=kind_noahmp) :: CarbonAssimRefMax          ! reference maximum CO2 assimilation rate [g co2/m2/s] 
     real(kind=kind_noahmp) :: LightExtCoeff              ! light extinction coefficient 
-    real(kind=kind_noahmp) :: LighUseEfficiency          ! initial light use efficiency 
+    real(kind=kind_noahmp) :: LightUseEfficiency         ! initial light use efficiency 
     real(kind=kind_noahmp) :: CarbonAssimReducFac        ! CO2 assimilation reduction factor(0-1) (caused by non-modeling part,e.g.pest,weeds)
     real(kind=kind_noahmp) :: StemAreaIndexMin           ! minimum stem area index [m2/m2]
     real(kind=kind_noahmp) :: WoodAllocFac               ! present wood allocation factor

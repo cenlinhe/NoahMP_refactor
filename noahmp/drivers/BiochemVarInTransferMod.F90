@@ -103,7 +103,7 @@ contains
        noahmp%biochem%param%TempMaxCarbonAssimMax   = NoahmpIO%TASSIM2_TABLE  (CropType)
        noahmp%biochem%param%CarbonAssimRefMax       = NoahmpIO%AREF_TABLE     (CropType)
        noahmp%biochem%param%LightExtCoeff           = NoahmpIO%K_TABLE        (CropType)
-       noahmp%biochem%param%LighUseEfficiency       = NoahmpIO%EPSI_TABLE     (CropType)
+       noahmp%biochem%param%LightUseEfficiency      = NoahmpIO%EPSI_TABLE     (CropType)
        noahmp%biochem%param%CarbonAssimReducFac     = NoahmpIO%PSNRF_TABLE    (CropType)
        noahmp%biochem%param%RespMaintGrain25C       = NoahmpIO%GRAINMR25_TABLE(CropType)
        noahmp%biochem%param%LeafDeathTempCoeffCrop  = NoahmpIO%DILE_FC_TABLE  (CropType,:)

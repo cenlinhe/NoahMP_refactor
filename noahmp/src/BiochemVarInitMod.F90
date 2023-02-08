@@ -139,7 +139,7 @@ contains
     noahmp%biochem%param%TempMaxCarbonAssimMax      = undefined_real
     noahmp%biochem%param%CarbonAssimRefMax          = undefined_real
     noahmp%biochem%param%LightExtCoeff              = undefined_real
-    noahmp%biochem%param%LighUseEfficiency          = undefined_real
+    noahmp%biochem%param%LightUseEfficiency         = undefined_real
     noahmp%biochem%param%CarbonAssimReducFac        = undefined_real
     noahmp%biochem%param%StemAreaIndexMin           = undefined_real
     noahmp%biochem%param%WoodAllocFac               = undefined_real
