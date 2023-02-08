@@ -38,7 +38,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand        => noahmp%config%domain%NumSWRadBand        ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand        => noahmp%config%domain%NumSwRadBand        ,& ! in,  number of solar radiation wave bands
               CosSolarZenithAngle => noahmp%config%domain%CosSolarZenithAngle ,& ! in,  cosine solar zenith angle
               OptSnowAlbedo       => noahmp%config%nmlist%OptSnowAlbedo       ,& ! in,  options for ground snow surface albedo
               ReflectanceLeaf     => noahmp%energy%param%ReflectanceLeaf      ,& ! in,  leaf reflectance: 1=vis, 2=nir
@@ -84,7 +84,7 @@ contains
     ReflectanceVeg   = 0.0
     TransmittanceVeg = 0.0
     CanopySunlitFrac = 0.0
-    do IndBand = 1, NumSWRadBand
+    do IndBand = 1, NumSwRadBand
        AlbedoSfcDir      (IndBand) = 0.0
        AlbedoSfcDif      (IndBand) = 0.0
        AlbedoGrdDir      (IndBand) = 0.0
@@ -110,7 +110,7 @@ contains
        ! weight reflectance/transmittance by LeafAreaIndex and StemAreaIndex
        LeafWgt = LeafAreaIndEff / max(VegAreaIndEff, MinThr)
        StemWgt = StemAreaIndEff / max(VegAreaIndEff, MinThr)
-       do IndBand = 1, NumSWRadBand
+       do IndBand = 1, NumSwRadBand
           ReflectanceVeg(IndBand)   = max(ReflectanceLeaf(IndBand)*LeafWgt+ReflectanceStem(IndBand)*StemWgt, MinThr)
           TransmittanceVeg(IndBand) = max(TransmittanceLeaf(IndBand)*LeafWgt+TransmittanceStem(IndBand)*StemWgt, MinThr)
        enddo
@@ -127,7 +127,7 @@ contains
 
        ! loop over shortwave bands to calculate surface albedos and solar
        ! fluxes for unit incoming direct (IndDif=0) and diffuse flux (IndDif=1)
-       do IndBand = 1, NumSWRadBand
+       do IndBand = 1, NumSwRadBand
           IndDif = 0      ! direct
           call CanopyRadiationTwoStream(noahmp, IndBand, IndDif)
           IndDif = 1      ! diffuse

@@ -36,7 +36,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand         => noahmp%config%domain%NumSWRadBand       ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand         => noahmp%config%domain%NumSwRadBand       ,& ! in,  number of solar radiation wave bands
               LeafAreaIndEff       => noahmp%energy%state%LeafAreaIndEff      ,& ! in,  leaf area index, after burying by snow
               VegAreaIndEff        => noahmp%energy%state%VegAreaIndEff       ,& ! in,  one-sided leaf+stem area index [m2/m2]
               CanopySunlitFrac     => noahmp%energy%state%CanopySunlitFrac    ,& ! in,  sunlit fraction of canopy
@@ -70,8 +70,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( RadSwAbsCanDir(1:NumSWRadBand) )
-    allocate( RadSwAbsCanDif(1:NumSWRadBand) )
+    allocate( RadSwAbsCanDir(1:NumSwRadBand) )
+    allocate( RadSwAbsCanDif(1:NumSwRadBand) )
     MinThr               = 1.0e-6
     RadSwAbsGrd          = 0.0
     RadSwAbsVeg          = 0.0
@@ -82,7 +82,7 @@ contains
     RadPhotoActAbsSunlit = 0.0
     RadPhotoActAbsShade  = 0.0
 
-    do IndBand = 1, NumSWRadBand
+    do IndBand = 1, NumSwRadBand
        ! absorbed by canopy
        RadSwAbsCanDir(IndBand) = RadSwDownDir(IndBand) * RadSwAbsVegDir(IndBand)
        RadSwAbsCanDif(IndBand) = RadSwDownDif(IndBand) * RadSwAbsVegDif(IndBand)

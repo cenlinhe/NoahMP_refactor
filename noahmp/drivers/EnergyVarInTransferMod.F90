@@ -39,7 +39,7 @@ contains
               FlagUrban       => noahmp%config%domain%FlagUrban       ,&
               NumSnowLayerMax => noahmp%config%domain%NumSnowLayerMax ,&
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer    ,&
-              NumSWRadBand    => noahmp%config%domain%NumSWRadBand     &
+              NumSwRadBand    => noahmp%config%domain%NumSwRadBand     &
              )
 
     ! energy state variables
@@ -118,14 +118,14 @@ contains
     noahmp%energy%param%HeatCapacCanFac                           = NoahmpIO%CBIOM_TABLE (VegType)
     noahmp%energy%param%LeafAreaIndexMon (1:12)                   = NoahmpIO%LAIM_TABLE  (VegType,1:12)
     noahmp%energy%param%StemAreaIndexMon (1:12)                   = NoahmpIO%SAIM_TABLE  (VegType,1:12)
-    noahmp%energy%param%ReflectanceLeaf  (1:NumSWRadBand)         = NoahmpIO%RHOL_TABLE  (VegType,1:NumSWRadBand)
-    noahmp%energy%param%ReflectanceStem  (1:NumSWRadBand)         = NoahmpIO%RHOS_TABLE  (VegType,1:NumSWRadBand)
-    noahmp%energy%param%TransmittanceLeaf(1:NumSWRadBand)         = NoahmpIO%TAUL_TABLE  (VegType,1:NumSWRadBand)
-    noahmp%energy%param%TransmittanceStem(1:NumSWRadBand)         = NoahmpIO%TAUS_TABLE  (VegType,1:NumSWRadBand)
-    noahmp%energy%param%AlbedoSoilSat    (1:NumSWRadBand)         = NoahmpIO%ALBSAT_TABLE(SoilColor,1:NumSWRadBand)
-    noahmp%energy%param%AlbedoSoilDry    (1:NumSWRadBand)         = NoahmpIO%ALBDRY_TABLE(SoilColor,1:NumSWRadBand)
-    noahmp%energy%param%AlbedoLakeFrz    (1:NumSWRadBand)         = NoahmpIO%ALBLAK_TABLE(1:NumSWRadBand)
-    noahmp%energy%param%ScatterCoeffSnow (1:NumSWRadBand)         = NoahmpIO%OMEGAS_TABLE(1:NumSWRadBand)
+    noahmp%energy%param%ReflectanceLeaf  (1:NumSwRadBand)         = NoahmpIO%RHOL_TABLE  (VegType,1:NumSwRadBand)
+    noahmp%energy%param%ReflectanceStem  (1:NumSwRadBand)         = NoahmpIO%RHOS_TABLE  (VegType,1:NumSwRadBand)
+    noahmp%energy%param%TransmittanceLeaf(1:NumSwRadBand)         = NoahmpIO%TAUL_TABLE  (VegType,1:NumSwRadBand)
+    noahmp%energy%param%TransmittanceStem(1:NumSwRadBand)         = NoahmpIO%TAUS_TABLE  (VegType,1:NumSwRadBand)
+    noahmp%energy%param%AlbedoSoilSat    (1:NumSwRadBand)         = NoahmpIO%ALBSAT_TABLE(SoilColor,1:NumSwRadBand)
+    noahmp%energy%param%AlbedoSoilDry    (1:NumSwRadBand)         = NoahmpIO%ALBDRY_TABLE(SoilColor,1:NumSwRadBand)
+    noahmp%energy%param%AlbedoLakeFrz    (1:NumSwRadBand)         = NoahmpIO%ALBLAK_TABLE(1:NumSwRadBand)
+    noahmp%energy%param%ScatterCoeffSnow (1:NumSwRadBand)         = NoahmpIO%OMEGAS_TABLE(1:NumSwRadBand)
 
     do SoilLayerIndex = 1, size(SoilType)
        noahmp%energy%param%SoilQuartzFrac(SoilLayerIndex)         = NoahmpIO%QUARTZ_TABLE(SoilType(SoilLayerIndex))

@@ -27,7 +27,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand         => noahmp%config%domain%NumSWRadBand       ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand         => noahmp%config%domain%NumSwRadBand       ,& ! in,  number of solar radiation wave bands
               MainTimeStep         => noahmp%config%domain%MainTimeStep       ,& ! in,  noahmp main time step [s]
               SnowfallGround       => noahmp%water%flux%SnowfallGround        ,& ! in,  snowfall at ground [mm/s]
               SnowMassFullCoverOld => noahmp%water%param%SnowMassFullCoverOld ,& ! in,  new snow mass to fully cover old snow [mm]
@@ -41,8 +41,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    AlbedoSnowDir(1:NumSWRadBand) = 0.0
-    AlbedoSnowDif(1:NumSWRadBand) = 0.0
+    AlbedoSnowDir(1:NumSwRadBand) = 0.0
+    AlbedoSnowDif(1:NumSwRadBand) = 0.0
 
     ! when CosSolarZenithAngle > 0
     SnowAlbedoTmp = SnowAlbRefClass + (AlbedoSnowPrev-SnowAlbRefClass) * exp(-0.01*MainTimeStep/SnowAgeFacClass)

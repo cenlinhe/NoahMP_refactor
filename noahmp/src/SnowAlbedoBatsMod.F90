@@ -31,7 +31,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand        => noahmp%config%domain%NumSWRadBand        ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand        => noahmp%config%domain%NumSwRadBand        ,& ! in,  number of solar radiation wave bands
               CosSolarZenithAngle => noahmp%config%domain%CosSolarZenithAngle ,& ! in,  cosine solar zenith angle
               SolarZenithAdjBats  => noahmp%energy%param%SolarZenithAdjBats   ,& ! in,  zenith angle snow albedo adjustment
               FreshSnoAlbVisBats  => noahmp%energy%param%FreshSnoAlbVisBats   ,& ! in,  new snow visible albedo
@@ -47,8 +47,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    AlbedoSnowDir(1:NumSWRadBand) = 0.0
-    AlbedoSnowDif(1:NumSWRadBand) = 0.0
+    AlbedoSnowDir(1:NumSwRadBand) = 0.0
+    AlbedoSnowDif(1:NumSwRadBand) = 0.0
 
     ! when CosSolarZenithAngle > 0
     SolarAngleFac    = SolarZenithAdjBats

@@ -63,7 +63,7 @@ contains
     noahmp%config%domain%VegType                     = undefined_int
     noahmp%config%domain%CropType                    = undefined_int
     noahmp%config%domain%SurfaceType                 = undefined_int
-    noahmp%config%domain%NumSWRadBand                = undefined_int
+    noahmp%config%domain%NumSwRadBand                = undefined_int
     noahmp%config%domain%SoilColor                   = undefined_int
     noahmp%config%domain%IndicatorIceSfc             = undefined_int
     noahmp%config%domain%NumCropGrowStage            = undefined_int

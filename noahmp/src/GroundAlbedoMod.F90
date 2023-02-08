@@ -28,7 +28,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand        => noahmp%config%domain%NumSWRadBand        ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand        => noahmp%config%domain%NumSwRadBand        ,& ! in,  number of solar radiation wave bands
               SurfaceType         => noahmp%config%domain%SurfaceType         ,& ! in,  surface type 1-soil; 2-lake
               CosSolarZenithAngle => noahmp%config%domain%CosSolarZenithAngle ,& ! in,  cosine solar zenith angle
               SnowCoverFrac       => noahmp%water%state%SnowCoverFrac         ,& ! in,  snow cover fraction
@@ -46,7 +46,7 @@ contains
              )
 ! ----------------------------------------------------------------------
 
-    do IndSwBnd = 1, NumSWRadBand
+    do IndSwBnd = 1, NumSwRadBand
 
        AlbedoSoilAdjWet = max(0.11-0.40*SoilMoisture(1), 0.0)
 

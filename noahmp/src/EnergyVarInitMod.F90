@@ -25,7 +25,7 @@ contains
     associate(                                                         &
               NumSnowLayerMax => noahmp%config%domain%NumSnowLayerMax ,&
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer    ,&
-              NumSWRadBand    => noahmp%config%domain%NumSWRadBand     &
+              NumSwRadBand    => noahmp%config%domain%NumSwRadBand     &
              )
     
     ! energy state variables
@@ -181,25 +181,25 @@ contains
     if ( .not. allocated(noahmp%energy%state%ThermConductGlaIce) )   &
        allocate( noahmp%energy%state%ThermConductGlaIce(1:NumSoilLayer) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSnowDir) )        &
-       allocate( noahmp%energy%state%AlbedoSnowDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSnowDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSnowDif) )        &
-       allocate( noahmp%energy%state%AlbedoSnowDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSnowDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSoilDir) )        &
-       allocate( noahmp%energy%state%AlbedoSoilDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSoilDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSoilDif) )        &
-       allocate( noahmp%energy%state%AlbedoSoilDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSoilDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoGrdDir) )         &
-       allocate( noahmp%energy%state%AlbedoGrdDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoGrdDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoGrdDif) )         &
-       allocate( noahmp%energy%state%AlbedoGrdDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoGrdDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%ReflectanceVeg) )       &
-       allocate( noahmp%energy%state%ReflectanceVeg(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%ReflectanceVeg(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%TransmittanceVeg) )     &
-       allocate( noahmp%energy%state%TransmittanceVeg(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%TransmittanceVeg(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSfcDir) )         &
-       allocate( noahmp%energy%state%AlbedoSfcDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSfcDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%state%AlbedoSfcDif) )         &
-       allocate( noahmp%energy%state%AlbedoSfcDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%state%AlbedoSfcDif(1:NumSwRadBand) )
  
     noahmp%energy%state%TemperatureSoilSnow (:)     = undefined_real
     noahmp%energy%state%ThermConductSoilSnow(:)     = undefined_real
@@ -262,29 +262,29 @@ contains
     noahmp%energy%flux%HeatLatentIrriEvap           = 0.0
  
     if ( .not. allocated(noahmp%energy%flux%RadSwAbsVegDir) )      &
-       allocate( noahmp%energy%flux%RadSwAbsVegDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwAbsVegDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwAbsVegDif) )      &
-       allocate( noahmp%energy%flux%RadSwAbsVegDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwAbsVegDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDirTranGrdDir) )  &
-       allocate( noahmp%energy%flux%RadSwDirTranGrdDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDirTranGrdDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDirTranGrdDif) )  &
-       allocate( noahmp%energy%flux%RadSwDirTranGrdDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDirTranGrdDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDifTranGrdDir) )  &
-       allocate( noahmp%energy%flux%RadSwDifTranGrdDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDifTranGrdDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDifTranGrdDif) )  &
-       allocate( noahmp%energy%flux%RadSwDifTranGrdDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDifTranGrdDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwReflVegDir) )     &
-       allocate( noahmp%energy%flux%RadSwReflVegDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwReflVegDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwReflVegDif) )     &
-       allocate( noahmp%energy%flux%RadSwReflVegDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwReflVegDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwReflGrdDir) )     &
-       allocate( noahmp%energy%flux%RadSwReflGrdDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwReflGrdDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwReflGrdDif) )     &
-       allocate( noahmp%energy%flux%RadSwReflGrdDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwReflGrdDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDownDir) )        &
-       allocate( noahmp%energy%flux%RadSwDownDir(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDownDir(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwDownDif) )        &
-       allocate( noahmp%energy%flux%RadSwDownDif(1:NumSWRadBand) )
+       allocate( noahmp%energy%flux%RadSwDownDif(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%flux%RadSwPenetrateGrd) )   &
        allocate( noahmp%energy%flux%RadSwPenetrateGrd(-NumSnowLayerMax+1:NumSoilLayer) )
     
@@ -357,25 +357,25 @@ contains
     if ( .not. allocated(noahmp%energy%param%SoilQuartzFrac) )     &
        allocate( noahmp%energy%param%SoilQuartzFrac(1:NumSoilLayer) )
     if ( .not. allocated(noahmp%energy%param%AlbedoSoilSat) )      &
-       allocate( noahmp%energy%param%AlbedoSoilSat(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%AlbedoSoilSat(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%AlbedoSoilDry) )      &
-       allocate( noahmp%energy%param%AlbedoSoilDry(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%AlbedoSoilDry(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%AlbedoLakeFrz) )      &
-       allocate( noahmp%energy%param%AlbedoLakeFrz(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%AlbedoLakeFrz(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%ScatterCoeffSnow) )   &
-       allocate( noahmp%energy%param%ScatterCoeffSnow(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%ScatterCoeffSnow(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%ReflectanceLeaf) )    &
-       allocate( noahmp%energy%param%ReflectanceLeaf(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%ReflectanceLeaf(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%ReflectanceStem) )    &
-       allocate( noahmp%energy%param%ReflectanceStem(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%ReflectanceStem(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%TransmittanceLeaf) )  &
-       allocate( noahmp%energy%param%TransmittanceLeaf(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%TransmittanceLeaf(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%TransmittanceStem) )  &
-       allocate( noahmp%energy%param%TransmittanceStem(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%TransmittanceStem(1:NumSwRadBand) )
     if ( .not. allocated(noahmp%energy%param%EmissivitySoilLake) ) &
        allocate( noahmp%energy%param%EmissivitySoilLake(1:2) )
     if ( .not. allocated(noahmp%energy%param%AlbedoLandIce) )      &
-       allocate( noahmp%energy%param%AlbedoLandIce(1:NumSWRadBand) )
+       allocate( noahmp%energy%param%AlbedoLandIce(1:NumSwRadBand) )
     
     noahmp%energy%param%LeafAreaIndexMon  (:)       = undefined_real
     noahmp%energy%param%StemAreaIndexMon  (:)       = undefined_real
