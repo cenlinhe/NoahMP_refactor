@@ -3,8 +3,8 @@ module SurfaceEnergyFluxVegetatedMod
 !!! Compute surface energy fluxes and budget for vegetated surface
 !!! Use newton-raphson iteration to solve for vegetation and ground temperatures
 !!! Surface energy balance:
-!!! Canopy level: -RadSwAbsVeg + RadLwNetCanopy + HeatSensibleCanopy + HeatLatentCanEvap + HeatLatentCanTransp + HeatCanStorageChg = 0
-!!! Ground level: -RadSwAbsGrd + RadLwNetVegGrd + HeatSensibleVegGrd + HeatLatentVegGrd + HeatGroundVegGrd = 0
+!!! Canopy level: -RadSwAbsVeg - HeatPrecipAdvCanopy + RadLwNetCanopy + HeatSensibleCanopy + HeatLatentCanEvap + HeatLatentCanTransp + HeatCanStorageChg = 0
+!!! Ground level: -RadSwAbsGrd - HeatPrecipAdvVegGrd + RadLwNetVegGrd + HeatSensibleVegGrd + HeatLatentVegGrd + HeatGroundVegGrd = 0
 
   use Machine
   use NoahmpVarType

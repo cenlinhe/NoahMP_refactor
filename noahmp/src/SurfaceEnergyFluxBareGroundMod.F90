@@ -3,7 +3,7 @@ module SurfaceEnergyFluxBareGroundMod
 !!! Compute surface energy fluxes and budget for bare ground
 !!! Use newton-raphson iteration to solve for ground temperatures
 !!! Surface energy balance (bare soil):
-!!! Ground level: -RadSwAbsGrd + RadLwNetBareGrd + HeatSensibleBareGrd + HeatLatentBareGrd + HeatGroundBareGrd = 0
+!!! Ground level: -RadSwAbsGrd - HeatPrecipAdvBareGrd + RadLwNetBareGrd + HeatSensibleBareGrd + HeatLatentBareGrd + HeatGroundBareGrd = 0
 
   use Machine
   use NoahmpVarType

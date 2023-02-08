@@ -118,7 +118,7 @@ contains
        GlacierPhaseChg(LoopInd1)        = EnergyRes(LoopInd1) * MainTimeStep / ConstLatHeatFusion
     enddo
 
-    ! The rate of melting and freezing for snow without a layer, needs more work.
+    ! The rate of melting for snow without a layer, needs more work.
     if ( OptGlacierTreatment == 2 ) then
        if ( (NumSnowLayerNeg == 0) .and. (SnowWaterEquiv > 0.0) .and. (TemperatureSoilSnow(1) > ConstFreezePoint) ) then
           EnergyRes(1)           = (TemperatureSoilSnow(1) - ConstFreezePoint) / PhaseChgFacSoilSnow(1)                     ! available heat
@@ -227,7 +227,7 @@ contains
           GlacierPhaseChg(LoopInd1) = EnergyRes(LoopInd1) * MainTimeStep / ConstLatHeatFusion
        enddo
 
-       ! The rate of melting and freezing for snow without a layer, needs more work.
+       ! The rate of melting for snow without a layer, needs more work.
        if ( (NumSnowLayerNeg == 0) .and. (SnowWaterEquiv > 0.0) .and. (GlacierPhaseChg(1) > 0.0) ) then
           SnowWaterPrev = SnowWaterEquiv
           SnowWaterEquiv     = max(0.0, SnowWaterPrev-GlacierPhaseChg(1))

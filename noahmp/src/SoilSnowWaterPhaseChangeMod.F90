@@ -5,7 +5,8 @@ module SoilSnowWaterPhaseChangeMod
   use Machine
   use NoahmpVarType
   use ConstantDefineMod
-  use SoilWaterSupercoolLiquidMod, only : SoilWaterSupercoolLiquid
+  use SoilWaterSupercoolKoren99Mod, only : SoilWaterSupercoolKoren99
+  use SoilWaterSupercoolNiu06Mod,   only : SoilWaterSupercoolNiu06
 
   implicit none
 
@@ -29,7 +30,6 @@ contains
     real(kind=kind_noahmp)                :: EnergyResLeft                  ! energy residual or loss after melting/freezing
     real(kind=kind_noahmp)                :: SnowWaterPrev                  ! old/previous snow water equivalent [kg/m2]
     real(kind=kind_noahmp)                :: SnowWaterRatio                 ! ratio of previous vs updated snow water equivalent 
-    real(kind=kind_noahmp)                :: SoilWatPotFrz                  ! frozen water potential [mm]
     real(kind=kind_noahmp)                :: HeatLhTotPhsChg                ! total latent heat of phase change
     real(kind=kind_noahmp), allocatable, dimension(:) :: EnergyRes          ! energy residual [w/m2]
     real(kind=kind_noahmp), allocatable, dimension(:) :: WaterPhaseChg      ! melting or freezing water [kg/m2]
@@ -110,17 +110,14 @@ contains
        do LoopInd = 1, NumSoilLayer
           if ( OptSoilSupercoolWater == 1 ) then
              if ( TemperatureSoilSnow(LoopInd) < ConstFreezePoint ) then
-                SoilWatPotFrz               = ConstLatHeatFusion * (ConstFreezePoint - TemperatureSoilSnow(LoopInd)) /   &
-                                              (ConstGravityAcc * TemperatureSoilSnow(LoopInd))
-                SoilSupercoolWater(LoopInd) = SoilMoistureSat(LoopInd) * (SoilWatPotFrz/SoilMatPotentialSat(LoopInd)) ** &
-                                                                         (-1.0 / SoilExpCoeffB(LoopInd))
+                call SoilWaterSupercoolNiu06(noahmp, LoopInd, SoilSupercoolWater(LoopInd),TemperatureSoilSnow(LoopInd))
                 SoilSupercoolWater(LoopInd) = SoilSupercoolWater(LoopInd) * ThicknessSnowSoilLayer(LoopInd) * 1000.0
              endif
           endif
           if ( OptSoilSupercoolWater == 2 ) then
              if ( TemperatureSoilSnow(LoopInd) < ConstFreezePoint ) then
-                call SoilWaterSupercoolLiquid(noahmp, LoopInd, SoilSupercoolWater(LoopInd), &
-                                              TemperatureSoilSnow(LoopInd), SoilMoisture(LoopInd), SoilLiqWater(LoopInd))
+                call SoilWaterSupercoolKoren99(noahmp, LoopInd, SoilSupercoolWater(LoopInd), &
+                                               TemperatureSoilSnow(LoopInd), SoilMoisture(LoopInd), SoilLiqWater(LoopInd))
                 SoilSupercoolWater(LoopInd) = SoilSupercoolWater(LoopInd) * ThicknessSnowSoilLayer(LoopInd) * 1000.0
              endif
           endif
@@ -161,7 +158,7 @@ contains
        WaterPhaseChg(LoopInd) = EnergyRes(LoopInd) * MainTimeStep / ConstLatHeatFusion
     enddo
 
-    !--- The rate of melting and freezing for snow without a layer, needs more work.
+    !--- The rate of melting for snow without a layer, needs more work.
     if ( (NumSnowLayerNeg == 0) .and. (SnowWaterEquiv > 0.0) .and. (WaterPhaseChg(1) > 0.0) ) then
        SnowWaterPrev  = SnowWaterEquiv
        SnowWaterEquiv = max(0.0, SnowWaterPrev-WaterPhaseChg(1))

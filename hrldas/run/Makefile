@@ -139,7 +139,8 @@ OBJS = \
         ../../noahmp/src/SoilSnowTemperatureSolverMod.o \
         ../../noahmp/src/SoilSnowThermalDiffusionMod.o \
         ../../noahmp/src/SoilSnowWaterPhaseChangeMod.o \
-        ../../noahmp/src/SoilWaterSupercoolLiquidMod.o \
+        ../../noahmp/src/SoilWaterSupercoolKoren99Mod.o \
+        ../../noahmp/src/SoilWaterSupercoolNiu06Mod.o \
         ../../noahmp/src/SnowCoverGroundNiu07Mod.o \
         ../../noahmp/src/GroundRoughnessPropertyMod.o \
         ../../noahmp/src/SurfaceEmissivityMod.o \

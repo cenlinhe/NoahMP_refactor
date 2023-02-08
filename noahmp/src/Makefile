@@ -88,7 +88,8 @@ OBJS = ConstantDefineMod.o \
        SoilSnowTemperatureSolverMod.o \
        SoilSnowThermalDiffusionMod.o \
        SoilSnowWaterPhaseChangeMod.o \
-       SoilWaterSupercoolLiquidMod.o \
+       SoilWaterSupercoolKoren99Mod.o \
+       SoilWaterSupercoolNiu06Mod.o \
        SnowCoverGroundNiu07Mod.o \
        GroundRoughnessPropertyMod.o \
        SurfaceEmissivityMod.o \
@@ -287,9 +288,10 @@ SoilSnowTemperatureSolverMod.o:          ../utility/Machine.o NoahmpVarType.o Co
 SoilSnowThermalDiffusionMod.o:           ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 SoilSnowTemperatureMainMod.o:            ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o \
                                          SoilSnowTemperatureSolverMod.o SoilSnowThermalDiffusionMod.o
-SoilWaterSupercoolLiquidMod.o:           ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
+SoilWaterSupercoolKoren99Mod.o:          ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
+SoilWaterSupercoolNiu06Mod.o:            ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 SoilSnowWaterPhaseChangeMod.o:           ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o \
-                                         SoilWaterSupercoolLiquidMod.o
+                                         SoilWaterSupercoolKoren99Mod.o SoilWaterSupercoolNiu06Mod.o
 GroundRoughnessPropertyMod.o:            ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 PsychrometricVariableMod.o:              ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 ResistanceGroundEvaporationMod.o:        ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
