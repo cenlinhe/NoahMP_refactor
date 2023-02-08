@@ -29,7 +29,7 @@ module WaterVarType
     real(kind=kind_noahmp) :: FrostCanopyIce             ! canopy ice frost rate [mm/s]
     real(kind=kind_noahmp) :: SublimCanopyIce            ! canopy ice sublimation rate [mm/s]
     real(kind=kind_noahmp) :: MeltCanopyIce              ! canopy ice melting rate [mm/s]
-    real(kind=kind_noahmp) :: RefrzCanopyLiq             ! canopy water refreezing rate [mm/s]
+    real(kind=kind_noahmp) :: FreezeCanopyLiq            ! canopy water freezing rate [mm/s]
     real(kind=kind_noahmp) :: SnowfallGround             ! snowfall on the ground (below canopy) [mm/s]
     real(kind=kind_noahmp) :: SnowDepthIncr              ! snow depth increasing rate [m/s] due to snowfall
     real(kind=kind_noahmp) :: FrostSnowSfcIce            ! snow surface ice frost rate[mm/s]

@@ -45,7 +45,7 @@ contains
        noahmp%water%flux%ThroughfallRain     = noahmp%water%flux%RainfallRefHeight
        noahmp%water%flux%SublimCanopyIce     = 0.0
        noahmp%water%flux%FrostCanopyIce      = 0.0
-       noahmp%water%flux%RefrzCanopyLiq      = 0.0
+       noahmp%water%flux%FreezeCanopyLiq     = 0.0
        noahmp%water%flux%MeltCanopyIce       = 0.0
        noahmp%water%flux%EvapCanopyLiq       = 0.0
        noahmp%water%flux%DewCanopyLiq        = 0.0
@@ -102,7 +102,7 @@ contains
     NoahmpIO%QFROCXY     (I,J) = noahmp%water%flux%FrostCanopyIce
     NoahmpIO%QEVACXY     (I,J) = noahmp%water%flux%EvapCanopyLiq
     NoahmpIO%QDEWCXY     (I,J) = noahmp%water%flux%DewCanopyLiq
-    NoahmpIO%QFRZCXY     (I,J) = noahmp%water%flux%RefrzCanopyLiq
+    NoahmpIO%QFRZCXY     (I,J) = noahmp%water%flux%FreezeCanopyLiq
     NoahmpIO%QMELTCXY    (I,J) = noahmp%water%flux%MeltCanopyIce
     NoahmpIO%QSNBOTXY    (I,J) = noahmp%water%flux%SnowBotOutflow
     NoahmpIO%QMELTXY     (I,J) = noahmp%water%flux%MeltGroundSnow

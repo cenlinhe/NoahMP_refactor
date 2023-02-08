@@ -151,7 +151,7 @@ contains
     noahmp%water%flux%FrostCanopyIce               = undefined_real
     noahmp%water%flux%SublimCanopyIce              = undefined_real
     noahmp%water%flux%MeltCanopyIce                = undefined_real
-    noahmp%water%flux%RefrzCanopyLiq               = undefined_real
+    noahmp%water%flux%FreezeCanopyLiq              = undefined_real
     noahmp%water%flux%SnowfallGround               = undefined_real
     noahmp%water%flux%SnowDepthIncr                = undefined_real
     noahmp%water%flux%FrostSnowSfcIce              = undefined_real

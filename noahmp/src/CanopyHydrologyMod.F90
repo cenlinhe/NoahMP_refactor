@@ -47,7 +47,7 @@ contains
               FrostCanopyIce    => noahmp%water%flux%FrostCanopyIce      ,& ! out,   canopy ice frost rate [mm/s]
               SublimCanopyIce   => noahmp%water%flux%SublimCanopyIce     ,& ! out,   canopy ice sublimation rate [mm/s]
               MeltCanopyIce     => noahmp%water%flux%MeltCanopyIce       ,& ! out,   canopy ice melting rate [mm/s]
-              RefrzCanopyLiq    => noahmp%water%flux%RefrzCanopyLiq       & ! out,   canopy water refreezing rate [mm/s]
+              FreezeCanopyLiq   => noahmp%water%flux%FreezeCanopyLiq      & ! out,   canopy water freezing rate [mm/s]
              )
 ! --------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ contains
     FrostCanopyIce    = 0.0
     SublimCanopyIce   = 0.0
     MeltCanopyIce     = 0.0
-    RefrzCanopyLiq    = 0.0
+    FreezeCanopyLiq   = 0.0
     CanopyLiqWaterMax = 0.0
     CanopyIceMax      = 0.0
     CanopyWetFrac     = 0.0
@@ -120,9 +120,9 @@ contains
 
     ! canopy water refreeezing
     if ( (CanopyLiqWater > 1.0e-6) .and. (TemperatureCanopy < ConstFreezePoint) ) then
-       RefrzCanopyLiq    = min( CanopyLiqWater/MainTimeStep, (ConstFreezePoint-TemperatureCanopy) * ConstHeatCapacWater * &
+       FreezeCanopyLiq   = min( CanopyLiqWater/MainTimeStep, (ConstFreezePoint-TemperatureCanopy) * ConstHeatCapacWater * &
                                 CanopyLiqWater / ConstDensityWater / (MainTimeStep*ConstLatHeatFusion) )
-       CanopyLiqWater    = max( 0.0, CanopyLiqWater - RefrzCanopyLiq*MainTimeStep )
+       CanopyLiqWater    = max( 0.0, CanopyLiqWater - FreezeCanopyLiq*MainTimeStep )
        CanopyIce         = max( 0.0, CanopyTotalWater - CanopyLiqWater )
        TemperatureCanopy = CanopyWetFrac*ConstFreezePoint + (1.0 - CanopyWetFrac)*TemperatureCanopy
     endif
