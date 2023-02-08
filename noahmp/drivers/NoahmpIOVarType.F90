@@ -700,7 +700,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:)      :: HVB_TABLE                 ! bottom of canopy (m)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: DEN_TABLE                 ! tree density (no. of trunks per m2)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: RC_TABLE                  ! tree crown radius (m)
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: MFSNO_TABLE               ! snowmelt curve parameter ()
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: MFSNO_TABLE               ! snowmelt curve parameter
     real(kind=kind_noahmp), allocatable, dimension(:)      :: SCFFAC_TABLE              ! snow cover factor (m) (replace original hard-coded 2.5*z0 in SCF formulation)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: CBIOM_TABLE               ! canopy biomass heat capacity parameter (m) 
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: SAIM_TABLE                ! monthly stem area index, one-sided
@@ -715,13 +715,13 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AKC_TABLE                 ! q10 for kc25
     real(kind=kind_noahmp), allocatable, dimension(:)      :: KO25_TABLE                ! o2 michaelis-menten constant at 25c (pa)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AKO_TABLE                 ! q10 for ko25
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: VCMX25_TABLE              ! maximum rate of carboxylation at 25c (umol co2/m**2/s)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: VCMX25_TABLE              ! maximum rate of carboxylation at 25c (umol co2/m2/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AVCMX_TABLE               ! q10 for vcmx25
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: BP_TABLE                  ! minimum leaf conductance (umol/m**2/s)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: BP_TABLE                  ! minimum leaf conductance (umol/m2/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: MP_TABLE                  ! slope of conductance-to-photosynthesis relationship
     real(kind=kind_noahmp), allocatable, dimension(:)      :: QE25_TABLE                ! quantum efficiency at 25c (umol co2 / umol photon)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AQE_TABLE                 ! q10 for qe25
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: RMF25_TABLE               ! leaf maintenance respiration at 25c (umol co2/m**2/s)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: RMF25_TABLE               ! leaf maintenance respiration at 25c (umol co2/m2/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: RMS25_TABLE               ! stem maintenance respiration at 25c (umol co2/kg bio/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: RMR25_TABLE               ! root maintenance respiration at 25c (umol co2/kg bio/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: ARM_TABLE                 ! q10 for maintenance respiration
@@ -816,16 +816,16 @@ module NoahmpIOVarType
 
     ! tile drainage parameters
     integer                                                :: DRAIN_LAYER_OPT_TABLE     ! tile drainage layer
-    integer               , allocatable, dimension(:)      :: TD_DEPTH_TABLE            ! tile drainage depth
+    integer               , allocatable, dimension(:)      :: TD_DEPTH_TABLE            ! tile drainage depth (layer number) from soil surface
     real(kind=kind_noahmp), allocatable, dimension(:)      :: TDSMC_FAC_TABLE           ! tile drainage soil moisture factor
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DC_TABLE               ! tile drainage coefficient
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DCOEF_TABLE            ! tile drainage coefficient
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_D_TABLE                ! tile drainage depth
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_ADEPTH_TABLE           ! tile drainage mean depth
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_RADI_TABLE             ! tile drainage tube radius
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_SPAC_TABLE             ! tile drainage spacing
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DDRAIN_TABLE           ! tile drainage depth
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: KLAT_FAC_TABLE            ! hydraulic conductivity factor
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DC_TABLE               ! tile drainage coefficient [mm/d]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DCOEF_TABLE            ! tile drainage coefficient [mm/d]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_D_TABLE                ! depth to impervious layer from drain water level [m]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_ADEPTH_TABLE           ! actual depth of impervious layer from land surface [m]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_RADI_TABLE             ! effective radius of drain tubes [m]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_SPAC_TABLE             ! distance between two drain tubes or tiles [m]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: TD_DDRAIN_TABLE           ! tile drainage depth [m]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: KLAT_FAC_TABLE            ! hydraulic conductivity mutiplification factor
 
     ! crop parameters
     integer                                                :: DEFAULT_CROP_TABLE        ! Default crop index
@@ -845,14 +845,14 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AKCI_TABLE                ! q10 for kc25
     real(kind=kind_noahmp), allocatable, dimension(:)      :: KO25I_TABLE               ! o2 michaelis-menten constant at 25c (pa)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AKOI_TABLE                ! q10 for ko25
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: VCMX25I_TABLE             ! maximum rate of carboxylation at 25c (umol co2/m**2/s)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: VCMX25I_TABLE             ! maximum rate of carboxylation at 25c (umol co2/m2/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AVCMXI_TABLE              ! q10 for vcmx25
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: BPI_TABLE                 ! minimum leaf conductance (umol/m**2/s)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: BPI_TABLE                 ! minimum leaf conductance (umol/m2/s)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: MPI_TABLE                 ! slope of conductance-to-photosynthesis relationship
     real(kind=kind_noahmp), allocatable, dimension(:)      :: QE25I_TABLE               ! quantum efficiency at 25c (umol co2 / umol photon)
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: FOLNMXI_TABLE             ! foliage nitrogen concentration when
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: FOLNMXI_TABLE             ! foliage nitrogen concentration when f(n)=1 (%)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: AREF_TABLE                ! reference maximum CO2 assimulation rate 
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: PSNRF_TABLE               ! CO2 assimulation reduction factor(0-1) (caused by non-modeling part,e.g.pest,weeds)
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: PSNRF_TABLE               ! CO2 assimulation reduction factor(0-1) (caused by non-modeled part, pest,weeds)
     real(kind=kind_noahmp), allocatable, dimension(:)      :: I2PAR_TABLE               ! Fraction of incoming solar radiation to photosynthetically active radiation
     real(kind=kind_noahmp), allocatable, dimension(:)      :: TASSIM0_TABLE             ! Minimum temperature for CO2 assimulation [C]
     real(kind=kind_noahmp), allocatable, dimension(:)      :: TASSIM1_TABLE             ! CO2 assimulation linearly increasing until temperature reaches T1 [C]
@@ -867,7 +867,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: LF_OVRC_TABLE             ! fraction of leaf turnover  [1/s]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: ST_OVRC_TABLE             ! fraction of stem turnover  [1/s]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: RT_OVRC_TABLE             ! fraction of root tunrover  [1/s]
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: LFMR25_TABLE              ! leaf maintenance respiration at 25C [umol CO2/m**2  /s]
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: LFMR25_TABLE              ! leaf maintenance respiration at 25C [umol CO2/m2/s]
     real(kind=kind_noahmp), allocatable, dimension(:)      :: STMR25_TABLE              ! stem maintenance respiration at 25C [umol CO2/kg bio/s]
     real(kind=kind_noahmp), allocatable, dimension(:)      :: RTMR25_TABLE              ! root maintenance respiration at 25C [umol CO2/kg bio/s]
     real(kind=kind_noahmp), allocatable, dimension(:)      :: GRAINMR25_TABLE           ! grain maintenance respiration at 25C [umol CO2/kg bio/s]
@@ -876,9 +876,9 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: RTPT_TABLE                ! fraction of carbohydrate flux to root
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: GRAINPT_TABLE             ! fraction of carbohydrate flux to grain
     real(kind=kind_noahmp), allocatable, dimension(:,:)    :: LFCT_TABLE                ! fraction of carbohydrate translocation from leaf to grain 
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    :: STCT_TABLE                ! stem to grain
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    :: RTCT_TABLE                ! root to grain
-    real(kind=kind_noahmp), allocatable, dimension(:)      :: BIO2LAI_TABLE             ! leaf are per living leaf biomass [m^2/kg]
+    real(kind=kind_noahmp), allocatable, dimension(:,:)    :: STCT_TABLE                ! fraction of carbohydrate translocation from stem to grain
+    real(kind=kind_noahmp), allocatable, dimension(:,:)    :: RTCT_TABLE                ! fraction of carbohydrate translocation from root to grain
+    real(kind=kind_noahmp), allocatable, dimension(:)      :: BIO2LAI_TABLE             ! leaf area per living leaf biomass [m2/kg]
 
     ! soil parameters
     integer                                                :: SLCATS_TABLE              ! number of soil categories

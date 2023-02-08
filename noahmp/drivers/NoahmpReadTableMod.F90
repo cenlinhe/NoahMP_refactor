@@ -53,7 +53,7 @@ contains
                                               AKC, KO25, AKO, AVCMX, AQE, LTOVRC, DILEFC, DILEFW, RMF25, SLA, FRAGR, TMIN,   &
                                               VCMX25, TDLEF, BP, MP, QE25, RMS25, RMR25, ARM, FOLNMX, WDPOOL, WRRAT, MRP,    &
                                               NROOT, RGL, RS, HS, TOPT, RSMAX, RTOVRC, RSWOODC, BF, WSTRC, LAIMIN, CBIOM,    &
-                                              XSAMIN, EPS1, EPS2, EPS3, EPS4, EPS5
+                                              XSAMIN
     namelist / noahmp_usgs_veg_categories /   VEG_DATASET_DESCRIPTION, NVEG
     namelist / noahmp_usgs_parameters     /   ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL, URBTYPE_beg,    &
                                               LCZ_1, LCZ_2, LCZ_3, LCZ_4, LCZ_5, LCZ_6, LCZ_7, LCZ_8, LCZ_9, LCZ_10, LCZ_11, &
@@ -65,7 +65,7 @@ contains
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
                                               LAI_OCT, LAI_NOV, LAI_DEC, RHOL_VIS, RHOL_NIR, RHOS_VIS, RHOS_NIR, TAUL_VIS,   &
-                                              TAUL_NIR, TAUS_VIS, TAUS_NIR, EPS1, EPS2, EPS3, EPS4, EPS5
+                                              TAUL_NIR, TAUS_VIS, TAUS_NIR
     namelist / noahmp_modis_veg_categories /  VEG_DATASET_DESCRIPTION, NVEG
     namelist / noahmp_modis_parameters     /  ISURBAN, ISWATER, ISBARREN, ISICE, ISCROP, EBLFOREST, NATURAL, URBTYPE_beg,    &
                                               LCZ_1, LCZ_2, LCZ_3, LCZ_4, LCZ_5, LCZ_6, LCZ_7, LCZ_8, LCZ_9, LCZ_10, LCZ_11, &
@@ -77,7 +77,7 @@ contains
                                               SAI_JUN, SAI_JUL, SAI_AUG, SAI_SEP, SAI_OCT, SAI_NOV, SAI_DEC, LAI_JAN,        &
                                               LAI_FEB, LAI_MAR, LAI_APR, LAI_MAY, LAI_JUN, LAI_JUL, LAI_AUG, LAI_SEP,        &
                                               LAI_OCT, LAI_NOV, LAI_DEC, RHOL_VIS, RHOL_NIR, RHOS_VIS, RHOS_NIR, TAUL_VIS,   &
-                                              TAUL_NIR, TAUS_VIS, TAUS_NIR, EPS1, EPS2, EPS3, EPS4, EPS5
+                                              TAUL_NIR, TAUS_VIS, TAUS_NIR
 
     ! soil parameters
     character(len=256)                             :: message
