@@ -170,7 +170,7 @@ contains
              endif
              ! Decrease the number of snow layers
              NumSnowLayerNeg = NumSnowLayerNeg + 1
-             if ( NumSnowLayerNeg >= -1 ) EXIT
+             if ( NumSnowLayerNeg >= -1 ) Exit
           else 
              ! The layer thickness is greater than the prescribed minimum value
              IndLayer = IndLayer + 1

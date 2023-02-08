@@ -174,11 +174,7 @@ OBJS = \
         ../../noahmp/src/PsychrometricVariableGlacierMod.o \
         ../../noahmp/src/ResistanceGroundEvaporationGlacierMod.o \
         ../../noahmp/src/SnowCoverGlacierMod.o \
-        ../../noahmp/src/SnowLayerCombineGlacierMod.o \
-        ../../noahmp/src/SnowLayerDivideGlacierMod.o \
         ../../noahmp/src/SnowWaterMainGlacierMod.o \
-        ../../noahmp/src/SnowfallGlacierMod.o \
-        ../../noahmp/src/SnowpackCompactionGlacierMod.o \
         ../../noahmp/src/SnowpackHydrologyGlacierMod.o \
         ../../noahmp/src/SurfaceAlbedoGlacierMod.o \
         ../../noahmp/src/SurfaceEmissivityGlacierMod.o \

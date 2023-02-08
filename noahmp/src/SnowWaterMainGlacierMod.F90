@@ -6,11 +6,11 @@ module SnowWaterMainGlacierMod
   use Machine
   use NoahmpVarType
   use ConstantDefineMod
-  use SnowfallGlacierMod,            only : SnowfallGlacier
-  use SnowpackCompactionGlacierMod,  only : SnowpackCompactionGlacier
-  use SnowLayerCombineGlacierMod,    only : SnowLayerCombineGlacier
-  use SnowLayerDivideGlacierMod,     only : SnowLayerDivideGlacier
-  use SnowpackHydrologyGlacierMod,   only : SnowpackHydrologyGlacier
+  use SnowfallBelowCanopyMod,      only : SnowfallAfterCanopyIntercept
+  use SnowpackCompactionMod,       only : SnowpackCompaction
+  use SnowLayerCombineMod,         only : SnowLayerCombine
+  use SnowLayerDivideMod,          only : SnowLayerDivide
+  use SnowpackHydrologyGlacierMod, only : SnowpackHydrologyGlacier
 
   implicit none
 
@@ -59,18 +59,18 @@ contains
     PondSfcThinSnwTrans = 0.0
 
     ! snowfall
-    call SnowfallGlacier(noahmp)
+    call SnowfallAfterCanopyIntercept(noahmp)
 
     ! do following snow layer compaction, combination, and division only for multi-layer snowpack
 
     ! snowpack compaction
-    if ( NumSnowLayerNeg < 0 ) call SnowpackCompactionGlacier(noahmp)
+    if ( NumSnowLayerNeg < 0 ) call SnowpackCompaction(noahmp)
 
     ! snow layer combination
-    if ( NumSnowLayerNeg < 0 ) call SnowLayerCombineGlacier(noahmp)
+    if ( NumSnowLayerNeg < 0 ) call SnowLayerCombine(noahmp)
 
     ! snow layer division
-    if ( NumSnowLayerNeg < 0 ) call SnowLayerDivideGlacier(noahmp)
+    if ( NumSnowLayerNeg < 0 ) call SnowLayerDivide(noahmp)
 
     ! snow hydrology for all snow cases
     call SnowpackHydrologyGlacier(noahmp)

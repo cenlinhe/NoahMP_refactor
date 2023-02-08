@@ -6,7 +6,7 @@ module SnowpackHydrologyGlacierMod
   use Machine
   use NoahmpVarType
   use ConstantDefineMod
-  use SnowLayerCombineGlacierMod, only : SnowLayerCombineGlacier
+  use SnowLayerCombineMod, only : SnowLayerCombine
 
   implicit none
 
@@ -116,7 +116,7 @@ contains
     if ( NumSnowLayerNeg < 0 ) then
       SnowIceTmp = SnowIce(NumSnowLayerNeg+1) - SublimSnowSfcIce*MainTimeStep + FrostSnowSfcIce*MainTimeStep
       SnowIce(NumSnowLayerNeg+1) = SnowIceTmp
-      if ( (SnowIceTmp < 1.0e-6) .and. (NumSnowLayerNeg < 0) ) call SnowLayerCombineGlacier(noahmp)
+      if ( (SnowIceTmp < 1.0e-6) .and. (NumSnowLayerNeg < 0) ) call SnowLayerCombine(noahmp)
       if ( NumSnowLayerNeg < 0 ) then
          SnowLiqWater(NumSnowLayerNeg+1) = SnowLiqWater(NumSnowLayerNeg+1) + RainfallGround * MainTimeStep
          SnowLiqWater(NumSnowLayerNeg+1) = max(0.0, SnowLiqWater(NumSnowLayerNeg+1))
