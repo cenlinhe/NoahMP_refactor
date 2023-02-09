@@ -19,7 +19,7 @@ contains
 
     implicit none 
     
-    type(NoahmpIO_type)    :: NoahmpIO
+    type(NoahmpIO_type), intent(inout) :: NoahmpIO
     
 ! local variables
     integer                                                               :: I,J,IZ,itf,jtf
