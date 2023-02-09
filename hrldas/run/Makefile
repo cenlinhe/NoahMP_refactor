@@ -35,25 +35,25 @@ OBJS = \
         ../Utility_routines/module_wrf_error.o \
 	../Utility_routines/module_ra_gfdleta.o \
         ../Utility_routines/module_domain.o\
-        ../../noahmp/drivers/NoahmpDriverMainMod.o \
-        ../../noahmp/drivers/NoahmpInitMainMod.o \
-        ../../noahmp/drivers/NoahmpGroundwaterInitMod.o \
-        ../../noahmp/drivers/NoahmpSnowInitMod.o \
-        ../../noahmp/drivers/NoahmpIOVarType.o \
-        ../../noahmp/drivers/NoahmpIOVarInitMod.o \
-        ../../noahmp/drivers/NoahmpReadNamelistMod.o \
-        ../../noahmp/drivers/NoahmpReadTableMod.o \
-        ../../noahmp/drivers/ConfigVarOutTransferMod.o \
-        ../../noahmp/drivers/ForcingVarOutTransferMod.o \
-        ../../noahmp/drivers/EnergyVarOutTransferMod.o \
-        ../../noahmp/drivers/WaterVarOutTransferMod.o \
-        ../../noahmp/drivers/BiochemVarOutTransferMod.o \
-        ../../noahmp/drivers/ConfigVarInTransferMod.o \
-        ../../noahmp/drivers/ForcingVarInTransferMod.o \
-        ../../noahmp/drivers/EnergyVarInTransferMod.o \
-        ../../noahmp/drivers/WaterVarInTransferMod.o \
-        ../../noahmp/drivers/BiochemVarInTransferMod.o \
-        ../../noahmp/drivers/PedoTransferSR2006.o \
+        ../../noahmp/drivers/hrldas/NoahmpDriverMainMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpInitMainMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpGroundwaterInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpSnowInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpIOVarType.o \
+        ../../noahmp/drivers/hrldas/NoahmpIOVarInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpReadNamelistMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpReadTableMod.o \
+        ../../noahmp/drivers/hrldas/ConfigVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/ForcingVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/EnergyVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/WaterVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/BiochemVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/ConfigVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/ForcingVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/EnergyVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/WaterVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/BiochemVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/PedoTransferSR2006.o \
         ../../noahmp/utility/Machine.o \
         ../../noahmp/utility/CheckNanMod.o \
         ../../noahmp/src/ConstantDefineMod.o \
@@ -191,7 +191,7 @@ hrldas.exe: $(OBJS)
 	@echo ""
 	echo "${TAO_FORTRAN_LIB} ${TAO_LIB} ${PETSC_LIB} ${PHDF5_INC} -Wl,-rpath,${TACC_HDF5_LIB} -L${TACC_HDF5_LIB} -lhdf5 -lz"
 # We have to include the modules built in ../IO_code 
-	$(COMPILERF90) -o $(@) -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o $(@) -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers/hrldas \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP) $(HYDRO_LIB) $(RAPID_LIB) $(NETCDFLIB) $(RAPID_MACRO)
 
 	@echo ""
@@ -199,7 +199,7 @@ hrldas.exe: $(OBJS)
 # Template to create the exe file based on different land model. Such as NoahMP
 NoahMP: $(OBJS)
 	@echo ""
-	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers/hrldas \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP)  $(HYDRO_LIB) $(NETCDFLIB)
 	@echo ""
 

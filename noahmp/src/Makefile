@@ -144,7 +144,7 @@ GroundWaterMmfMod.o: GroundWaterMmfMod.F90
 	@echo ""
 
 .F90.o:
-	$(COMPILERF90) -c $(F90FLAGS) $(FREESOURCE) -I../utility -I../drivers $(NETCDFMOD) $(*).F90
+	$(COMPILERF90) -c $(F90FLAGS) $(FREESOURCE) -I../utility -I../drivers/hrldas $(NETCDFMOD) $(*).F90
 
 clean:
 	rm -f *.o *.mod *.exe
@@ -310,7 +310,7 @@ BiochemCropMainMod.o:                    ../utility/Machine.o NoahmpVarType.o Co
 IrrigationPrepareMod.o:                  ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o IrrigationTriggerMod.o
 BalanceErrorCheckMod.o:                  ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 GeneralInitMod.o:                        ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
-GroundWaterMmfMod.o:                     ../utility/Machine.o NoahmpVarType.o ../drivers/NoahmpIOVarType.o 
+GroundWaterMmfMod.o:                     ../utility/Machine.o NoahmpVarType.o ../drivers/hrldas/NoahmpIOVarType.o 
 BalanceErrorCheckGlacierMod.o:           ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o
 EnergyMainGlacierMod.o:                  ../utility/Machine.o NoahmpVarType.o ConstantDefineMod.o SnowCoverGlacierMod.o \
                                          GroundRoughnessPropertyGlacierMod.o GroundThermalPropertyGlacierMod.o \
