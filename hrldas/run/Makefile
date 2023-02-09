@@ -22,12 +22,12 @@ OBJS_NoahMP = ../IO_code/module_NoahMP_hrldas_driver.o
 OBJS = \
 	../IO_code/main_hrldas_driver.o \
 	../IO_code/module_hrldas_netcdf_io.o \
-        ../../wrf/module_bep_bem_helper.o \
-	../../wrf/module_sf_urban.o \
-	../../wrf/module_sf_bep.o \
-	../../wrf/module_sf_bem.o \
-	../../wrf/module_sf_bep_bem.o \
-        ../../wrf/NoahmpUrbanDriverMainMod.o \
+        ../../urban/wrf/module_bep_bem_helper.o \
+	../../urban/wrf/module_sf_urban.o \
+	../../urban/wrf/module_sf_bep.o \
+	../../urban/wrf/module_sf_bem.o \
+	../../urban/wrf/module_sf_bep_bem.o \
+        ../../urban/wrf/NoahmpUrbanDriverMainMod.o \
 	../Utility_routines/module_wrf_utilities.o \
 	../Utility_routines/module_model_constants.o \
 	../Utility_routines/module_date_utilities.o \
@@ -191,7 +191,7 @@ hrldas.exe: $(OBJS)
 	@echo ""
 	echo "${TAO_FORTRAN_LIB} ${TAO_LIB} ${PETSC_LIB} ${PHDF5_INC} -Wl,-rpath,${TACC_HDF5_LIB} -L${TACC_HDF5_LIB} -lhdf5 -lz"
 # We have to include the modules built in ../IO_code 
-	$(COMPILERF90) -o $(@) -I../IO_code -I../../wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o $(@) -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP) $(HYDRO_LIB) $(RAPID_LIB) $(NETCDFLIB) $(RAPID_MACRO)
 
 	@echo ""
@@ -199,7 +199,7 @@ hrldas.exe: $(OBJS)
 # Template to create the exe file based on different land model. Such as NoahMP
 NoahMP: $(OBJS)
 	@echo ""
-	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP)  $(HYDRO_LIB) $(NETCDFLIB)
 	@echo ""
 
