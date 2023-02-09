@@ -58,7 +58,6 @@ contains
     allocate ( NoahmpIO%P8W          (XSTART:XEND,KDS:KDE,YSTART:YEND) )    ! 3D pressure, valid at interface [Pa]
     allocate ( NoahmpIO%RAINBL       (XSTART:XEND,YSTART:YEND) )            ! total precipitation entering land model [mm] per time step
     allocate ( NoahmpIO%SNOWBL       (XSTART:XEND,YSTART:YEND) )            ! snow entering land model [mm] per time step
-    allocate ( NoahmpIO%RAINBL_tmp   (XSTART:XEND,YSTART:YEND) )            ! precipitation entering land model [mm]
     allocate ( NoahmpIO%SR           (XSTART:XEND,YSTART:YEND) )            ! frozen precip ratio entering land model [-]
     allocate ( NoahmpIO%RAINCV       (XSTART:XEND,YSTART:YEND) )            ! convective precip forcing [mm]
     allocate ( NoahmpIO%RAINNCV      (XSTART:XEND,YSTART:YEND) )            ! non-convective precip forcing [mm]
@@ -505,7 +504,6 @@ contains
     NoahmpIO%P8W             = undefined_real
     NoahmpIO%RAINBL          = undefined_real
     NoahmpIO%SNOWBL          = undefined_real
-    NoahmpIO%RAINBL_tmp      = undefined_real
     NoahmpIO%SR              = undefined_real
     NoahmpIO%RAINCV          = undefined_real
     NoahmpIO%RAINNCV         = undefined_real

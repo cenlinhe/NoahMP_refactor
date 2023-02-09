@@ -585,7 +585,6 @@ contains
      NoahmpIO%SH2O       =  huge(1.0)
      NoahmpIO%CANLIQXY   =  huge(1.0)
      NoahmpIO%TSK        =  huge(1.0)
-     NoahmpIO%RAINBL_tmp =  huge(1.0)
      NoahmpIO%SNOW       =  huge(1.0)
      NoahmpIO%SNOWH      =  huge(1.0)
 
@@ -819,7 +818,7 @@ contains
                              NoahmpIO%forcing_name_SN,NoahmpIO%T_PHY(:,1,:),         &
                              NoahmpIO%QV_CURR(:,1,:),NoahmpIO%U_PHY(:,1,:),          &
                              NoahmpIO%V_PHY(:,1,:),NoahmpIO%P8W(:,1,:), NoahmpIO%GLW,&
-                             NoahmpIO%SWDOWN, NoahmpIO%RAINBL_tmp, NoahmpIO%SNOWBL,  &
+                             NoahmpIO%SWDOWN, NoahmpIO%RAINBL, NoahmpIO%SNOWBL,      &
                              NoahmpIO%VEGFRA, NoahmpIO%update_veg, NoahmpIO%LAI,     &
                              NoahmpIO%update_lai, NoahmpIO%reset_spinup_date,        &
                              NoahmpIO%startdate)
@@ -832,7 +831,7 @@ contains
                                        NoahmpIO%xstart, NoahmpIO%xend, NoahmpIO%ystart, NoahmpIO%yend,          &
                                        NoahmpIO%T_PHY(:,1,:),NoahmpIO%QV_CURR(:,1,:),NoahmpIO%U_PHY(:,1,:),     &
                                        NoahmpIO%V_PHY(:,1,:),NoahmpIO%P8W(:,1,:), NoahmpIO%GLW,                 &   
-                                       NoahmpIO%SWDOWN,NoahmpIO%RAINBL_tmp,NoahmpIO%LAI,NoahmpIO%VEGFRA,        &
+                                       NoahmpIO%SWDOWN,NoahmpIO%RAINBL,NoahmpIO%LAI,NoahmpIO%VEGFRA,            &
                                        NoahmpIO%SNOWH,ITIME,NoahmpIO%FORCING_TIMESTEP,NoahmpIO%prcp0)
 
            call geth_newdate(NoahmpIO%newdate, forcDate, NoahmpIO%FORCING_TIMESTEP)
@@ -848,7 +847,7 @@ contains
                           NoahmpIO%forcing_name_SW,NoahmpIO%forcing_name_PR,NoahmpIO%forcing_name_SN,        &
                           NoahmpIO%T_PHY(:,1,:),NoahmpIO%QV_CURR(:,1,:),NoahmpIO%U_PHY(:,1,:),               &
                           NoahmpIO%V_PHY(:,1,:),NoahmpIO%P8W(:,1,:), NoahmpIO%GLW, NoahmpIO%SWDOWN,          &
-                          NoahmpIO%RAINBL_tmp, NoahmpIO%SNOWBL, NoahmpIO%VEGFRA, NoahmpIO%update_veg,        &
+                          NoahmpIO%RAINBL, NoahmpIO%SNOWBL, NoahmpIO%VEGFRA, NoahmpIO%update_veg,            &
                           NoahmpIO%LAI, NoahmpIO%update_lai, NoahmpIO%reset_spinup_date, NoahmpIO%startdate)
           
        if(maxval(NoahmpIO%VEGFRA) <= 1 ) then
@@ -866,20 +865,20 @@ contains
      where(NoahmpIO%XLAND > 1.5)   NoahmpIO%P8W(:,1,:)     = 0.0
      where(NoahmpIO%XLAND > 1.5)   NoahmpIO%GLW            = 0.0
      where(NoahmpIO%XLAND > 1.5)   NoahmpIO%SWDOWN         = 0.0
-     where(NoahmpIO%XLAND > 1.5)   NoahmpIO%RAINBL_tmp     = 0.0
+     where(NoahmpIO%XLAND > 1.5)   NoahmpIO%RAINBL         = 0.0
      where(NoahmpIO%XLAND > 1.5)   NoahmpIO%SNOWBL         = 0.0
 
      NoahmpIO%QV_CURR(:,1,:) = NoahmpIO%QV_CURR(:,1,:)/&
-                            (1.0 - NoahmpIO%QV_CURR(:,1,:))  ! Assuming input forcing are specific hum.;
-                                                          ! WRF wants mixing ratio at driver level
+                            (1.0 - NoahmpIO%QV_CURR(:,1,:))     ! Assuming input forcing are specific hum.;
+                                                                ! WRF wants mixing ratio at driver level
      NoahmpIO%P8W(:,2,:)     = NoahmpIO%P8W(:,1,:)              ! WRF uses lowest two layers
      NoahmpIO%T_PHY(:,2,:)   = NoahmpIO%T_PHY(:,1,:)            ! Only pressure is needed in two layer but fill the rest
      NoahmpIO%U_PHY(:,2,:)   = NoahmpIO%U_PHY(:,1,:)            ! 
      NoahmpIO%V_PHY(:,2,:)   = NoahmpIO%V_PHY(:,1,:)            ! 
      NoahmpIO%QV_CURR(:,2,:) = NoahmpIO%QV_CURR(:,1,:)          ! 
-     NoahmpIO%RAINBL         = NoahmpIO%RAINBL_tmp * NoahmpIO%DTBL ! RAINBL in WRF is [mm]
-     NoahmpIO%SNOWBL         = NoahmpIO%SNOWBL * NoahmpIO%DTBL           ! 
-     NoahmpIO%SR             = 0.0                           ! Will only use component if opt_snf=4
+     NoahmpIO%RAINBL         = NoahmpIO%RAINBL * NoahmpIO%DTBL  ! RAINBL in WRF is [mm]
+     NoahmpIO%SNOWBL         = NoahmpIO%SNOWBL * NoahmpIO%DTBL  ! 
+     NoahmpIO%SR             = 0.0                              ! Will only use component if opt_snf=4
      NoahmpIO%RAINCV         = 0.0
      NoahmpIO%RAINNCV        = NoahmpIO%RAINBL
      NoahmpIO%RAINSHV        = 0.0
@@ -1117,7 +1116,7 @@ contains
               call add_to_output(NoahmpIO%SWDOWN     , "SWFORC"  , "Shortwave forcing"                    , "W/m2"                  )
               call add_to_output(NoahmpIO%COSZEN     , "COSZ"    , "Cosine of zenith angle"               , "-"                     )
               call add_to_output(NoahmpIO%GLW        , "LWFORC"  , "Longwave forcing"                     , "W/m2"                  )
-              call add_to_output(NoahmpIO%RAINBL_tmp , "RAINRATE", "Precipitation rate"                   , "mm/s"                  )
+              call add_to_output(NoahmpIO%RAINBL     , "RAINRATE", "Precipitation rate"                   , "mm/timestep"           )
             ! Grid energy budget terms
               call add_to_output(NoahmpIO%EMISS      , "EMISS"   , "Grid emissivity"                      , "-"                     )
               call add_to_output(NoahmpIO%FSAXY      , "FSA"     , "Total absorbed SW radiation"          , "W/m2"                  )         
