@@ -38,6 +38,9 @@ contains
     real(kind=kind_noahmp)           :: MixingRatioTmp        ! mixing ratio [kg/kg]
     real(kind=kind_noahmp)           :: MixingRatioSat        ! saturated mixing ratio [kg/kg]
     real(kind=kind_noahmp)           :: MixingRatioSatTempD   ! d(MixingRatioSat)/d(T)
+    real(kind=kind_noahmp)           :: RadPhotoActAbsTmp     ! temporary absorbed par for leaves [W/m2]
+    real(kind=kind_noahmp)           :: ResistanceStomataTmp  ! temporary leaf stomatal resistance [s/m]
+    real(kind=kind_noahmp)           :: PhotosynLeafTmp       ! temporary leaf photosynthesis [umol co2/m2/s]
 
 ! --------------------------------------------------------------------
     associate(                                                                        &
@@ -60,68 +63,46 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    ResistanceSolar  = 0.0
-    ResistanceTemp   = 0.0
-    ResistanceVapDef = 0.0
+    ResistanceSolar      = 0.0
+    ResistanceTemp       = 0.0
+    ResistanceVapDef     = 0.0
+    ResistanceStomataTmp = 0.0
+    if ( IndexShade == 0 ) RadPhotoActAbsTmp = RadPhotoActAbsSunlit  ! Sunlit case
+    if ( IndexShade == 1 ) RadPhotoActAbsTmp = RadPhotoActAbsShade   ! Shaded case
 
+    ! compute MixingRatioTmp and MixingRatioSat
+    SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir) ! specific humidity
+    MixingRatioTmp  = SpecHumidityTmp / (1.0 - SpecHumidityTmp)   ! convert to mixing ratio [kg/kg]
+    call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, MixingRatioSat, MixingRatioSatTempD)
+
+    ! contribution due to incoming solar radiation
+    RadFac          = 2.0 * RadPhotoActAbsTmp / RadiationStressFac
+    ResistanceSolar = (RadFac + ResistanceStomataMin/ResistanceStomataMax) / (1.0 + RadFac)
+    ResistanceSolar = max(ResistanceSolar, 0.0001)
+
+    ! contribution due to air temperature
+    ResistanceTemp = 1.0 - 0.0016 * ((AirTempOptimTransp - TemperatureCanopy)**2.0)
+    ResistanceTemp = max(ResistanceTemp, 0.0001)
+
+    ! contribution due to vapor pressure deficit
+    ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, MixingRatioSat - MixingRatioTmp))
+    ResistanceVapDef = max(ResistanceVapDef, 0.01)
+
+    ! determine canopy resistance due to all factors
+    ResistanceStomataTmp = ResistanceStomataMin / (ResistanceSolar * ResistanceTemp * ResistanceVapDef * SoilTranspFacAcc)
+    PhotosynLeafTmp      = -999.99       ! photosynthesis not applied for dynamic carbon
+
+    ! assign updated values
     ! Sunlit case
     if ( IndexShade == 0 ) then
-       ResistanceStomataSunlit = 0.0
-
-       ! compute MixingRatioTmp and MixingRatioSat
-       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir) ! specific humidity
-       MixingRatioTmp  = SpecHumidityTmp / (1.0 - SpecHumidityTmp)   ! convert to mixing ratio [kg/kg]
-       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, MixingRatioSat, MixingRatioSatTempD)
-
-       ! contribution due to incoming solar radiation
-       RadFac          = 2.0 * RadPhotoActAbsSunlit / RadiationStressFac
-       ResistanceSolar = (RadFac + ResistanceStomataMin/ResistanceStomataMax) / (1.0 + RadFac)
-       ResistanceSolar = max(ResistanceSolar, 0.0001)
-
-       ! contribution due to air temperature
-       ResistanceTemp = 1.0 - 0.0016 * ((AirTempOptimTransp - TemperatureCanopy)**2.0)
-       ResistanceTemp = max(ResistanceTemp, 0.0001)
-
-       ! contribution due to vapor pressure deficit
-       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, MixingRatioSat - MixingRatioTmp))
-       ResistanceVapDef = max(ResistanceVapDef, 0.01)
-
-       ! determine canopy resistance due to all factors
-       ResistanceStomataSunlit = ResistanceStomataMin / &
-                                (ResistanceSolar * ResistanceTemp * ResistanceVapDef * SoilTranspFacAcc)
-       PhotosynLeafSunlit      = -999.99       ! photosynthesis not applied for dynamic carbon
-
-    endif ! IndexShade == 0
-
+       ResistanceStomataSunlit = ResistanceStomataTmp
+       PhotosynLeafSunlit      = PhotosynLeafTmp
+    endif
     ! Shaded case
-    ! same as Sunlit case but using shaded input and output
     if ( IndexShade == 1 ) then
-       ResistanceStomataShade = 0.0
-       
-       ! compute MixingRatioTmp and MixingRatioSat
-       SpecHumidityTmp = 0.622 * PressureVaporCanAir / (PressureAirRefHeight - 0.378*PressureVaporCanAir)  ! specific humidity
-       MixingRatioTmp = SpecHumidityTmp / (1.0 - SpecHumidityTmp)      ! convert to mixing ratio [kg/kg]
-       call HumiditySaturation(TemperatureCanopy, PressureAirRefHeight, MixingRatioSat, MixingRatioSatTempD)
-
-       ! contribution due to incoming solar radiation
-       RadFac          = 2.0 * RadPhotoActAbsShade / RadiationStressFac
-       ResistanceSolar = (RadFac + ResistanceStomataMin/ResistanceStomataMax) / (1.0 + RadFac)
-       ResistanceSolar = max(ResistanceSolar, 0.0001)
-
-       ! contribution due to air temperature
-       ResistanceTemp = 1.0 - 0.0016 * ((AirTempOptimTransp - TemperatureCanopy)**2.0)
-       ResistanceTemp = max(ResistanceTemp, 0.0001)
-
-       ! contribution due to vapor pressure deficit
-       ResistanceVapDef = 1.0 / (1.0 + VaporPresDeficitFac * max(0.0, MixingRatioSat - MixingRatioTmp))
-       ResistanceVapDef = max(ResistanceVapDef, 0.01)
-
-       ! determine canopy resistance due to all factors
-       ResistanceStomataShade = ResistanceStomataMin / &
-                               (ResistanceSolar * ResistanceTemp * ResistanceVapDef * SoilTranspFacAcc)
-       PhotosynLeafShade      = -999.99       ! photosynthesis not applied for dynamic carbon
-
-    endif ! IndexShade == 1
+       ResistanceStomataShade  = ResistanceStomataTmp
+       PhotosynLeafShade       = PhotosynLeafTmp
+    endif
 
     end associate
 
