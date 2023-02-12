@@ -67,6 +67,12 @@ contains
     call GlacierThermalDiffusion(noahmp, MatLeft1, MatLeft2, MatLeft3, MatRight)
     call GlacierTemperatureSolver(noahmp, MainTimeStep, MatLeft1, MatLeft2, MatLeft3, MatRight)
 
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRight)
+    deallocate(MatLeft1)
+    deallocate(MatLeft2)
+    deallocate(MatLeft3)
+
     end associate
 
   end subroutine GlacierTemperatureMain

@@ -75,6 +75,9 @@ contains
           ThermConductSnow(LoopInd) = 2.22 * (SnowDensBulk(LoopInd)/1000.0)**1.88                 ! Douvill(Yen, 1981)
     enddo
 
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SnowDensBulk)
+
     end associate
 
   end subroutine SnowThermalProperty

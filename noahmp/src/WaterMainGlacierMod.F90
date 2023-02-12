@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: WATER_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -70,6 +70,8 @@ contains
     ! initialize
     if (.not. allocated(SoilIceTmp)     ) allocate(SoilIceTmp     (1:NumSoilLayer))
     if (.not. allocated(SoilLiqWaterTmp)) allocate(SoilLiqWaterTmp(1:NumSoilLayer))
+    SoilIceTmp         = 0.0
+    SoilLiqWaterTmp    = 0.0
     GlacierExcessFlow  = 0.0
     RunoffSubsurface   = 0.0
     RunoffSurface      = 0.0
@@ -145,6 +147,10 @@ contains
        write(*,*) "GLACIER HAS MELTED AT: ", GridIndexI, GridIndexJ, " ARE YOU SURE THIS SHOULD BE A GLACIER POINT?"
     endif
 
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SoilIceTmp     )
+    deallocate(SoilLiqWaterTmp)
+ 
     end associate
 
   end subroutine WaterMainGlacier

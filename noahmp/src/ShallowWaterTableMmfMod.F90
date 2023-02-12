@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SHALLOWWATERTABLE
 ! Original code: Miguez-Macho&Fan (Miguez-Macho et al 2007, Fan et al 2007)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -165,6 +165,9 @@ contains
     else if ( (IndAbvWatTbl < NumSoilLayer) .and. (IndAbvWatTbl <= 0) ) then
        SoilMoistureToWT = SoilMoistureSat(1)
     endif
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DepthSoilLayer0)
 
     end associate
 

@@ -201,6 +201,11 @@ contains
 
     TileDrain = DrainWatVolTot / SoilTimeStep
 
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DrainFracTmp   )
+    deallocate(SoilFieldCapLiq)
+    deallocate(WatExcFieldCap )
+
     end associate
 
   end subroutine TileDrainageSimple

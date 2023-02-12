@@ -19,7 +19,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: SRT
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -165,6 +165,13 @@ contains
        endif
        MatRight(LoopInd) = WaterExcess(LoopInd) / (-SoilThickTmp(LoopInd))
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DepthSnowSoilInv)
+    deallocate(SoilThickTmp    )
+    deallocate(SoilWaterGrad   )
+    deallocate(WaterExcess     )
+    deallocate(SoilMoistureTmp )
 
     end associate
 

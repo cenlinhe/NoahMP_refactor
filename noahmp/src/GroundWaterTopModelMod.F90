@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: GROUNDWATER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -74,8 +74,14 @@ contains
     if (.not. allocated(SoilEffPorosity)  ) allocate(SoilEffPorosity  (1:NumSoilLayer))
     if (.not. allocated(SoilWatConductTmp)) allocate(SoilWatConductTmp(1:NumSoilLayer))
     if (.not. allocated(SoilMoisture)     ) allocate(SoilMoisture     (1:NumSoilLayer))
-    DischargeGw = 0.0
-    RechargeGw  = 0.0
+    DepthSoilMid      = 0.0
+    ThicknessSoil     = 0.0
+    SoilLiqTmp        = 0.0
+    SoilEffPorosity   = 0.0
+    SoilWatConductTmp = 0.0
+    SoilMoisture      = 0.0
+    DischargeGw       = 0.0
+    RechargeGw        = 0.0
 
     ! Derive layer-bottom depth in [mm]; KWM:Derive layer thickness in mm
     ThicknessSoil(1) = -DepthSoilLayer(1) * 1.0e3
@@ -194,6 +200,14 @@ contains
     do LoopInd = 1, NumSoilLayer
         SoilLiqWater(LoopInd) = SoilLiqTmp(LoopInd) / ThicknessSoil(LoopInd)
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DepthSoilMid     )
+    deallocate(ThicknessSoil    )
+    deallocate(SoilLiqTmp       )
+    deallocate(SoilEffPorosity  )
+    deallocate(SoilWatConductTmp)
+    deallocate(SoilMoisture     )
 
     end associate
 

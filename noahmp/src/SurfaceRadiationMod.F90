@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SURRAD
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -73,6 +73,8 @@ contains
     if (.not. allocated(RadSwAbsCanDir)) allocate(RadSwAbsCanDir(1:NumSwRadBand))
     if (.not. allocated(RadSwAbsCanDif)) allocate(RadSwAbsCanDif(1:NumSwRadBand))
     MinThr               = 1.0e-6
+    RadSwAbsCanDir       = 0.0
+    RadSwAbsCanDif       = 0.0
     RadSwAbsGrd          = 0.0
     RadSwAbsVeg          = 0.0
     RadSwAbsSfc          = 0.0
@@ -123,6 +125,10 @@ contains
                    RadSwReflVegDir(2)*RadSwDownDir(2) + RadSwReflVegDif(2)*RadSwDownDif(2)
     RadSwReflGrd = RadSwReflGrdDir(1)*RadSwDownDir(1) + RadSwReflGrdDif(1)*RadSwDownDif(1) + &
                    RadSwReflGrdDir(2)*RadSwDownDir(2) + RadSwReflGrdDif(2)*RadSwDownDif(2)
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(RadSwAbsCanDir)
+    deallocate(RadSwAbsCanDif)
 
     end associate
 

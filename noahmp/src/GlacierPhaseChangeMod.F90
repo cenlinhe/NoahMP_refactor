@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: PHASECHANGE_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -68,6 +68,14 @@ contains
     if (.not. allocated(MassWatIceTmp)  ) allocate(MassWatIceTmp  (-NumSnowLayerMax+1:NumSoilLayer))
     if (.not. allocated(MassWatLiqTmp)  ) allocate(MassWatLiqTmp  (-NumSnowLayerMax+1:NumSoilLayer))
     if (.not. allocated(EnergyResLeft)  ) allocate(EnergyResLeft  (-NumSnowLayerMax+1:NumSoilLayer))
+    EnergyRes          = 0.0
+    GlacierPhaseChg    = 0.0
+    MassWatTotInit     = 0.0
+    MassWatIceInit     = 0.0
+    MassWatLiqInit     = 0.0
+    MassWatIceTmp      = 0.0
+    MassWatLiqTmp      = 0.0
+    EnergyResLeft      = 0.0
     MeltGroundSnow     = 0.0
     PondSfcThinSnwMelt = 0.0
     HeatLhTotPhsChg    = 0.0
@@ -414,6 +422,16 @@ contains
        endif
        SoilMoisture(LoopInd1)    = 1.0
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(EnergyRes      )
+    deallocate(GlacierPhaseChg)
+    deallocate(MassWatTotInit )
+    deallocate(MassWatIceInit )
+    deallocate(MassWatLiqInit )
+    deallocate(MassWatIceTmp  )
+    deallocate(MassWatLiqTmp  )
+    deallocate(EnergyResLeft  )
 
     end associate
 

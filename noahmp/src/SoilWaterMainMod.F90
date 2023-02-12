@@ -32,7 +32,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SOILWATER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -255,6 +255,13 @@ contains
     RunoffSurface    = RunoffSurface    * SoilTimeStep
     RunoffSubsurface = RunoffSubsurface * SoilTimeStep
     TileDrain        = TileDrain        * SoilTimeStep
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRight  )
+    deallocate(MatLeft1  )
+    deallocate(MatLeft2  )
+    deallocate(MatLeft3  )
+    deallocate(SoilLiqTmp)
 
     end associate
 

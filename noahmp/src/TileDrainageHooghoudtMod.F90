@@ -18,7 +18,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: TILE_HOOGHOUDT
 ! Original code: P. Valayamkunnath (NCAR)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -174,6 +174,12 @@ contains
     enddo
 
     TileDrain = TileDrain / SoilTimeStep            ! mm/s
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(ThickSatZone        )
+    deallocate(LateralWatCondTmp   )
+    deallocate(WatExcFieldCapTmp   )
+    deallocate(SoilLiqWaterAftDrain)
 
     end associate
 

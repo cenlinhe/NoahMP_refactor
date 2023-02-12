@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: TDFCND
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! If the soil has any moisture content compute a partial sum/product
 ! otherwise use a constant value which works well with most soils
 ! -------------------------------------------------------------------------
@@ -101,6 +101,9 @@ contains
        ThermConductSoil(LoopInd) = KerstenFac*(ThermConductSoilSat-ThermConductSoilDry) + ThermConductSoilDry
 
     enddo ! LoopInd
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SoilIceTmp)
 
     end associate
 

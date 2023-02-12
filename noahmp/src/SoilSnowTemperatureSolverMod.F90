@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: HSTEP
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -72,6 +72,10 @@ contains
     do LoopInd = NumSnowLayerNeg+1, NumSoilLayer
        TemperatureSoilSnow(LoopInd) = TemperatureSoilSnow(LoopInd) + MatLeft3(LoopInd)
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRightTmp)
+    deallocate(MatLeft3Tmp)
 
     end associate
 

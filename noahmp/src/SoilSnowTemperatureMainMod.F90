@@ -71,6 +71,12 @@ contains
     ! accumulate soil bottom flux for soil timestep
     HeatFromSoilBot = HeatFromSoilBot * SoilTimeStep
 
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRight)
+    deallocate(MatLeft1)
+    deallocate(MatLeft2)
+    deallocate(MatLeft3)
+
     end associate
 
   end subroutine SoilSnowTemperatureMain
