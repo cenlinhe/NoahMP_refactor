@@ -51,7 +51,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSoilLayer0 (0:NumSoilLayer) )
+    if (.not. allocated(DepthSoilLayer0)) allocate(DepthSoilLayer0(0:NumSoilLayer))
     DepthSoilLayer0(1:NumSoilLayer) = DepthSoilLayer(1:NumSoilLayer)
     DepthSoilLayer0(0)              = 0.0
 

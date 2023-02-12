@@ -826,7 +826,6 @@ contains
              NoahmpIO%VEGFRA = NoahmpIO%VEGFRA * 100.
      else
         if(NoahmpIO%olddate == forcDate) then
-           NoahmpIO%LAI_tmp = NoahmpIO%LAI
            CALL HYDRO_frocing_drv(trim(NoahmpIO%indir), NoahmpIO%forc_typ,NoahmpIO%snow_assim,NoahmpIO%olddate, &
                                        NoahmpIO%xstart, NoahmpIO%xend, NoahmpIO%ystart, NoahmpIO%yend,          &
                                        NoahmpIO%T_PHY(:,1,:),NoahmpIO%QV_CURR(:,1,:),NoahmpIO%U_PHY(:,1,:),     &

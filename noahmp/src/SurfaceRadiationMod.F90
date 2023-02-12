@@ -70,8 +70,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( RadSwAbsCanDir(1:NumSwRadBand) )
-    allocate( RadSwAbsCanDif(1:NumSwRadBand) )
+    if (.not. allocated(RadSwAbsCanDir)) allocate(RadSwAbsCanDir(1:NumSwRadBand))
+    if (.not. allocated(RadSwAbsCanDif)) allocate(RadSwAbsCanDif(1:NumSwRadBand))
     MinThr               = 1.0e-6
     RadSwAbsGrd          = 0.0
     RadSwAbsVeg          = 0.0

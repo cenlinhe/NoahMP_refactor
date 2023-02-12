@@ -67,13 +67,13 @@ contains
 ! ----------------------------------------------------------------------
 
     !--- Initialization
-    allocate( EnergyRes     (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( WaterPhaseChg (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatTotInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatIceInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatLiqInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatIceTmp (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatLiqTmp (-NumSnowLayerMax+1:NumSoilLayer) )
+    if (.not. allocated(EnergyRes)     ) allocate(EnergyRes     (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(WaterPhaseChg) ) allocate(WaterPhaseChg (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatTotInit)) allocate(MassWatTotInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatIceInit)) allocate(MassWatIceInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatLiqInit)) allocate(MassWatLiqInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatIceTmp) ) allocate(MassWatIceTmp (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatLiqTmp) ) allocate(MassWatLiqTmp (-NumSnowLayerMax+1:NumSoilLayer))
     MeltGroundSnow     = 0.0
     PondSfcThinSnwMelt = 0.0
     HeatLhTotPhsChg    = 0.0

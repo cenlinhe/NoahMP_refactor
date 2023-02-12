@@ -45,8 +45,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( MatRightTmp(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MatLeft3Tmp(-NumSnowLayerMax+1:NumSoilLayer) )
+    if (.not. allocated(MatRightTmp)) allocate(MatRightTmp(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MatLeft3Tmp)) allocate(MatLeft3Tmp(-NumSnowLayerMax+1:NumSoilLayer))
     MatRightTmp = 0.0
     MatLeft3Tmp = 0.0
 

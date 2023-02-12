@@ -68,6 +68,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp)                                 ::  DTBL                ! timestep [s]
     real(kind=kind_noahmp)                                 ::  DX                  ! horizontal grid spacing [m]
     real(kind=kind_noahmp)                                 ::  soiltstep           ! soil time step (s) (default=0: same as main NoahMP timstep)
+    logical                                                ::  FNDSNOWH            ! snow depth present in input
     logical                                                ::  calculate_soil      ! logical index for if do soil calculation
     integer                                                ::  soil_update_steps   ! number of model time steps to update soil process
     integer,                allocatable, dimension(:,:)    ::  IVGTYP              ! vegetation type
@@ -81,6 +82,7 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  TMN                 ! deep soil temperature [K]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  XLAND               ! =2 ocean; =1 land/seaice
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  XICE                ! fraction of grid that is seaice
+    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  SEAICE              ! seaice fraction
 
     ! forcings    
     real(kind=kind_noahmp), allocatable, dimension(:,:,:)  ::  T_PHY               ! 3D atmospheric temperature valid at mid-levels [K]
@@ -214,7 +216,6 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  STBLCPXY            ! stable carbon in deep soil [g/m2]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  FASTCPXY            ! short-lived carbon, shallow soil [g/m2]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  LAI                 ! leaf area index
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  LAI_tmp             ! leaf area index
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  XSAIXY              ! stem area index
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  TAUSSXY             ! snow age factor
 
@@ -329,15 +330,6 @@ module NoahmpIOVarType
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  ACC_ETRANXY         ! accumulated transpiration per soil timestep [mm]
     real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  ACC_EDIRXY          ! accumulated net ground (soil/snow) evaporation per soil timestep [mm]
     real(kind=kind_noahmp), allocatable, dimension(:,:,:)  ::  ACC_ETRANIXY        ! accumualted transpiration rate within soil timestep [m/s * dt_soil/dt_main]
-
-!------------------------------------------------------------------------
-! Needed for NoahMP init
-!------------------------------------------------------------------------
-
-    logical                                                ::  FNDSOILW            ! soil water present in input
-    logical                                                ::  FNDSNOWH            ! snow depth present in input
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  CHSTARXY            ! for consistency with MP_init; delete later
-    real(kind=kind_noahmp), allocatable, dimension(:,:)    ::  SEAICE              ! seaice fraction
 
 !------------------------------------------------------------------------
 ! Needed for MMF_RUNOFF (IOPT_RUN = 5); not part of MP driver in WRF

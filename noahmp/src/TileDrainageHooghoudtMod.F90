@@ -71,10 +71,10 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( ThickSatZone        (1:NumSoilLayer) )
-    allocate( LateralWatCondTmp   (1:NumSoilLayer) )
-    allocate( WatExcFieldCapTmp   (1:NumSoilLayer) )
-    allocate( SoilLiqWaterAftDrain(1:NumSoilLayer) )
+    if (.not. allocated(ThickSatZone)        ) allocate(ThickSatZone        (1:NumSoilLayer))
+    if (.not. allocated(LateralWatCondTmp)   ) allocate(LateralWatCondTmp   (1:NumSoilLayer))
+    if (.not. allocated(WatExcFieldCapTmp)   ) allocate(WatExcFieldCapTmp   (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqWaterAftDrain)) allocate(SoilLiqWaterAftDrain(1:NumSoilLayer))
     ThickSatZone         = 0.0
     LateralWatCondTmp    = 0.0
     WatExcFieldCapTmp    = 0.0

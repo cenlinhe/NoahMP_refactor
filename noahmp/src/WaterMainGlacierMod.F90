@@ -68,8 +68,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialize
-    allocate( SoilIceTmp     (1:NumSoilLayer) )
-    allocate( SoilLiqWaterTmp(1:NumSoilLayer) )
+    if (.not. allocated(SoilIceTmp)     ) allocate(SoilIceTmp     (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqWaterTmp)) allocate(SoilLiqWaterTmp(1:NumSoilLayer))
     GlacierExcessFlow  = 0.0
     RunoffSubsurface   = 0.0
     RunoffSurface      = 0.0

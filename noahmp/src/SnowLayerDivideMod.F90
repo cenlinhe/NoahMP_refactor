@@ -48,11 +48,11 @@ contains
              )
 ! ----------------------------------------------------------------------
 
-! initialization
-    allocate( SnowIceTmp        (1:NumSnowLayerMax) )
-    allocate( SnowLiqTmp        (1:NumSnowLayerMax) )
-    allocate( TemperatureSnowTmp(1:NumSnowLayerMax) )
-    allocate( SnowThickTmp      (1:NumSnowLayerMax) )
+    ! initialization
+    if (.not. allocated(SnowIceTmp)        ) allocate(SnowIceTmp        (1:NumSnowLayerMax))
+    if (.not. allocated(SnowLiqTmp)        ) allocate(SnowLiqTmp        (1:NumSnowLayerMax))
+    if (.not. allocated(TemperatureSnowTmp)) allocate(TemperatureSnowTmp(1:NumSnowLayerMax))
+    if (.not. allocated(SnowThickTmp)      ) allocate(SnowThickTmp      (1:NumSnowLayerMax))
     SnowIceTmp        (:) = 0.0
     SnowLiqTmp        (:) = 0.0
     TemperatureSnowTmp(:) = 0.0
@@ -67,7 +67,7 @@ contains
        endif
     enddo
 
-! start snow layer division
+    ! start snow layer division
     NumSnowLayerTmp = abs(NumSnowLayerNeg)
 
     if ( NumSnowLayerTmp == 1 ) then

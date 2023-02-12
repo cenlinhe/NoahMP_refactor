@@ -50,9 +50,9 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DrainFracTmp   (1:NumSoilLayer) )
-    allocate( SoilFieldCapLiq(1:NumSoilLayer) )
-    allocate( WatExcFieldCap (1:NumSoilLayer) )
+    if (.not. allocated(DrainFracTmp)   ) allocate(DrainFracTmp   (1:NumSoilLayer))
+    if (.not. allocated(SoilFieldCapLiq)) allocate(SoilFieldCapLiq(1:NumSoilLayer))
+    if (.not. allocated(WatExcFieldCap) ) allocate(WatExcFieldCap (1:NumSoilLayer))
     DrainFracTmp       = 0.0
     SoilFieldCapLiq    = 0.0
     DrainWatVolTot     = 0.0

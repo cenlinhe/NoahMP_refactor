@@ -43,7 +43,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( SnowDensBulk(-NumSnowLayerMax+1:0) )
+    if (.not. allocated(SnowDensBulk)) allocate(SnowDensBulk(-NumSnowLayerMax+1:0))
     SnowDensBulk = 0.0
 
     !  effective porosity of snow

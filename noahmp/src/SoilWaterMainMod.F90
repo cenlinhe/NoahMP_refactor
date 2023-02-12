@@ -92,11 +92,11 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( MatRight  (1:NumSoilLayer) )
-    allocate( MatLeft1  (1:NumSoilLayer) )
-    allocate( MatLeft2  (1:NumSoilLayer) )
-    allocate( MatLeft3  (1:NumSoilLayer) )
-    allocate( SoilLiqTmp(1:NumSoilLayer) )
+    if (.not. allocated(MatRight)  ) allocate(MatRight  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft1)  ) allocate(MatLeft1  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft2)  ) allocate(MatLeft2  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft3)  ) allocate(MatLeft3  (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqTmp)) allocate(SoilLiqTmp(1:NumSoilLayer))
     MatRight         = 0.0
     MatLeft1         = 0.0
     MatLeft2         = 0.0

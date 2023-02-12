@@ -66,11 +66,11 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSnowSoilInv(1:NumSoilLayer) )
-    allocate( SoilThickTmp    (1:NumSoilLayer) )
-    allocate( SoilWaterGrad   (1:NumSoilLayer) )
-    allocate( WaterExcess     (1:NumSoilLayer) )
-    allocate( SoilMoistureTmp (1:NumSoilLayer) )
+    if (.not. allocated(DepthSnowSoilInv)) allocate(DepthSnowSoilInv(1:NumSoilLayer))
+    if (.not. allocated(SoilThickTmp)    ) allocate(SoilThickTmp    (1:NumSoilLayer))
+    if (.not. allocated(SoilWaterGrad)   ) allocate(SoilWaterGrad   (1:NumSoilLayer))
+    if (.not. allocated(WaterExcess)     ) allocate(WaterExcess     (1:NumSoilLayer))
+    if (.not. allocated(SoilMoistureTmp) ) allocate(SoilMoistureTmp (1:NumSoilLayer))
     MatRight(:)         = 0.0
     MatLeft1(:)         = 0.0
     MatLeft2(:)         = 0.0

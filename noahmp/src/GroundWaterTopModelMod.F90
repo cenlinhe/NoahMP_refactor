@@ -68,12 +68,12 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSoilMid     (1:NumSoilLayer) )
-    allocate( ThicknessSoil    (1:NumSoilLayer) )
-    allocate( SoilLiqTmp       (1:NumSoilLayer) )
-    allocate( SoilEffPorosity  (1:NumSoilLayer) )
-    allocate( SoilWatConductTmp(1:NumSoilLayer) )
-    allocate( SoilMoisture     (1:NumSoilLayer) )
+    if (.not. allocated(DepthSoilMid)     ) allocate(DepthSoilMid     (1:NumSoilLayer))
+    if (.not. allocated(ThicknessSoil)    ) allocate(ThicknessSoil    (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqTmp)       ) allocate(SoilLiqTmp       (1:NumSoilLayer))
+    if (.not. allocated(SoilEffPorosity)  ) allocate(SoilEffPorosity  (1:NumSoilLayer))
+    if (.not. allocated(SoilWatConductTmp)) allocate(SoilWatConductTmp(1:NumSoilLayer))
+    if (.not. allocated(SoilMoisture)     ) allocate(SoilMoisture     (1:NumSoilLayer))
     DischargeGw = 0.0
     RechargeGw  = 0.0
 

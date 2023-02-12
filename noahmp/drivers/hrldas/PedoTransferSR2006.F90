@@ -23,29 +23,29 @@ contains
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
     type(noahmp_type)  , intent(inout) :: noahmp
 
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Sand
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Clay
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Orgm
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Sand
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Clay
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Orgm
 
 ! local
     integer                                                 :: k
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_33t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_33
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_s33t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_s33
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_et
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_e                                 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcmax 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcref 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcwlt 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcdry 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: bexp   
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psisat 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: dksat  
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: dwsat  
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: quartz 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_1500t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_1500
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_33t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_33
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_s33t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_s33
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psi_et
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psi_e                                 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcmax 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcref 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcwlt 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcdry 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: bexp   
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psisat 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: dksat  
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: dwsat  
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: quartz 
 
 ! ------------------------------------------------------------------------------
     associate(                                                               & 

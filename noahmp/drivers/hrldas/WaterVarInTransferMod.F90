@@ -220,9 +220,9 @@ contains
                                                                NoahmpIO%SNLIQXY(I,NumSnowLayerNeg+1:0,J))
 
     if ( (noahmp%config%nmlist%OptSoilProperty == 3) .and. (.not. noahmp%config%domain%FlagUrban) ) then
-       allocate( SoilSand(1:NumSoilLayer) )
-       allocate( SoilClay(1:NumSoilLayer) )
-       allocate( SoilOrg (1:NumSoilLayer) )
+       if (.not. allocated (SoilSand)) allocate( SoilSand(1:NumSoilLayer) )
+       if (.not. allocated (SoilClay)) allocate( SoilClay(1:NumSoilLayer) )
+       if (.not. allocated (SoilOrg) ) allocate( SoilOrg (1:NumSoilLayer) )
        SoilSand = 0.01 * NoahmpIO%soilcomp(I,1:NumSoilLayer,J)
        SoilClay = 0.01 * NoahmpIO%soilcomp(I,(NumSoilLayer+1):(NumSoilLayer*2),J)
        SoilOrg  = 0.0

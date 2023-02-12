@@ -63,7 +63,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialize
-    allocate( SoilWatMaxHold(1:NumSoilLayer) )
+    if (.not. allocated(SoilWatMaxHold)) allocate(SoilWatMaxHold(1:NumSoilLayer))
     SoilWatMaxHold(1:NumSoilLayer) = 0.0
 
     ! start infiltration for free drainage scheme

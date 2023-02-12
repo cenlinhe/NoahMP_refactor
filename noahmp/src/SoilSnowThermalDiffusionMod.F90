@@ -59,10 +59,10 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSnowSoilInv(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( HeatCapacPerArea(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( TempGradDepth   (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( EnergyExcess    (-NumSnowLayerMax+1:NumSoilLayer) )
+    if (.not. allocated(DepthSnowSoilInv)) allocate(DepthSnowSoilInv(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(HeatCapacPerArea)) allocate(HeatCapacPerArea(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(TempGradDepth)   ) allocate(TempGradDepth   (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(EnergyExcess)    ) allocate(EnergyExcess    (-NumSnowLayerMax+1:NumSoilLayer))
     MatRight(:)         = 0.0
     MatLeft1(:)         = 0.0
     MatLeft2(:)         = 0.0

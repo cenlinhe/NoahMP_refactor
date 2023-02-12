@@ -58,8 +58,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( SnowLiqVol(-NumSnowLayerMax+1:0) )
-    allocate( SnowIceVol(-NumSnowLayerMax+1:0) )
+    if (.not. allocated(SnowLiqVol)) allocate(SnowLiqVol(-NumSnowLayerMax+1:0))
+    if (.not. allocated(SnowIceVol)) allocate(SnowIceVol(-NumSnowLayerMax+1:0))
     SnowLiqVol(:)      = 0.0
     SnowIceVol(:)      = 0.0
     SnowEffPorosity(:) = 0.0

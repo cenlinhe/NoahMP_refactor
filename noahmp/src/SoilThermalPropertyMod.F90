@@ -50,7 +50,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initiazliation
-    allocate( SoilIceTmp(1:NumSoilLayer) )
+    if (.not. allocated(SoilIceTmp)) allocate(SoilIceTmp(1:NumSoilLayer))
     SoilIceTmp(:)       = 0.0
 
     do LoopInd = 1, NumSoilLayer

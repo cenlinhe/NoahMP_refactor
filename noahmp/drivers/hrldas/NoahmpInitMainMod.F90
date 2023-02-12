@@ -52,7 +52,6 @@ contains
               SMOIS             => NoahmpIO%SMOIS,             &
               SH2O              => NoahmpIO%SH2O,              &
               DZS               => NoahmpIO%DZS,               &
-              FNDSOILW          => NoahmpIO%FNDSOILW,          & 
               FNDSNOWH          => NoahmpIO%FNDSNOWH,          &
               TSK               => NoahmpIO%TSK,               &
               isnowxy           => NoahmpIO%ISNOWXY,           & 
@@ -104,7 +103,6 @@ contains
               irrsplh           => NoahmpIO%irrsplh,           &       
               t2mvxy            => NoahmpIO%T2MVXY,            &
               t2mbxy            => NoahmpIO%T2MBXY,            &
-              chstarxy          => NoahmpIO%CHSTARXY,          &
               NSOIL             => NoahmpIO%NSOIL,             &
               IOPT_RUNSRF       => NoahmpIO%IOPT_RUNSRF,       & 
               OptCropModel      => NoahmpIO%IOPT_CROP,       &
@@ -278,7 +276,6 @@ contains
              if(snow(i,j) > 0.0 .and. tsk(i,j) > 273.15) t2mvxy(I,J) = 273.15
              t2mbxy     (I,J) = TSK(I,J)
              if(snow(i,j) > 0.0 .and. tsk(i,j) > 273.15) t2mbxy(I,J) = 273.15
-             chstarxy   (I,J) = 0.1
 
            cmxy       (I,J) = 0.0
            chxy       (I,J) = 0.0

@@ -107,7 +107,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization (including variables that do not depend on stability iteration)
-    allocate(SoilIceTmp(1:NumSoilLayer))
+    if (.not. allocated(SoilIceTmp)) allocate(SoilIceTmp(1:NumSoilLayer))
     SoilIceTmp         = 0.0
     TemperatureGrdChg  = 0.0
     MoStabParaBare     = 0.0

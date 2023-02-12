@@ -91,6 +91,8 @@ contains
     noahmp%config%domain%RunoffSlopeType             = NoahmpIO%SLOPETYP
     noahmp%config%domain%DepthSoilTempBottom         = NoahmpIO%ZBOT_TABLE
 
+    ! the following initialization cannot be done in ConfigVarInitMod
+    ! because the NumSoilLayer and NumSnowLayerMax are initialized with input values in this module
     if ( .not. allocated(noahmp%config%domain%DepthSoilLayer) )          &
        allocate( noahmp%config%domain%DepthSoilLayer(1:NumSoilLayer) )
     if ( .not. allocated(noahmp%config%domain%ThicknessSoilLayer) )      &
