@@ -6,7 +6,7 @@ module BiochemVarInTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan, 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -26,6 +26,7 @@ contains
     type(noahmp_type),   intent(inout) :: noahmp
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
 
+! -------------------------------------------------------------------------
     associate(                                                   &
               I            => noahmp%config%domain%GridIndexI   ,&
               J            => noahmp%config%domain%GridIndexJ   ,&
@@ -33,6 +34,7 @@ contains
               CropType     => noahmp%config%domain%CropType     ,&
               OptCropModel => noahmp%config%nmlist%OptCropModel  &
              )
+! -------------------------------------------------------------------------
 
     ! biochem state variables
     noahmp%biochem%state%PlantGrowStage             = NoahmpIO%PGSXY   (I,J)   
@@ -73,7 +75,7 @@ contains
     noahmp%biochem%param%LeafAreaIndexMin           = NoahmpIO%LAIMIN_TABLE (VegType)
     noahmp%biochem%param%TurnoverCoeffRootVeg       = NoahmpIO%RTOVRC_TABLE (VegType)
     noahmp%biochem%param%WoodRespCoeff              = NoahmpIO%RSWOODC_TABLE(VegType)
-
+    ! crop model specific parameters
     if ( (OptCropModel > 0) .and. (CropType > 0) ) then
        noahmp%biochem%param%DatePlanting            = NoahmpIO%PLTDAY_TABLE   (CropType)
        noahmp%biochem%param%DateHarvest             = NoahmpIO%HSDAY_TABLE    (CropType)

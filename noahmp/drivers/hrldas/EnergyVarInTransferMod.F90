@@ -6,7 +6,7 @@ module EnergyVarInTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -29,6 +29,7 @@ contains
     ! local loop index
     integer                          :: SoilLayerIndex
 
+! -------------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
@@ -41,6 +42,7 @@ contains
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer    ,&
               NumSwRadBand    => noahmp%config%domain%NumSwRadBand     &
              )
+! -------------------------------------------------------------------------
 
     ! energy state variables
     noahmp%energy%state%LeafAreaIndex                             = NoahmpIO%LAI     (I,J)

@@ -316,7 +316,7 @@ contains
   jxfull = NoahmpIO%jxfull 
 
   if (NoahmpIO%restart_filename_requested /= " ") then
-     NoahmpIO%restart_flag = .TRUE.
+     NoahmpIO%restart_flag = .true.
 
      call find_restart_file(NoahmpIO%rank, trim(NoahmpIO%restart_filename_requested), NoahmpIO%startdate, &
                             NoahmpIO%khour, NoahmpIO%olddate, NoahmpIO%restart_flnm)
@@ -578,15 +578,14 @@ contains
 
   else
 
-     NoahmpIO%restart_flag = .FALSE.
-
-     NoahmpIO%SMOIS      =  huge(1.0)
-     NoahmpIO%TSLB       =  huge(1.0)
-     NoahmpIO%SH2O       =  huge(1.0)
-     NoahmpIO%CANLIQXY   =  huge(1.0)
-     NoahmpIO%TSK        =  huge(1.0)
-     NoahmpIO%SNOW       =  huge(1.0)
-     NoahmpIO%SNOWH      =  huge(1.0)
+     NoahmpIO%restart_flag = .false.
+     NoahmpIO%SMOIS        =  huge(1.0)
+     NoahmpIO%TSLB         =  huge(1.0)
+     NoahmpIO%SH2O         =  huge(1.0)
+     NoahmpIO%CANLIQXY     =  huge(1.0)
+     NoahmpIO%TSK          =  huge(1.0)
+     NoahmpIO%SNOW         =  huge(1.0)
+     NoahmpIO%SNOWH        =  huge(1.0)
 
 #ifdef WRF_HYDRO
   if((forc_typ .gt. 2) .and. (forc_typ .ne. 6) ) HRLDAS_ini_typ = 0

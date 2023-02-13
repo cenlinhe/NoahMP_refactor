@@ -4,7 +4,7 @@ module ForcingVarOutTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -24,15 +24,18 @@ contains
     type(noahmp_type),   intent(inout) :: noahmp
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
 
+! -------------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ       &
              )
+! -------------------------------------------------------------------------
 
     NoahmpIO%FORCTLSM  (I,J) = noahmp%forcing%TemperatureAirRefHeight
     NoahmpIO%FORCQLSM  (I,J) = noahmp%forcing%SpecHumidityRefHeight
     NoahmpIO%FORCPLSM  (I,J) = noahmp%forcing%PressureAirRefHeight
-    NoahmpIO%FORCWLSM  (I,J) = sqrt(noahmp%forcing%WindEastwardRefHeight**2 + noahmp%forcing%WindNorthwardRefHeight**2)
+    NoahmpIO%FORCWLSM  (I,J) = sqrt(noahmp%forcing%WindEastwardRefHeight**2 + &
+                                    noahmp%forcing%WindNorthwardRefHeight**2)
 
     end associate
 

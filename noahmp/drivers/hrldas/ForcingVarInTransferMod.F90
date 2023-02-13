@@ -6,7 +6,7 @@ module ForcingVarInTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -46,6 +46,7 @@ contains
     noahmp%forcing%RadLwDownRefHeight      = NoahmpIO%GLW      (I,J)
     noahmp%forcing%RadSwDownRefHeight      = NoahmpIO%SWDOWN   (I,J)
     noahmp%forcing%TemperatureSoilBottom   = NoahmpIO%TMN      (I,J)
+
     ! treat different precipitation types
     PrecipTotalRefHeight                   = NoahmpIO%RAINBL   (I,J) / NoahmpIO%DTBL                ! convert precip unit from mm/timestep to mm/s
     noahmp%forcing%PrecipConvRefHeight     = NoahmpIO%MP_RAINC (I,J) / NoahmpIO%DTBL

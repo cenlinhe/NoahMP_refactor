@@ -4,7 +4,7 @@ module ConfigVarOutTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -24,12 +24,14 @@ contains
     type(NoahmpIO_type) , intent(inout) :: NoahmpIO
     type(noahmp_type),    intent(inout) :: noahmp
 
+! ----------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
               NumSnowLayerMax => noahmp%config%domain%NumSnowLayerMax ,&
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer     &
              )
+! ----------------------------------------------------------------------
 
     ! config domain variables
     NoahmpIO%ISNOWXY(I,J)  = noahmp%config%domain%NumSnowLayerNeg

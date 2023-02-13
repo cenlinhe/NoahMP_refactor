@@ -6,7 +6,7 @@ module ConfigVarInTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -25,13 +25,15 @@ contains
 
     type(NoahmpIO_type) , intent(inout) :: NoahmpIO
     type(noahmp_type),    intent(inout) :: noahmp
- 
+
+! --------------------------------------------------------------------- 
     associate(                                      &
               I               => NoahmpIO%I        ,&
               J               => NoahmpIO%J        ,&
               NumSnowLayerMax => NoahmpIO%NSNOW    ,&
               NumSoilLayer    => NoahmpIO%NSOIL     &
              )
+! ---------------------------------------------------------------------
 
     ! config namelist variable
     noahmp%config%nmlist%OptDynamicVeg               = NoahmpIO%IOPT_DVEG

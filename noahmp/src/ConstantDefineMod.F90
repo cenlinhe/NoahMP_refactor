@@ -24,7 +24,7 @@ module ConstantDefineMod
   real(kind=kind_noahmp), public, parameter :: ConstHeatCapacWater      = 4.188e06    ! specific heat capacity of water [J/m3/K]
   real(kind=kind_noahmp), public, parameter :: ConstHeatCapacIce        = 2.094e06    ! specific heat capacity of ice [J/m3/K]
   real(kind=kind_noahmp), public, parameter :: ConstHeatCapacAir        = 1004.64     ! specific heat capacity of dry air [J/kg/K]
-  real(kind=kind_noahmp), public, parameter :: ConstThermConductWater   = 0.6         ! thermal conductivity of water [W/m/K]
+  real(kind=kind_noahmp), public, parameter :: ConstThermConductWater   = 0.57        ! thermal conductivity of water [W/m/K]
   real(kind=kind_noahmp), public, parameter :: ConstThermConductIce     = 2.2         ! thermal conductivity of ice [W/m/K]
   real(kind=kind_noahmp), public, parameter :: ConstThermConductAir     = 0.023       ! thermal conductivity of air [W/m/K]
   real(kind=kind_noahmp), public, parameter :: ConstThermConductQuartz  = 7.7         ! thermal conductivity for quartz [W/m/K]

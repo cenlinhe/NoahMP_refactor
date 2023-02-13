@@ -1,7 +1,14 @@
+! ---------------- Noah-MP Parameter Look-up Table History ------------------------
+! Original Table: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
+! Updated Table: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
+! Updated table reformats and merges original MPTABLE.TBL, SOILPARM.TBL, GENPARM.TBL
+! ----------------------------------------------------------------------------------
+
 &noahmp_usgs_veg_categories
  VEG_DATASET_DESCRIPTION = "USGS"   ! land type dataset
  NVEG = 27                          ! total number of land categories in USGS
 /
+
 &noahmp_usgs_parameters
  ! NVEG = 27
  !  1: Urban and Built-Up Land
