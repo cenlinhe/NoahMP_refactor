@@ -34,7 +34,7 @@ contains
     
     ! local variables
     logical                                             :: urbanpt_flag ! added to identify urban pixels
-    integer                                             :: I,J,K,ITER,itf,jtf, NITER, NCOUNT,NS
+    integer                                             :: I,J,K,ITER,itf,jtf,NITER,NCOUNT,NS
     real(kind=kind_noahmp)                              :: BEXP,SMCMAX,PSISAT,SMCWLT,DWSAT,DKSAT
     real(kind=kind_noahmp)                              :: FRLIQ,SMCEQDEEP
     real(kind=kind_noahmp)                              :: DELTAT,RCOND,TOTWATER
@@ -45,64 +45,38 @@ contains
     integer,                dimension(NoahmpIO%ims:NoahmpIO%ime, NoahmpIO%jms:NoahmpIO%jme) :: LANDMASK 
 
 ! --------------------------------------------------------------------------------    
-    associate(                                       &
-              NSOIL      => NoahmpIO%NSOIL          ,&
-              DZS        => NoahmpIO%DZS            ,&
-              ISLTYP     => NoahmpIO%ISLTYP         ,&
-              IVGTYP     => NoahmpIO%IVGTYP         ,&
-              WTDDT      => NoahmpIO%WTDDT          ,&  
-              FDEPTH     => NoahmpIO%FDEPTHXY       ,&
-              TOPO       => NoahmpIO%TERRAIN        ,&
-              RIVERBED   => NoahmpIO%RIVERBEDXY     ,&
-              EQWTD      => NoahmpIO%EQZWT          ,&
-              RIVERCOND  => NoahmpIO%RIVERCONDXY    ,&
-              PEXP       => NoahmpIO%PEXPXY         ,&  
-              AREA       => NoahmpIO%AREAXY         ,& 
-              WTD        => NoahmpIO%ZWTXY          ,& 
-              SMOIS      => NoahmpIO%SMOIS          ,& 
-              SH2O       => NoahmpIO%SH2O           ,&  
-              SMOISEQ    => NoahmpIO%SMOISEQ        ,&  
-              SMCWTDXY   => NoahmpIO%SMCWTDXY       ,&  
-              DEEPRECHXY => NoahmpIO%DEEPRECHXY     ,&  
-              RECHXY     => NoahmpIO%RECHXY         ,& 
-              QLATXY     => NoahmpIO%QLATXY         ,&
-              QSLATXY    => NoahmpIO%QSLATXY        ,&
-              QRFXY      => NoahmpIO%QRFXY          ,&
-              QRFSXY     => NoahmpIO%QRFSXY         ,&
-              QSPRINGXY  => NoahmpIO%QSPRINGXY      ,&
-              QSPRINGSXY => NoahmpIO%QSPRINGSXY     ,&
-              RECHCLIM   => NoahmpIO%RECHCLIM       ,& 
-              ids        => NoahmpIO%ids            ,&
-              ide        => NoahmpIO%ide            ,&
-              jds        => NoahmpIO%jds            ,&
-              jde        => NoahmpIO%jde            ,&  
-              kds        => NoahmpIO%kds            ,&
-              kde        => NoahmpIO%kde            ,&
-              ims        => NoahmpIO%ims            ,&
-              ime        => NoahmpIO%ime            ,&  
-              jms        => NoahmpIO%jms            ,&
-              jme        => NoahmpIO%jme            ,&  
-              kms        => NoahmpIO%kms            ,&
-              kme        => NoahmpIO%kme            ,&
-              ips        => NoahmpIO%ims            ,&
-              ipe        => NoahmpIO%ime            ,&  
-              jps        => NoahmpIO%jms            ,&
-              jpe        => NoahmpIO%jme            ,&  
-              kps        => NoahmpIO%kms            ,&
-              kpe        => NoahmpIO%kme            ,&
-              its        => NoahmpIO%its            ,&
-              ite        => NoahmpIO%ite            ,&  
-              jts        => NoahmpIO%jts            ,&
-              jte        => NoahmpIO%jte            ,&  
-              kts        => NoahmpIO%kts            ,&
-              kte        => NoahmpIO%kte             & 
+    associate(                                &
+              ids => NoahmpIO%ids            ,&
+              ide => NoahmpIO%ide            ,&
+              jds => NoahmpIO%jds            ,&
+              jde => NoahmpIO%jde            ,&  
+              kds => NoahmpIO%kds            ,&
+              kde => NoahmpIO%kde            ,&
+              ims => NoahmpIO%ims            ,&
+              ime => NoahmpIO%ime            ,&  
+              jms => NoahmpIO%jms            ,&
+              jme => NoahmpIO%jme            ,&  
+              kms => NoahmpIO%kms            ,&
+              kme => NoahmpIO%kme            ,&
+              ips => NoahmpIO%ims            ,&
+              ipe => NoahmpIO%ime            ,&  
+              jps => NoahmpIO%jms            ,&
+              jpe => NoahmpIO%jme            ,&  
+              kps => NoahmpIO%kms            ,&
+              kpe => NoahmpIO%kme            ,&
+              its => NoahmpIO%its            ,&
+              ite => NoahmpIO%ite            ,&  
+              jts => NoahmpIO%jts            ,&
+              jte => NoahmpIO%jte            ,&  
+              kts => NoahmpIO%kts            ,&
+              kte => NoahmpIO%kte             & 
              )
 ! -------------------------------------------------------------------------------- 
     
     ! Given the soil layer thicknesses (in DZS), calculate the soil layer depths from the surface.
-    ZSOIL(1) = -DZS(1)          ! negative
-    do NS = 2, NSOIL
-       ZSOIL(NS) = ZSOIL(NS-1) - DZS(NS)
+    ZSOIL(1) = -NoahmpIO%DZS(1)          ! negative
+    do NS = 2, NoahmpIO%NSOIL
+       ZSOIL(NS) = ZSOIL(NS-1) - NoahmpIO%DZS(NS)
     enddo
 
     ! initialize grid index
@@ -110,18 +84,18 @@ contains
     jtf = min0(jte,(jde+1)-1)
 
     ! initialize land mask
-    where ( (IVGTYP /= NoahmpIO%ISWATER_TABLE) .and. (IVGTYP /= NoahmpIO%ISICE_TABLE) )
+    where ( (NoahmpIO%IVGTYP /= NoahmpIO%ISWATER_TABLE) .and. (NoahmpIO%IVGTYP /= NoahmpIO%ISICE_TABLE) )
          LANDMASK = 1
     elsewhere
          LANDMASK = -1
     endwhere
         
-    PEXP   = 1.0
+    NoahmpIO%PEXPXY   = 1.0
     DELTAT = 365.0*24*3600.0 ! 1 year
     
     ! read just the raw aggregated water table from hi-res map, so that it is better compatible with topography
     ! use WTD here, to use the lateral communication routine
-    WTD    = EQWTD
+    NoahmpIO%ZWTXY = NoahmpIO%EQZWT
     NCOUNT = 0
 
     do NITER = 1, 500
@@ -133,21 +107,22 @@ contains
       ! Calculate lateral flow
       if ( (NCOUNT > 0) .or. (NITER == 1) ) then
          QLAT = 0.0
-         call LATERALFLOW(NoahmpIO,ISLTYP,WTD,QLAT,FDEPTH,TOPO,LANDMASK,DELTAT,AREA &
-                                  ,ids,ide,jds,jde,kds,kde                          & 
-                                  ,ims,ime,jms,jme,kms,kme                          &
-                                  ,its,ite,jts,jte,kts,kte                          )
+         call LATERALFLOW(NoahmpIO,NoahmpIO%ISLTYP,NoahmpIO%ZWTXY,QLAT,NoahmpIO%FDEPTHXY,&
+                          NoahmpIO%TERRAIN,LANDMASK,DELTAT,NoahmpIO%AREAXY,              &
+                          ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,               &
+                          its,ite,jts,jte,kts,kte                          )
          NCOUNT = 0
          do J = jts, jtf
            do I = its, itf
              if ( LANDMASK(I,J) > 0 ) then
                if ( QLAT(i,j) > 1.0e-2 ) then
-                  NCOUNT   = NCOUNT+1
-                  WTD(I,J) = min(WTD(I,J)+0.25, 0.0)
+                  NCOUNT = NCOUNT + 1
+                  NoahmpIO%ZWTXY(I,J) = min(NoahmpIO%ZWTXY(I,J)+0.25, 0.0)
                endif
              endif
            enddo
          enddo
+
       endif
     enddo !NITER
 
@@ -157,7 +132,7 @@ contains
 #endif
 #endif
 
-    EQWTD=WTD
+    NoahmpIO%EQZWT=NoahmpIO%ZWTXY
 
     ! after adjusting, where qlat > 1cm/year now wtd is at the surface.
     ! it may still happen that qlat + rech > 0 and eqwtd-rbed <0. There the wtd can
@@ -166,44 +141,45 @@ contains
     ! now, calculate river conductivity
     do J = jts, jtf
        do I = its, itf
-          DDZ = EQWTD(I,J) - (RIVERBED(I,J) - TOPO(I,J))
+          DDZ = NoahmpIO%EQZWT(I,J) - (NoahmpIO%RIVERBEDXY(I,J) - NoahmpIO%TERRAIN(I,J))
           ! dont allow riverbed above water table
           if ( DDZ < 0.0 ) then
-             RIVERBED(I,J) = TOPO(I,J) + EQWTD(I,J)
+             NoahmpIO%RIVERBEDXY(I,J) = NoahmpIO%TERRAIN(I,J) + NoahmpIO%EQZWT(I,J)
              DDZ = 0.0
           endif
-          TOTWATER = AREA(I,J) * (QLAT(I,J) + RECHCLIM(I,J)*0.001) / DELTAT
+          TOTWATER = NoahmpIO%AREAXY(I,J) * (QLAT(I,J) + NoahmpIO%RECHCLIM(I,J)*0.001) / DELTAT
           if ( TOTWATER > 0 ) then
-             RIVERCOND(I,J) = TOTWATER / max(DDZ,0.05)
+             NoahmpIO%RIVERCONDXY(I,J) = TOTWATER / max(DDZ,0.05)
           else
-             RIVERCOND(I,J) = 0.01
+             NoahmpIO%RIVERCONDXY(I,J) = 0.01
              ! make riverbed equal to eqwtd, otherwise qrf might be too big...
-             RIVERBED(I,J)  = TOPO(I,J) + EQWTD(I,J)
+             NoahmpIO%RIVERBEDXY(I,J)  = NoahmpIO%TERRAIN(I,J) + NoahmpIO%EQZWT(I,J)
           endif
        enddo
     enddo
     
     ! make riverbed to be height down from the surface instead of above sea level
-    RIVERBED = min(RIVERBED-TOPO, 0.0)
+    NoahmpIO%RIVERBEDXY = min(NoahmpIO%RIVERBEDXY-NoahmpIO%TERRAIN, 0.0)
 
     ! now recompute lateral flow and flow to rivers to initialize deep soil moisture
-    DELTAT = WTDDT * 60.0 !timestep in seconds for this calculation
+    DELTAT = NoahmpIO%WTDDT * 60.0 !timestep in seconds for this calculation
     QLAT   = 0.0
-    call LATERALFLOW(NoahmpIO,ISLTYP,WTD,QLAT,FDEPTH,TOPO,LANDMASK,DELTAT,AREA &
-                             ,ids,ide,jds,jde,kds,kde                          & 
-                             ,ims,ime,jms,jme,kms,kme                          &
-                             ,its,ite,jts,jte,kts,kte                          )
+    call LATERALFLOW(NoahmpIO,NoahmpIO%ISLTYP,NoahmpIO%ZWTXY,QLAT,NoahmpIO%FDEPTHXY,&
+                     NoahmpIO%TERRAIN,LANDMASK,DELTAT,NoahmpIO%AREAXY,              &
+                     ids,ide,jds,jde,kds,kde,ims,ime,jms,jme,kms,kme,               &
+                     its,ite,jts,jte,kts,kte                      )
                         
     ! compute flux from grounwater to rivers in the cell
     do J = jts, jtf
        do I = its, itf
           if ( LANDMASK(I,J) > 0 ) then
-             if ( (WTD(I,J) > RIVERBED(I,J)) .and. (EQWTD(I,J) > RIVERBED(I,J)) ) then
-                RCOND = RIVERCOND(I,J) * exp(PEXP(I,J) * (WTD(I,J)-EQWTD(I,J)))
+             if ( (NoahmpIO%ZWTXY(I,J) > NoahmpIO%RIVERBEDXY(I,J)) .and. &
+                  (NoahmpIO%EQZWT(I,J) > NoahmpIO%RIVERBEDXY(I,J)) ) then
+                RCOND = NoahmpIO%RIVERCONDXY(I,J) * exp(NoahmpIO%PEXPXY(I,J)*(NoahmpIO%ZWTXY(I,J)-NoahmpIO%EQZWT(I,J)))
              else    
-                RCOND = RIVERCOND(I,J)
+                RCOND = NoahmpIO%RIVERCONDXY(I,J)
              endif
-             QRF(I,J) = RCOND * (WTD(I,J)-RIVERBED(I,J)) * DELTAT / AREA(I,J)
+             QRF(I,J) = RCOND * (NoahmpIO%ZWTXY(I,J)-NoahmpIO%RIVERBEDXY(I,J)) * DELTAT / NoahmpIO%AREAXY(I,J)
              ! for now, dont allow it to go from river to groundwater
              QRF(I,J) = max(QRF(I,J), 0.0) 
           else
@@ -216,32 +192,32 @@ contains
     do J = jts, jtf
        do I = its, itf
 
-          BEXP   = NoahmpIO%BEXP_TABLE(ISLTYP(I,J))
-          SMCMAX = NoahmpIO%SMCMAX_TABLE(ISLTYP(I,J))
-          SMCWLT = NoahmpIO%SMCWLT_TABLE(ISLTYP(I,J))                
+          BEXP   = NoahmpIO%BEXP_TABLE(NoahmpIO%ISLTYP(I,J))
+          SMCMAX = NoahmpIO%SMCMAX_TABLE(NoahmpIO%ISLTYP(I,J))
+          SMCWLT = NoahmpIO%SMCWLT_TABLE(NoahmpIO%ISLTYP(I,J))                
           ! add urban flag
           urbanpt_flag = .false.
-          if ( (IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE) .or. &
-               (IVGTYP(I,J) > NoahmpIO%URBTYPE_beg) ) urbanpt_flag = .true.
+          if ( (NoahmpIO%IVGTYP(I,J) == NoahmpIO%ISURBAN_TABLE) .or. &
+               (NoahmpIO%IVGTYP(I,J) > NoahmpIO%URBTYPE_beg) ) urbanpt_flag = .true.
           if ( urbanpt_flag .eqv. .true. ) then
              SMCMAX = 0.45         
              SMCWLT = 0.40         
           endif 
-          DWSAT  = NoahmpIO%DWSAT_TABLE(ISLTYP(I,J))
-          DKSAT  = NoahmpIO%DKSAT_TABLE(ISLTYP(I,J))
-          PSISAT = -NoahmpIO%PSISAT_TABLE(ISLTYP(I,J))
+          DWSAT  = NoahmpIO%DWSAT_TABLE(NoahmpIO%ISLTYP(I,J))
+          DKSAT  = NoahmpIO%DKSAT_TABLE(NoahmpIO%ISLTYP(I,J))
+          PSISAT = -NoahmpIO%PSISAT_TABLE(NoahmpIO%ISLTYP(I,J))
           if ( (BEXP > 0.0) .and. (SMCMAX > 0.0) .and. (-PSISAT > 0.0) ) then
              ! initialize equilibrium soil moisture for water table diagnostic
-             call EquilibriumSoilMoisture(NSOIL,  ZSOIL, SMCMAX, SMCWLT, DWSAT, DKSAT, BEXP, SMCEQ)  
-             SMOISEQ(I,1:NSOIL,J) = SMCEQ(1:NSOIL)
+             call EquilibriumSoilMoisture(NoahmpIO%NSOIL, ZSOIL, SMCMAX, SMCWLT, DWSAT, DKSAT, BEXP, SMCEQ)  
+             NoahmpIO%SMOISEQ(I,1:NoahmpIO%NSOIL,J) = SMCEQ(1:NoahmpIO%NSOIL)
 
              ! make sure that below the water table the layers are saturated and
              ! initialize the deep soil moisture
-             if ( WTD(I,J) < (ZSOIL(NSOIL)-DZS(NSOIL)) ) then
+             if ( NoahmpIO%ZWTXY(I,J) < (ZSOIL(NoahmpIO%NSOIL)-NoahmpIO%DZS(NoahmpIO%NSOIL)) ) then
                 ! initialize deep soil moisture so that the flux compensates qlat+qrf
                 ! use Newton-Raphson method to find soil moisture
                 EXPON    = 2.0 * BEXP + 3.0
-                DDZ      = ZSOIL(NSOIL) - WTD(I,J)
+                DDZ      = ZSOIL(NoahmpIO%NSOIL) - NoahmpIO%ZWTXY(I,J)
                 CC       = PSISAT / DDZ
                 FLUX     = (QLAT(I,J) - QRF(I,J)) / DELTAT
                 SMC      = 0.5 * SMCMAX
@@ -256,46 +232,46 @@ contains
                    SMC   = SMC - DX
                    if ( abs(DX) < 1.0e-6 ) exit
                 enddo
-                SMCWTDXY(I,J) = max(SMC, 1.0e-4)
-             elseif ( WTD(I,J) < ZSOIL(NSOIL) ) then
-                SMCEQDEEP     = SMCMAX * ( PSISAT / ( PSISAT - DZS(NSOIL) ) ) ** (1.0/BEXP)
+                NoahmpIO%SMCWTDXY(I,J) = max(SMC, 1.0e-4)
+             elseif ( NoahmpIO%ZWTXY(I,J) < ZSOIL(NoahmpIO%NSOIL) ) then
+                SMCEQDEEP     = SMCMAX * (PSISAT / (PSISAT - NoahmpIO%DZS(NoahmpIO%NSOIL))) ** (1.0/BEXP)
                !SMCEQDEEP     = MAX(SMCEQDEEP,SMCWLT)
                 SMCEQDEEP     = max(SMCEQDEEP, 1.0e-4)
-                SMCWTDXY(I,J) = SMCMAX * (WTD(I,J) -  (ZSOIL(NSOIL)-DZS(NSOIL))) + &
-                                SMCEQDEEP * (ZSOIL(NSOIL) - WTD(I,J))
+                NoahmpIO%SMCWTDXY(I,J) = SMCMAX * (NoahmpIO%ZWTXY(I,J)-(ZSOIL(NoahmpIO%NSOIL)-DZS(NoahmpIO%NSOIL))) + &
+                                         SMCEQDEEP * (ZSOIL(NoahmpIO%NSOIL) - NoahmpIO%ZWTXY(I,J))
              else !water table within the resolved layers
-               SMCWTDXY(I,J) = SMCMAX
-               do K = NSOIL, 2, -1
-                  if ( WTD(I,J) >= ZSOIL(K-1) ) then
-                     FRLIQ        = SH2O(I,K,J) / SMOIS(I,K,J)
-                     SMOIS(I,K,J) = SMCMAX
-                     SH2O(I,K,J)  = SMCMAX * FRLIQ
+               NoahmpIO%SMCWTDXY(I,J) = SMCMAX
+               do K = NoahmpIO%NSOIL, 2, -1
+                  if ( NoahmpIO%ZWTXY(I,J) >= ZSOIL(K-1) ) then
+                     FRLIQ        = NoahmpIO%SH2O(I,K,J) / NoahmpIO%SMOIS(I,K,J)
+                     NoahmpIO%SMOIS(I,K,J) = SMCMAX
+                     NoahmpIO%SH2O(I,K,J)  = SMCMAX * FRLIQ
                   else
-                     if ( SMOIS(I,K,J) < SMCEQ(K) ) then
-                        WTD(I,J)  = ZSOIL(K)
+                     if ( NoahmpIO%SMOIS(I,K,J) < SMCEQ(K) ) then
+                        NoahmpIO%ZWTXY(I,J)  = ZSOIL(K)
                      else
-                        WTD(I,J)  = (SMOIS(I,K,J)*DZS(K) - SMCEQ(K)*ZSOIL(K-1) + SMCMAX*ZSOIL(K)) / &
-                                    (SMCMAX - SMCEQ(K)) 
+                        NoahmpIO%ZWTXY(I,J)  = (NoahmpIO%SMOIS(I,K,J)*NoahmpIO%DZS(K) - SMCEQ(K)*ZSOIL(K-1) + &
+                                                SMCMAX*ZSOIL(K)) / (SMCMAX - SMCEQ(K)) 
                      endif
                      exit
                   endif
                enddo
              endif
           else
-             SMOISEQ (I,1:NSOIL,J) = SMCMAX
-             SMCWTDXY(I,J)         = SMCMAX
-             WTD(I,J)              = 0.0
+             NoahmpIO%SMOISEQ (I,1:NoahmpIO%NSOIL,J) = SMCMAX
+             NoahmpIO%SMCWTDXY(I,J) = SMCMAX
+             NoahmpIO%ZWTXY(I,J)    = 0.0
           endif
   
           ! zero out some arrays
-          QLATXY(I,J)     = 0.0
-          QSLATXY(I,J)    = 0.0
-          QRFXY(I,J)      = 0.0
-          QRFSXY(I,J)     = 0.0
-          DEEPRECHXY(I,J) = 0.0
-          RECHXY(I,J)     = 0.0
-          QSPRINGXY(I,J)  = 0.0
-          QSPRINGSXY(I,J) = 0.0
+          NoahmpIO%QLATXY(I,J)     = 0.0
+          NoahmpIO%QSLATXY(I,J)    = 0.0
+          NoahmpIO%QRFXY(I,J)      = 0.0
+          NoahmpIO%QRFSXY(I,J)     = 0.0
+          NoahmpIO%DEEPRECHXY(I,J) = 0.0
+          NoahmpIO%RECHXY(I,J)     = 0.0
+          NoahmpIO%QSPRINGXY(I,J)  = 0.0
+          NoahmpIO%QSPRINGSXY(I,J) = 0.0
 
        enddo
     enddo

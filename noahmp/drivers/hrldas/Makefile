@@ -23,7 +23,7 @@ OBJS = NoahmpGroundwaterInitMod.o \
        EnergyVarInTransferMod.o \
        WaterVarInTransferMod.o \
        BiochemVarInTransferMod.o \
-       PedoTransferSR2006.o
+       PedoTransferSR2006Mod.o
 
 all:	$(OBJS)
 
@@ -42,7 +42,7 @@ NoahmpIOVarType.o:          ../../utility/Machine.o
 NoahmpIOVarInitMod.o:       ../../utility/Machine.o NoahmpIOVarType.o
 NoahmpReadTableMod.o:       ../../utility/Machine.o NoahmpIOVarType.o
 NoahmpReadNamelistMod.o:    ../../utility/Machine.o NoahmpIOVarType.o
-PedoTransferSR2006.o:       ../../utility/Machine.o NoahmpIOVarType.o
+PedoTransferSR2006Mod.o:    ../../utility/Machine.o NoahmpIOVarType.o
 ConfigVarOutTransferMod.o:  ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
 ForcingVarOutTransferMod.o: ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
 EnergyVarOutTransferMod.o:  ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
@@ -52,7 +52,7 @@ ConfigVarInTransferMod.o:   ../../utility/Machine.o NoahmpIOVarType.o ../../src/
 ForcingVarInTransferMod.o:  ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
 EnergyVarInTransferMod.o:   ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
 BiochemVarInTransferMod.o:  ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o
-WaterVarInTransferMod.o:    ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o PedoTransferSR2006.o
+WaterVarInTransferMod.o:    ../../utility/Machine.o NoahmpIOVarType.o ../../src/NoahmpVarType.o PedoTransferSR2006Mod.o
 NoahmpGroundwaterInitMod.o: ../../../hrldas/Utility_routines/module_domain.o \
                             ../../utility/Machine.o NoahmpIOVarType.o ../../src/GroundWaterMmfMod.o 
 NoahmpSnowInitMod.o:        ../../utility/Machine.o NoahmpIOVarType.o

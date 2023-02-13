@@ -53,7 +53,7 @@ OBJS = \
         ../../noahmp/drivers/hrldas/EnergyVarInTransferMod.o \
         ../../noahmp/drivers/hrldas/WaterVarInTransferMod.o \
         ../../noahmp/drivers/hrldas/BiochemVarInTransferMod.o \
-        ../../noahmp/drivers/hrldas/PedoTransferSR2006.o \
+        ../../noahmp/drivers/hrldas/PedoTransferSR2006Mod.o \
         ../../noahmp/utility/Machine.o \
         ../../noahmp/utility/CheckNanMod.o \
         ../../noahmp/src/ConstantDefineMod.o \

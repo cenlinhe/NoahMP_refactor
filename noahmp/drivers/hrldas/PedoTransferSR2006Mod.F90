@@ -1,4 +1,4 @@
-module PedoTransferSR2006
+module PedoTransferSR2006Mod
 
 !!! Compute soil water infiltration based on different soil composition
 
@@ -10,12 +10,12 @@ module PedoTransferSR2006
 
 contains
 
-  subroutine PedoTransfer_SR2006(NoahmpIO, noahmp, Sand, Clay, Orgm)
+  subroutine PedoTransferSR2006(NoahmpIO, noahmp, Sand, Clay, Orgm)
 
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: PEDOTRANSFER_SR2006
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -205,6 +205,6 @@ contains
 
     end associate
 
-  end subroutine PedoTransfer_SR2006
+  end subroutine PedoTransferSR2006
 
-end module PedoTransferSR2006
+end module PedoTransferSR2006Mod

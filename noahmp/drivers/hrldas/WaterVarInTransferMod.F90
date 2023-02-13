@@ -6,13 +6,13 @@ module WaterVarInTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
   use NoahmpIOVarType
   use NoahmpVarType
-  use PedoTransferSR2006
+  use PedoTransferSR2006Mod
 
   implicit none
 
@@ -33,6 +33,7 @@ contains
     real(kind=kind_noahmp), allocatable, dimension(:) :: SoilClay
     real(kind=kind_noahmp), allocatable, dimension(:) :: SoilOrg
 
+! -------------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
@@ -44,6 +45,7 @@ contains
               RunoffSlopeType => noahmp%config%domain%RunoffSlopeType ,&
               NumSnowLayerNeg => noahmp%config%domain%NumSnowLayerNeg  &
              )
+! -------------------------------------------------------------------------
 
     ! water state variables
     noahmp%water%state%CanopyLiqWater                     = NoahmpIO%CANLIQXY   (I,J)
@@ -227,7 +229,7 @@ contains
        SoilClay = 0.01 * NoahmpIO%soilcomp(I,(NumSoilLayer+1):(NumSoilLayer*2),J)
        SoilOrg  = 0.0
        if (noahmp%config%nmlist%OptPedotransfer == 1) &
-          call PedoTransfer_SR2006(NoahmpIO,noahmp,SoilSand,SoilClay,SoilOrg)
+          call PedoTransferSR2006(NoahmpIO,noahmp,SoilSand,SoilClay,SoilOrg)
        deallocate(SoilSand)
        deallocate(SoilClay)
        deallocate(SoilOrg )

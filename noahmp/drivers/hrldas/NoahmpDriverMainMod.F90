@@ -41,7 +41,7 @@ contains
     
     type(NoahmpIO_type), intent(inout)  :: NoahmpIO
     
-    !local
+    ! local variables
     type(noahmp_type)                   :: noahmp
     integer                             :: I
     integer                             :: J
@@ -51,6 +51,7 @@ contains
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: SAND
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: CLAY
     real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil ) :: ORGM
+! ------------------------------------------------------------------------- 
 
     !---------------------------------------------------------------------
     !  Treatment of Noah-MP soil timestep

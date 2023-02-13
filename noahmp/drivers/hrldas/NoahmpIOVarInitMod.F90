@@ -5,7 +5,7 @@ module NoahmpIOVarInitMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -24,7 +24,8 @@ contains
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
    
 ! ------------------------------------------------- 
-    associate(XSTART  =>  NoahmpIO%XSTART   ,&
+    associate(                               &
+              XSTART  =>  NoahmpIO%XSTART   ,&
               XEND    =>  NoahmpIO%XEND     ,&
               YSTART  =>  NoahmpIO%YSTART   ,&
               YEND    =>  NoahmpIO%YEND     ,&

@@ -5,7 +5,7 @@ module NoahmpReadNamelistMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -318,7 +318,7 @@ contains
     !---------------------------------------------------------------------
     !  Transfer Namelist locals to input data structure
     !---------------------------------------------------------------------
- 
+    ! physics option 
     NoahmpIO%IOPT_DVEG                         = dynamic_veg_option 
     NoahmpIO%IOPT_CRS                          = canopy_stomatal_resistance_option
     NoahmpIO%IOPT_BTR                          = btr_option
@@ -342,7 +342,7 @@ contains
     NoahmpIO%IOPT_IRRM                         = irrigation_method
     NoahmpIO%IOPT_INFDV                        = dvic_infiltration_option
     NoahmpIO%IOPT_TDRN                         = tile_drainage_option
-    
+    ! basic model setup variables
     NoahmpIO%indir                             = indir
     NoahmpIO%forcing_timestep                  = forcing_timestep
     NoahmpIO%noah_timestep                     = noah_timestep

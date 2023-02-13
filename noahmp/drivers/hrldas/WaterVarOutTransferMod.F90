@@ -4,7 +4,7 @@ module WaterVarOutTransferMod
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -24,6 +24,7 @@ contains
     type(noahmp_type),   intent(inout) :: noahmp
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
 
+! -------------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
@@ -31,6 +32,7 @@ contains
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer    ,&
               IndicatorIceSfc => noahmp%config%domain%IndicatorIceSfc  &
              )
+! -------------------------------------------------------------------------
 
     ! special treatment for glacier point output
     if ( IndicatorIceSfc == -1 ) then ! land ice point
@@ -127,7 +129,7 @@ contains
     NoahmpIO%SNICEXY     (I,-NumSnowLayerMax+1:0,J) = noahmp%water%state%SnowIce(-NumSnowLayerMax+1:0)
     NoahmpIO%SNLIQXY     (I,-NumSnowLayerMax+1:0,J) = noahmp%water%state%SnowLiqWater(-NumSnowLayerMax+1:0)
 
-! irrigation
+    ! irrigation
     NoahmpIO%IRNUMSI   (I,J) = noahmp%water%state%IrrigationCntSprinkler
     NoahmpIO%IRNUMMI   (I,J) = noahmp%water%state%IrrigationCntMicro
     NoahmpIO%IRNUMFI   (I,J) = noahmp%water%state%IrrigationCntFlood
