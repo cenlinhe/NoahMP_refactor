@@ -111,8 +111,6 @@ contains
        enddo ! I
     enddo    ! J
 
-    end associate
-    
   end subroutine NoahmpSnowInitMain
 
 end module NoahmpSnowInitMod

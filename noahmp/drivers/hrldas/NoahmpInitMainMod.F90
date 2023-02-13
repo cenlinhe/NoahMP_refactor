@@ -24,7 +24,7 @@ contains
 
     ! local variables
     integer                                     :: ide,jde,its,jts,itf,jtf
-    integer                                     :: I,J,errflag,itf,jtf,NS
+    integer                                     :: I,J,errflag,NS
     logical                                     :: urbanpt_flag
     real(kind=kind_noahmp)                      :: BEXP, SMCMAX, PSISAT, FK
     real(kind=kind_noahmp), parameter           :: BLIM  = 5.5
@@ -261,8 +261,6 @@ contains
 
     endif ! NoahmpIO%restart_flag
  
-    end associate
-    
   end subroutine NoahmpInitMain    
 
 end module NoahmpInitMainMod

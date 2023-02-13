@@ -237,7 +237,7 @@ contains
                 SMCEQDEEP     = SMCMAX * (PSISAT / (PSISAT - NoahmpIO%DZS(NoahmpIO%NSOIL))) ** (1.0/BEXP)
                !SMCEQDEEP     = MAX(SMCEQDEEP,SMCWLT)
                 SMCEQDEEP     = max(SMCEQDEEP, 1.0e-4)
-                NoahmpIO%SMCWTDXY(I,J) = SMCMAX * (NoahmpIO%ZWTXY(I,J)-(ZSOIL(NoahmpIO%NSOIL)-DZS(NoahmpIO%NSOIL))) + &
+                NoahmpIO%SMCWTDXY(I,J) = SMCMAX * (NoahmpIO%ZWTXY(I,J)-(ZSOIL(NoahmpIO%NSOIL)-NoahmpIO%DZS(NoahmpIO%NSOIL))) + &
                                          SMCEQDEEP * (ZSOIL(NoahmpIO%NSOIL) - NoahmpIO%ZWTXY(I,J))
              else !water table within the resolved layers
                NoahmpIO%SMCWTDXY(I,J) = SMCMAX
