@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SHALLOWWATERTABLE
 ! Original code: Miguez-Macho&Fan (Miguez-Macho et al 2007, Fan et al 2007)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none

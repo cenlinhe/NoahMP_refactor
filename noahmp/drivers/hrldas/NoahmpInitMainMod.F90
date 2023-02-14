@@ -183,7 +183,8 @@ contains
                 NoahmpIO%GDDXY(I,J)    = 0
                 NoahmpIO%CROPCAT(I,J)  = 0
              else
-                if ( NoahmpIO%LAI(I,J) > 100 ) NoahmpIO%LAI(I,J) = 0.0
+                if ( (NoahmpIO%LAI(I,J) > 100) .or. (NoahmpIO%LAI(I,J) < 0) ) &
+                NoahmpIO%LAI(I,J)      = 0.0
                 NoahmpIO%LAI(I,J)      = max(NoahmpIO%LAI(I,J), 0.05)                       ! at least start with 0.05 for arbitrary initialization (v3.7)
                 NoahmpIO%XSAIXY(I,J)   = max(0.1*NoahmpIO%LAI(I,J), 0.05)                   ! MB: arbitrarily initialize SAI using input LAI (v3.7)
                 NoahmpIO%LFMASSXY(I,J) = NoahmpIO%LAI(I,J) * 1000.0 / &

@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: None (embedded in NOAHMP_GLACIER)
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -45,7 +45,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: ERROR_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -104,7 +104,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: ERROR_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none

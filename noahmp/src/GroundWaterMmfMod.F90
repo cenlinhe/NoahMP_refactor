@@ -1,11 +1,17 @@
 module GroundWaterMmfMod
-!===============================================================================
-! Module to calculate lateral groundwater flow and the flux between groundwater and rivers
-! plus the routine to update soil moisture and water table due to those two fluxes
-! according to the Miguez-Macho & Fan groundwater scheme (Miguez-Macho et al., JGR 2007).
-! Module written by Gonzalo Miguez-Macho , U. de Santiago de Compostela, Galicia, Spain
-! November 2012 
-!===============================================================================
+
+!!! Module to calculate lateral groundwater flow and the flux between groundwater and rivers
+!!! plus the routine to update soil moisture and water table due to those two fluxes
+!!! according to the Miguez-Macho & Fan groundwater scheme (Miguez-Macho et al., JGR 2007).
+!!! Module written by Gonzalo Miguez-Macho , U. de Santiago de Compostela, Galicia, Spain
+!!! November 2012 
+
+! ------------------------ Code history -----------------------------------
+! Original Noah-MP subroutine: module_sf_groundwater.F
+! Original code: Miguez-Macho&Fan (Miguez-Macho et al 2007, Fan et al 2007)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
+! Note: this MMF scheme needs further refactoring
+! -------------------------------------------------------------------------
 
   use NoahmpIOVarType
   use NoahmpVarType

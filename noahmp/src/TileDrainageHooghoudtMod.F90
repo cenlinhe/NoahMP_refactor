@@ -18,7 +18,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: TILE_HOOGHOUDT
 ! Original code: P. Valayamkunnath (NCAR)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none

@@ -19,7 +19,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: MICRO_IRRIGATION
 ! Original code: P. Valayamkunnath (NCAR) <prasanth@ucar.edu> (08/06/2020)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none

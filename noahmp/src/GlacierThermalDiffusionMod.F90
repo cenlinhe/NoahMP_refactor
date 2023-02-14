@@ -19,7 +19,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: HRT_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none

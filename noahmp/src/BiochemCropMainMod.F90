@@ -20,7 +20,7 @@ contains
 ! Original Noah-MP subroutine: CARBON_CROP
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
 ! Modified by Xing Liu, 2014
-! Refactered code: P. Valayamkunnath, C. He & refactor team (Jan 2023)
+! Refactered code: C. He, P. Valayamkunnath & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
         
     implicit none

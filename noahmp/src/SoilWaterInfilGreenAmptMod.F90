@@ -18,7 +18,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: GREEN_AMPT_INFIL
 ! Original code: Prasanth Valayamkunnath <prasanth@ucar.edu>
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
