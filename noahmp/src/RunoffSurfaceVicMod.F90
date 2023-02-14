@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: COMPUTE_VIC_SURFRUNOFF
 ! Original code: Prasanth Valayamkunnath <prasanth@ucar.edu>
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none

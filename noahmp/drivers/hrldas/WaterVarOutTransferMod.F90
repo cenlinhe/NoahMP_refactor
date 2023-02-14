@@ -1,11 +1,10 @@
-module WaterVarOutMod
+module WaterVarOutTransferMod
 
 !!! Transfer column (1-D) Noah-MP water variables to 2D NoahmpIO for output
-!!! Water variables should be first defined in WaterVarType.F90
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -16,7 +15,7 @@ module WaterVarOutMod
 
 contains
 
-!=== Transfer model states to output=====
+!=== Transfer model states to output =====
 
   subroutine WaterVarOutTransfer(noahmp, NoahmpIO)
 
@@ -25,6 +24,7 @@ contains
     type(noahmp_type),   intent(inout) :: noahmp
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
 
+! -------------------------------------------------------------------------
     associate(                                                         &
               I               => noahmp%config%domain%GridIndexI      ,&
               J               => noahmp%config%domain%GridIndexJ      ,&
@@ -32,6 +32,7 @@ contains
               NumSoilLayer    => noahmp%config%domain%NumSoilLayer    ,&
               IndicatorIceSfc => noahmp%config%domain%IndicatorIceSfc  &
              )
+! -------------------------------------------------------------------------
 
     ! special treatment for glacier point output
     if ( IndicatorIceSfc == -1 ) then ! land ice point
@@ -46,7 +47,7 @@ contains
        noahmp%water%flux%ThroughfallRain     = noahmp%water%flux%RainfallRefHeight
        noahmp%water%flux%SublimCanopyIce     = 0.0
        noahmp%water%flux%FrostCanopyIce      = 0.0
-       noahmp%water%flux%RefrzCanopyLiq      = 0.0
+       noahmp%water%flux%FreezeCanopyLiq     = 0.0
        noahmp%water%flux%MeltCanopyIce       = 0.0
        noahmp%water%flux%EvapCanopyLiq       = 0.0
        noahmp%water%flux%DewCanopyLiq        = 0.0
@@ -103,7 +104,7 @@ contains
     NoahmpIO%QFROCXY     (I,J) = noahmp%water%flux%FrostCanopyIce
     NoahmpIO%QEVACXY     (I,J) = noahmp%water%flux%EvapCanopyLiq
     NoahmpIO%QDEWCXY     (I,J) = noahmp%water%flux%DewCanopyLiq
-    NoahmpIO%QFRZCXY     (I,J) = noahmp%water%flux%RefrzCanopyLiq
+    NoahmpIO%QFRZCXY     (I,J) = noahmp%water%flux%FreezeCanopyLiq
     NoahmpIO%QMELTCXY    (I,J) = noahmp%water%flux%MeltCanopyIce
     NoahmpIO%QSNBOTXY    (I,J) = noahmp%water%flux%SnowBotOutflow
     NoahmpIO%QMELTXY     (I,J) = noahmp%water%flux%MeltGroundSnow
@@ -128,7 +129,7 @@ contains
     NoahmpIO%SNICEXY     (I,-NumSnowLayerMax+1:0,J) = noahmp%water%state%SnowIce(-NumSnowLayerMax+1:0)
     NoahmpIO%SNLIQXY     (I,-NumSnowLayerMax+1:0,J) = noahmp%water%state%SnowLiqWater(-NumSnowLayerMax+1:0)
 
-! irrigation
+    ! irrigation
     NoahmpIO%IRNUMSI   (I,J) = noahmp%water%state%IrrigationCntSprinkler
     NoahmpIO%IRNUMMI   (I,J) = noahmp%water%state%IrrigationCntMicro
     NoahmpIO%IRNUMFI   (I,J) = noahmp%water%state%IrrigationCntFlood
@@ -150,4 +151,4 @@ contains
 
   end subroutine WaterVarOutTransfer
 
-end module WaterVarOutMod
+end module WaterVarOutTransferMod

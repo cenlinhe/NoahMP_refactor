@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: TDFCND
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! If the soil has any moisture content compute a partial sum/product
 ! otherwise use a constant value which works well with most soils
 ! -------------------------------------------------------------------------
@@ -29,11 +29,8 @@ contains
     real(kind=kind_noahmp)           :: KerstenFac                    ! Kersten number
     real(kind=kind_noahmp)           :: SoilGamFac                    ! temporary soil GAMMD factor
     real(kind=kind_noahmp)           :: ThermConductSoilDry           ! thermal conductivity for dry soil
-    real(kind=kind_noahmp)           :: ThermConductSoilOth           ! thermal conductivity for other soil components 
-    real(kind=kind_noahmp)           :: ThermConductQuartz            ! thermal conductivity for quartz
     real(kind=kind_noahmp)           :: ThermConductSoilSat           ! thermal conductivity for saturated soil
     real(kind=kind_noahmp)           :: ThermConductSolid             ! thermal conductivity for the solids
-    real(kind=kind_noahmp)           :: ThermConductWater             ! water thermal conductivity
     real(kind=kind_noahmp)           :: SoilSatRatio                  ! saturation ratio
     real(kind=kind_noahmp)           :: SoilWatFracSat                ! saturated soil water fraction
     real(kind=kind_noahmp)           :: SoilWatFrac                   ! soil water fraction
@@ -53,11 +50,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initiazliation
-    allocate( SoilIceTmp(1:NumSoilLayer) )
+    if (.not. allocated(SoilIceTmp)) allocate(SoilIceTmp(1:NumSoilLayer))
     SoilIceTmp(:)       = 0.0
-    ThermConductWater   = 0.57            ! water thermal conductivity
-    ThermConductSoilOth = 2.0             ! thermal conductivity for other soil components
-    ThermConductQuartz  = 7.7             ! thermal conductivity for quartz
 
     do LoopInd = 1, NumSoilLayer
 
@@ -72,8 +66,8 @@ contains
        SoilSatRatio = SoilMoisture(LoopInd) / SoilMoistureSat(LoopInd) ! SATURATION RATIO
 
        ! UNFROZEN FRACTION (FROM 1., i.e., 100%LIQUID, TO 0. (100% FROZEN))
-       ThermConductSolid = (ThermConductQuartz ** SoilQuartzFrac(LoopInd)) * &
-                           (ThermConductSoilOth ** (1.0 - SoilQuartzFrac(LoopInd)))
+       ThermConductSolid = (ConstThermConductQuartz ** SoilQuartzFrac(LoopInd)) * &
+                           (ConstThermConductSoilOth ** (1.0 - SoilQuartzFrac(LoopInd)))
 
        ! UNFROZEN VOLUME FOR SATURATION (POROSITY*SoilWatFrac)
        SoilWatFrac = 1.0    ! Prevent divide by zero (suggested by D. Mocko)
@@ -83,7 +77,7 @@ contains
        ! SATURATED THERMAL CONDUCTIVITY
        ThermConductSoilSat = ThermConductSolid ** (1.0-SoilMoistureSat(LoopInd)) * &
                              ConstThermConductIce ** (SoilMoistureSat(LoopInd)-SoilWatFracSat) * &
-                             ThermConductWater ** (SoilWatFracSat)
+                             ConstThermConductWater ** (SoilWatFracSat)
 
        ! DRY THERMAL CONDUCTIVITY IN W.M-1.K-1
        SoilGamFac          = (1.0 - SoilMoistureSat(LoopInd)) * 2700.0
@@ -107,6 +101,9 @@ contains
        ThermConductSoil(LoopInd) = KerstenFac*(ThermConductSoilSat-ThermConductSoilDry) + ThermConductSoilDry
 
     enddo ! LoopInd
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SoilIceTmp)
 
     end associate
 

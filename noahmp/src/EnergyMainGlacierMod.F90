@@ -27,7 +27,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: ENERGY_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -40,14 +40,12 @@ contains
     associate(                                                                    &
               RadLwDownRefHeight     => noahmp%forcing%RadLwDownRefHeight        ,& ! in,    downward longwave radiation [W/m2] at reference height
               RadSwDownRefHeight     => noahmp%forcing%RadSwDownRefHeight        ,& ! in,    downward shortwave radiation [W/m2] at reference height
-              WindEastwardRefHeight  => noahmp%forcing%WindEastwardRefHeight     ,& ! in,    wind speed [m/s] in eastward direction at reference height
-              WindNorthwardRefHeight => noahmp%forcing%WindNorthwardRefHeight    ,& ! in,    wind speed [m/s] in northward direction at reference height
               OptSnowSoilTempTime    => noahmp%config%nmlist%OptSnowSoilTempTime ,& ! in,    options for snow/soil temperature time scheme
               HeatPrecipAdvBareGrd   => noahmp%energy%flux%HeatPrecipAdvBareGrd  ,& ! in,    precipitation advected heat - bare ground net [W/m2]
               TemperatureSfc         => noahmp%energy%state%TemperatureSfc       ,& ! inout, surface temperature [K]
               TemperatureGrd         => noahmp%energy%state%TemperatureGrd       ,& ! inout, ground temperature [K]
-              SpecHumiditySfcBare    => noahmp%energy%state%SpecHumiditySfcBare  ,& ! inout, specific humidity at bare surface
-              SpecHumiditySfc        => noahmp%energy%state%SpecHumiditySfc      ,& ! inout, specific humidity at surface grid mean
+              SpecHumiditySfc        => noahmp%energy%state%SpecHumiditySfc      ,& ! inout, specific humidity at bare surface
+              SpecHumiditySfcMean    => noahmp%energy%state%SpecHumiditySfcMean  ,& ! inout, specific humidity at surface grid mean
               ExchCoeffMomSfc        => noahmp%energy%state%ExchCoeffMomSfc      ,& ! inout, exchange coefficient [m/s] for momentum, surface, grid mean
               ExchCoeffShSfc         => noahmp%energy%state%ExchCoeffShSfc       ,& ! inout, exchange coefficient [m/s] for heat, surface, grid mean
               SnowDepth              => noahmp%water%state%SnowDepth             ,& ! inout, snow depth [m]
@@ -58,7 +56,6 @@ contains
               TemperatureAir2m       => noahmp%energy%state%TemperatureAir2m     ,& ! out,   grid mean 2-m air temperature [K]
               TemperatureAir2mBare   => noahmp%energy%state%TemperatureAir2mBare ,& ! out,   2 m height air temperature [K] bare ground
               EmissivitySfc          => noahmp%energy%state%EmissivitySfc        ,& ! out,   surface emissivity
-              WindSpdRefHeight       => noahmp%energy%state%WindSpdRefHeight     ,& ! out,   wind speed [m/s] at reference height
               RoughLenMomGrd         => noahmp%energy%state%RoughLenMomGrd       ,& ! out,   roughness length, momentum, ground [m]
               WindStressEwBare       => noahmp%energy%state%WindStressEwBare     ,& ! out,   wind stress: east-west [N/m2] bare ground
               WindStressNsBare       => noahmp%energy%state%WindStressNsBare     ,& ! out,   wind stress: north-south [N/m2] bare ground
@@ -81,9 +78,6 @@ contains
               HeatGroundBareGrd      => noahmp%energy%flux%HeatGroundBareGrd      & ! out,   bare ground heat flux [W/m2] (+ to soil/snow)
              )
 ! ----------------------------------------------------------------------
-
-    ! wind speed at reference height: ur >= 1
-    WindSpdRefHeight = max(sqrt(WindEastwardRefHeight**2.0 + WindNorthwardRefHeight**2.0), 1.0)
 
     ! glaicer snow cover fraction
     call SnowCoverGlacier(noahmp)
@@ -130,7 +124,7 @@ contains
     TemperatureSfc      = TemperatureGrd
     ExchCoeffMomSfc     = ExchCoeffMomBare
     ExchCoeffShSfc      = ExchCoeffShBare
-    SpecHumiditySfc     = SpecHumiditySfcBare
+    SpecHumiditySfcMean = SpecHumiditySfc
     SpecHumidity2m      = SpecHumidity2mBare
     RoughLenMomSfcToAtm = RoughLenMomGrd
 

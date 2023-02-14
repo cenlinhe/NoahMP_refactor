@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: TILE_DRAIN
 ! Original code: P. Valayamkunnath (NCAR)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -50,9 +50,9 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DrainFracTmp   (1:NumSoilLayer) )
-    allocate( SoilFieldCapLiq(1:NumSoilLayer) )
-    allocate( WatExcFieldCap (1:NumSoilLayer) )
+    if (.not. allocated(DrainFracTmp)   ) allocate(DrainFracTmp   (1:NumSoilLayer))
+    if (.not. allocated(SoilFieldCapLiq)) allocate(SoilFieldCapLiq(1:NumSoilLayer))
+    if (.not. allocated(WatExcFieldCap) ) allocate(WatExcFieldCap (1:NumSoilLayer))
     DrainFracTmp       = 0.0
     SoilFieldCapLiq    = 0.0
     DrainWatVolTot     = 0.0
@@ -200,6 +200,11 @@ contains
     endif
 
     TileDrain = DrainWatVolTot / SoilTimeStep
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DrainFracTmp   )
+    deallocate(SoilFieldCapLiq)
+    deallocate(WatExcFieldCap )
 
     end associate
 

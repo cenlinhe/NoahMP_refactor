@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: COMBINE
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -170,7 +170,7 @@ contains
              endif
              ! Decrease the number of snow layers
              NumSnowLayerNeg = NumSnowLayerNeg + 1
-             if ( NumSnowLayerNeg >= -1 ) EXIT
+             if ( NumSnowLayerNeg >= -1 ) Exit
           else 
              ! The layer thickness is greater than the prescribed minimum value
              IndLayer = IndLayer + 1

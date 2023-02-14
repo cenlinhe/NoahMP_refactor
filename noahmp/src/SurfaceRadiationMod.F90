@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SURRAD
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -36,7 +36,7 @@ contains
 
 ! --------------------------------------------------------------------
     associate(                                                                 &
-              NumSWRadBand         => noahmp%config%domain%NumSWRadBand       ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand         => noahmp%config%domain%NumSwRadBand       ,& ! in,  number of solar radiation wave bands
               LeafAreaIndEff       => noahmp%energy%state%LeafAreaIndEff      ,& ! in,  leaf area index, after burying by snow
               VegAreaIndEff        => noahmp%energy%state%VegAreaIndEff       ,& ! in,  one-sided leaf+stem area index [m2/m2]
               CanopySunlitFrac     => noahmp%energy%state%CanopySunlitFrac    ,& ! in,  sunlit fraction of canopy
@@ -70,9 +70,11 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( RadSwAbsCanDir(1:NumSWRadBand) )
-    allocate( RadSwAbsCanDif(1:NumSWRadBand) )
+    if (.not. allocated(RadSwAbsCanDir)) allocate(RadSwAbsCanDir(1:NumSwRadBand))
+    if (.not. allocated(RadSwAbsCanDif)) allocate(RadSwAbsCanDif(1:NumSwRadBand))
     MinThr               = 1.0e-6
+    RadSwAbsCanDir       = 0.0
+    RadSwAbsCanDif       = 0.0
     RadSwAbsGrd          = 0.0
     RadSwAbsVeg          = 0.0
     RadSwAbsSfc          = 0.0
@@ -82,7 +84,7 @@ contains
     RadPhotoActAbsSunlit = 0.0
     RadPhotoActAbsShade  = 0.0
 
-    do IndBand = 1, NumSWRadBand
+    do IndBand = 1, NumSwRadBand
        ! absorbed by canopy
        RadSwAbsCanDir(IndBand) = RadSwDownDir(IndBand) * RadSwAbsVegDir(IndBand)
        RadSwAbsCanDif(IndBand) = RadSwDownDif(IndBand) * RadSwAbsVegDif(IndBand)
@@ -123,6 +125,10 @@ contains
                    RadSwReflVegDir(2)*RadSwDownDir(2) + RadSwReflVegDif(2)*RadSwDownDif(2)
     RadSwReflGrd = RadSwReflGrdDir(1)*RadSwDownDir(1) + RadSwReflGrdDif(1)*RadSwDownDif(1) + &
                    RadSwReflGrdDir(2)*RadSwDownDir(2) + RadSwReflGrdDif(2)*RadSwDownDif(2)
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(RadSwAbsCanDir)
+    deallocate(RadSwAbsCanDif)
 
     end associate
 

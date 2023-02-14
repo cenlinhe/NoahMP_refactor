@@ -62,7 +62,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: ENERGY
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -76,8 +76,6 @@ contains
     associate(                                                                        &
               PressureAirRefHeight    => noahmp%forcing%PressureAirRefHeight         ,& ! in,    air pressure [Pa] at reference height
               RadLwDownRefHeight      => noahmp%forcing%RadLwDownRefHeight           ,& ! in,    downward longwave radiation [W/m2] at reference height
-              WindEastwardRefHeight   => noahmp%forcing%WindEastwardRefHeight        ,& ! in,    wind speed [m/s] in eastward direction at reference height
-              WindNorthwardRefHeight  => noahmp%forcing%WindNorthwardRefHeight       ,& ! in,    wind speed [m/s] in northward direction at reference height
               RadSwDownRefHeight      => noahmp%forcing%RadSwDownRefHeight           ,& ! in,    downward shortwave radiation [W/m2] at reference height
               OptSnowSoilTempTime     => noahmp%config%nmlist%OptSnowSoilTempTime    ,& ! in,    options for snow/soil temperature time scheme
               FlagCropland            => noahmp%config%domain%FlagCropland           ,& ! in,    flag to identify croplands
@@ -96,8 +94,8 @@ contains
               TemperatureSfc          => noahmp%energy%state%TemperatureSfc          ,& ! inout, surface temperature [K]
               TemperatureGrd          => noahmp%energy%state%TemperatureGrd          ,& ! inout, ground temperature [K]
               TemperatureCanopy       => noahmp%energy%state%TemperatureCanopy       ,& ! inout, vegetation temperature [K]
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity [kg/kg] at bare surface
-              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity [kg/kg] at surface grid mean
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity [kg/kg] at bare/veg/urban surface
+              SpecHumiditySfcMean     => noahmp%energy%state%SpecHumiditySfcMean     ,& ! inout, specific humidity [kg/kg] at surface grid mean
               PressureVaporCanAir     => noahmp%energy%state%PressureVaporCanAir     ,& ! inout, canopy air vapor pressure [Pa]
               ExchCoeffMomSfc         => noahmp%energy%state%ExchCoeffMomSfc         ,& ! inout, exchange coefficient [m/s] for momentum, surface, grid mean
               ExchCoeffShSfc          => noahmp%energy%state%ExchCoeffShSfc          ,& ! inout, exchange coefficient [m/s] for heat, surface, grid mean
@@ -116,7 +114,6 @@ contains
               LeafAreaIndShade        => noahmp%energy%state%LeafAreaIndShade        ,& ! out,   shaded leaf area index, one-sided [m2/m2]
               EmissivitySfc           => noahmp%energy%state%EmissivitySfc           ,& ! out,   surface emissivity
               VegAreaIndEff           => noahmp%energy%state%VegAreaIndEff           ,& ! out,   one-sided leaf+stem area index [m2/m2]
-              WindSpdRefHeight        => noahmp%energy%state%WindSpdRefHeight        ,& ! out,   wind speed [m/s] at reference height
               RoughLenMomSfc          => noahmp%energy%state%RoughLenMomSfc          ,& ! out,   roughness length [m], momentum, surface
               RoughLenMomGrd          => noahmp%energy%state%RoughLenMomGrd          ,& ! out,   roughness length [m], momentum, ground
               WindStressEwVeg         => noahmp%energy%state%WindStressEwVeg         ,& ! out,   wind stress: east-west [N/m2] above canopy
@@ -191,9 +188,6 @@ contains
     HeatPrecipAdvSfc    = 0.0
     HeatCanStorageChg   = 0.0
 
-    ! wind speed at reference height: ur >= 1
-    WindSpdRefHeight = max(sqrt(WindEastwardRefHeight**2.0 + WindNorthwardRefHeight**2.0), 1.0)
-
     ! vegetated or non-vegetated
     VegAreaIndEff = LeafAreaIndEff + StemAreaIndEff
     FlagVegSfc    = .false.
@@ -263,8 +257,8 @@ contains
        ExchCoeffMomSfc     = VegFrac * ExchCoeffMomAbvCan  + (1.0 - VegFrac) * ExchCoeffMomBare     ! better way to average?
        ExchCoeffShSfc      = VegFrac * ExchCoeffShAbvCan   + (1.0 - VegFrac) * ExchCoeffShBare
        SpecHumidity2m      = VegFrac * SpecHumidity2mVeg   + (1.0 - VegFrac) * SpecHumidity2mBare 
-       SpecHumiditySfc     = VegFrac * (PressureVaporCanAir * 0.622 / &
-                             (PressureAirRefHeight - 0.378*PressureVaporCanAir)) + (1.0 - VegFrac) * SpecHumiditySfcBare
+       SpecHumiditySfcMean = VegFrac * (PressureVaporCanAir * 0.622 / &
+                             (PressureAirRefHeight - 0.378*PressureVaporCanAir)) + (1.0 - VegFrac) * SpecHumiditySfc
        RoughLenMomSfcToAtm = RoughLenMomSfc
     else
        WindStressEwSfc         = WindStressEwBare
@@ -281,7 +275,7 @@ contains
        TemperatureSfc          = TemperatureGrd
        ExchCoeffMomSfc         = ExchCoeffMomBare
        ExchCoeffShSfc          = ExchCoeffShBare
-       SpecHumiditySfc         = SpecHumiditySfcBare
+       SpecHumiditySfcMean     = SpecHumiditySfc
        SpecHumidity2m          = SpecHumidity2mBare
        ResistanceStomataSunlit = 0.0
        ResistanceStomataShade  = 0.0

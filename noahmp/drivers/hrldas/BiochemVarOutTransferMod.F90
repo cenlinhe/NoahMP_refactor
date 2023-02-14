@@ -1,11 +1,10 @@
-module BiochemVarOutMod
+module BiochemVarOutTransferMod
 
-!!! Transfer column (1-D) Noah-MP biochemistry (carbon,nitrogen,etc) variables 
-!!! to 2D NoahmpIO for output
+!!! Transfer column (1-D) biochemistry variables to 2D NoahmpIO for output
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He, & refactor team (July, 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -16,7 +15,8 @@ module BiochemVarOutMod
 
 contains
 
-!=== Transfer model states to output=====
+!=== Transfer model states to output =====
+
   subroutine BiochemVarOutTransfer(noahmp, NoahmpIO)
 
     implicit none
@@ -24,10 +24,12 @@ contains
     type(noahmp_type),   intent(inout) :: noahmp
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
 
+! ---------------------------------------------------------------------
     associate(                                         &
               I    => noahmp%config%domain%GridIndexI ,&
               J    => noahmp%config%domain%GridIndexJ  &
              )
+! ---------------------------------------------------------------------
 
     ! biochem state variables
     NoahmpIO%LFMASSXY(I,J) = noahmp%biochem%state%LeafMass
@@ -40,7 +42,6 @@ contains
     NoahmpIO%PGSXY   (I,J) = noahmp%biochem%state%PlantGrowStage
     NoahmpIO%GRAINXY (I,J) = noahmp%biochem%state%GrainMass
 
-
     ! biochem flux variables
     NoahmpIO%NEEXY   (I,J) = noahmp%biochem%flux%NetEcoExchange
     NoahmpIO%GPPXY   (I,J) = noahmp%biochem%flux%GrossPriProduction
@@ -51,4 +52,4 @@ contains
 
   end subroutine BiochemVarOutTransfer
 
-end module BiochemVarOutMod
+end module BiochemVarOutTransferMod

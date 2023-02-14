@@ -19,7 +19,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: SRT
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -66,11 +66,11 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSnowSoilInv(1:NumSoilLayer) )
-    allocate( SoilThickTmp    (1:NumSoilLayer) )
-    allocate( SoilWaterGrad   (1:NumSoilLayer) )
-    allocate( WaterExcess     (1:NumSoilLayer) )
-    allocate( SoilMoistureTmp (1:NumSoilLayer) )
+    if (.not. allocated(DepthSnowSoilInv)) allocate(DepthSnowSoilInv(1:NumSoilLayer))
+    if (.not. allocated(SoilThickTmp)    ) allocate(SoilThickTmp    (1:NumSoilLayer))
+    if (.not. allocated(SoilWaterGrad)   ) allocate(SoilWaterGrad   (1:NumSoilLayer))
+    if (.not. allocated(WaterExcess)     ) allocate(WaterExcess     (1:NumSoilLayer))
+    if (.not. allocated(SoilMoistureTmp) ) allocate(SoilMoistureTmp (1:NumSoilLayer))
     MatRight(:)         = 0.0
     MatLeft1(:)         = 0.0
     MatLeft2(:)         = 0.0
@@ -165,6 +165,13 @@ contains
        endif
        MatRight(LoopInd) = WaterExcess(LoopInd) / (-SoilThickTmp(LoopInd))
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DepthSnowSoilInv)
+    deallocate(SoilThickTmp    )
+    deallocate(SoilWaterGrad   )
+    deallocate(WaterExcess     )
+    deallocate(SoilMoistureTmp )
 
     end associate
 

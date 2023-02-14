@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: None (embedded in ENERGY subroutine)
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -25,9 +25,9 @@ contains
     type(noahmp_type), intent(inout) :: noahmp
 
 ! local variables
-    integer                          :: IndSoil             ! loop index
-    real(kind=kind_noahmp)           :: SoilTranspFacTmp    ! temporary variable
-    real(kind=kind_noahmp)           :: MinThr            ! minimum threshold to prevent divided by zero
+    integer                          :: IndSoil       ! loop index
+    real(kind=kind_noahmp)           :: SoilWetFac    ! temporary variable
+    real(kind=kind_noahmp)           :: MinThr        ! minimum threshold to prevent divided by zero
 
 ! --------------------------------------------------------------------
     associate(                                                                             &
@@ -57,26 +57,26 @@ contains
     if ( SurfaceType ==1 ) then
        do IndSoil = 1, NumSoilLayerRoot
           if ( OptSoilWaterTranspiration == 1 ) then  ! Noah
-             SoilTranspFacTmp          = (SoilLiqWater(IndSoil) - SoilMoistureWilt(IndSoil)) / &
+             SoilWetFac                = (SoilLiqWater(IndSoil) - SoilMoistureWilt(IndSoil)) / &
                                          (SoilMoistureFieldCap(IndSoil) - SoilMoistureWilt(IndSoil))
           endif
           if ( OptSoilWaterTranspiration == 2 ) then  ! CLM
              SoilMatPotential(IndSoil) = max(SoilMatPotentialWilt, -SoilMatPotentialSat(IndSoil) * &
                                             (max(0.01,SoilLiqWater(IndSoil))/SoilMoistureSat(IndSoil)) ** &
                                             (-SoilExpCoeffB(IndSoil)))
-             SoilTranspFacTmp          = (1.0 - SoilMatPotential(IndSoil)/SoilMatPotentialWilt) / &
+             SoilWetFac                = (1.0 - SoilMatPotential(IndSoil)/SoilMatPotentialWilt) / &
                                          (1.0 + SoilMatPotentialSat(IndSoil)/SoilMatPotentialWilt)
           endif
           if ( OptSoilWaterTranspiration == 3 ) then  ! SSiB
              SoilMatPotential(IndSoil) = max(SoilMatPotentialWilt, -SoilMatPotentialSat(IndSoil) * &
                                             (max(0.01,SoilLiqWater(IndSoil))/SoilMoistureSat(IndSoil)) ** &
                                             (-SoilExpCoeffB(IndSoil)))
-             SoilTranspFacTmp          = 1.0 - exp(-5.8*(log(SoilMatPotentialWilt/SoilMatPotential(IndSoil))))
+             SoilWetFac                = 1.0 - exp(-5.8*(log(SoilMatPotentialWilt/SoilMatPotential(IndSoil))))
           endif
-          SoilTranspFacTmp             = min(1.0, max(0.0,SoilTranspFacTmp))
+          SoilWetFac                   = min(1.0, max(0.0,SoilWetFac))
 
           SoilTranspFac(IndSoil)       = max(MinThr, ThicknessSnowSoilLayer(IndSoil) / &
-                                            (-DepthSoilLayer(NumSoilLayerRoot)) * SoilTranspFacTmp)
+                                            (-DepthSoilLayer(NumSoilLayerRoot)) * SoilWetFac)
           SoilTranspFacAcc             = SoilTranspFacAcc + SoilTranspFac(IndSoil)
        enddo
 

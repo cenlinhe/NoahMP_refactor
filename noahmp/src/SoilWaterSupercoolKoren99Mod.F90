@@ -1,4 +1,4 @@
-module SoilWaterSupercoolLiquidMod
+module SoilWaterSupercoolKoren99Mod
 
 !!! Calculate amount of supercooled liquid soil water content if soil temperature < freezing point
 !!! This uses Newton-type iteration to solve the nonlinear implicit equation 
@@ -17,13 +17,13 @@ module SoilWaterSupercoolLiquidMod
 
 contains
 
-  subroutine SoilWaterSupercoolLiquid(noahmp, IndSoil, SoilWatSupercool, &
-                                      SoilTemperature, SoilMoisture, SoilLiqWater)
+  subroutine SoilWaterSupercoolKoren99(noahmp, IndSoil, SoilWatSupercool, &
+                                       SoilTemperature, SoilMoisture, SoilLiqWater)
 
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: FRH2O
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -122,6 +122,6 @@ contains
 
     end associate
 
-  end subroutine SoilWaterSupercoolLiquid
+  end subroutine SoilWaterSupercoolKoren99
 
-end module SoilWaterSupercoolLiquidMod
+end module SoilWaterSupercoolKoren99Mod

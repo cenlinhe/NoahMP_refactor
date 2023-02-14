@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: SSTEP
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -56,8 +56,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( MatRightTmp(1:NumSoilLayer) )
-    allocate( MatLeft3Tmp(1:NumSoilLayer) )
+    if (.not. allocated(MatRightTmp)) allocate(MatRightTmp(1:NumSoilLayer))
+    if (.not. allocated(MatLeft3Tmp)) allocate(MatLeft3Tmp(1:NumSoilLayer))
     MatRightTmp          = 0.0
     MatLeft3Tmp          = 0.0
     SoilSaturationExcess = 0.0
@@ -136,6 +136,10 @@ contains
     endif
 
     SoilMoisture = SoilLiqWater + SoilIce
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRightTmp)
+    deallocate(MatLeft3Tmp)
 
     end associate
 

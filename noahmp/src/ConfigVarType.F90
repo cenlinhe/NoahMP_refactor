@@ -5,7 +5,7 @@ module ConfigVarType
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -132,7 +132,7 @@ module ConfigVarType
     logical                :: FlagCropland                ! flag to identify croplands
     logical                :: FlagDynamicCrop             ! flag to activate dynamic crop model
     logical                :: FlagDynamicVeg              ! flag to activate dynamic vegetation scheme
-    logical                :: FlagSoilProcess           ! flag to determine if calculating soil processes
+    logical                :: FlagSoilProcess             ! flag to determine if calculating soil processes
     integer                :: GridIndexI                  ! model grid index in x-direction
     integer                :: GridIndexJ                  ! model grid index in y-direction
     integer                :: VegType                     ! vegetation type
@@ -141,7 +141,7 @@ module ConfigVarType
     integer                :: NumSnowLayerMax             ! maximum number of snow layers
     integer                :: NumSnowLayerNeg             ! actual number of snow layers (negative)
     integer                :: SurfaceType                 ! surface type (1=soil; 2=lake)
-    integer                :: NumSWRadBand                ! number of shortwave radiation bands
+    integer                :: NumSwRadBand                ! number of shortwave radiation bands
     integer                :: SoilColor                   ! soil color type for albedo
     integer                :: IndicatorIceSfc             ! indicator for ice surface/point (1=sea ice, 0=non-ice, -1=land ice)
     integer                :: IndexWaterPoint             ! land type index for water point

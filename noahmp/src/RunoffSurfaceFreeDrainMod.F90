@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: INFIL
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -63,7 +63,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialize
-    allocate( SoilWatMaxHold(1:NumSoilLayer) )
+    if (.not. allocated(SoilWatMaxHold)) allocate(SoilWatMaxHold(1:NumSoilLayer))
     SoilWatMaxHold(1:NumSoilLayer) = 0.0
 
     ! start infiltration for free drainage scheme
@@ -121,6 +121,9 @@ contains
        InfilRateSfc  = SoilSfcInflowMean - RunoffSurface
 
     endif ! SoilSfcInflowMean > 0.0
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SoilWatMaxHold)
 
     end associate
 

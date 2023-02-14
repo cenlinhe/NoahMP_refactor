@@ -22,12 +22,12 @@ OBJS_NoahMP = ../IO_code/module_NoahMP_hrldas_driver.o
 OBJS = \
 	../IO_code/main_hrldas_driver.o \
 	../IO_code/module_hrldas_netcdf_io.o \
-        ../../wrf/module_bep_bem_helper.o \
-	../../wrf/module_sf_urban.o \
-	../../wrf/module_sf_bep.o \
-	../../wrf/module_sf_bem.o \
-	../../wrf/module_sf_bep_bem.o \
-        ../../wrf/NoahmpUrbanDriverMainMod.o \
+        ../../urban/wrf/module_bep_bem_helper.o \
+	../../urban/wrf/module_sf_urban.o \
+	../../urban/wrf/module_sf_bep.o \
+	../../urban/wrf/module_sf_bem.o \
+	../../urban/wrf/module_sf_bep_bem.o \
+        ../../urban/wrf/NoahmpUrbanDriverMainMod.o \
 	../Utility_routines/module_wrf_utilities.o \
 	../Utility_routines/module_model_constants.o \
 	../Utility_routines/module_date_utilities.o \
@@ -35,12 +35,25 @@ OBJS = \
         ../Utility_routines/module_wrf_error.o \
 	../Utility_routines/module_ra_gfdleta.o \
         ../Utility_routines/module_domain.o\
-        ../../noahmp/drivers/NoahmpDriverMainMod.o \
-        ../../noahmp/drivers/NoahmpInitMainMod.o \
-        ../../noahmp/drivers/NoahmpGroundwaterInitMod.o \
-        ../../noahmp/drivers/NoahmpSnowInitMod.o \
-        ../../noahmp/drivers/NoahmpIOVarType.o \
-        ../../noahmp/drivers/NoahmpIOVarInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpDriverMainMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpInitMainMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpGroundwaterInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpSnowInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpIOVarType.o \
+        ../../noahmp/drivers/hrldas/NoahmpIOVarInitMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpReadNamelistMod.o \
+        ../../noahmp/drivers/hrldas/NoahmpReadTableMod.o \
+        ../../noahmp/drivers/hrldas/ConfigVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/ForcingVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/EnergyVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/WaterVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/BiochemVarOutTransferMod.o \
+        ../../noahmp/drivers/hrldas/ConfigVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/ForcingVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/EnergyVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/WaterVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/BiochemVarInTransferMod.o \
+        ../../noahmp/drivers/hrldas/PedoTransferSR2006Mod.o \
         ../../noahmp/utility/Machine.o \
         ../../noahmp/utility/CheckNanMod.o \
         ../../noahmp/src/ConstantDefineMod.o \
@@ -126,7 +139,8 @@ OBJS = \
         ../../noahmp/src/SoilSnowTemperatureSolverMod.o \
         ../../noahmp/src/SoilSnowThermalDiffusionMod.o \
         ../../noahmp/src/SoilSnowWaterPhaseChangeMod.o \
-        ../../noahmp/src/SoilWaterSupercoolLiquidMod.o \
+        ../../noahmp/src/SoilWaterSupercoolKoren99Mod.o \
+        ../../noahmp/src/SoilWaterSupercoolNiu06Mod.o \
         ../../noahmp/src/SnowCoverGroundNiu07Mod.o \
         ../../noahmp/src/GroundRoughnessPropertyMod.o \
         ../../noahmp/src/SurfaceEmissivityMod.o \
@@ -144,7 +158,6 @@ OBJS = \
         ../../noahmp/src/IrrigationPrepareMod.o \
         ../../noahmp/src/BalanceErrorCheckMod.o \
         ../../noahmp/src/GeneralInitMod.o \
-        ../../noahmp/src/PedoTransferSR2006.o \
         ../../noahmp/src/GroundWaterMmfMod.o \
         ../../noahmp/src/BalanceErrorCheckGlacierMod.o \
         ../../noahmp/src/EnergyMainGlacierMod.o \
@@ -162,22 +175,13 @@ OBJS = \
         ../../noahmp/src/PsychrometricVariableGlacierMod.o \
         ../../noahmp/src/ResistanceGroundEvaporationGlacierMod.o \
         ../../noahmp/src/SnowCoverGlacierMod.o \
-        ../../noahmp/src/SnowLayerCombineGlacierMod.o \
-        ../../noahmp/src/SnowLayerDivideGlacierMod.o \
         ../../noahmp/src/SnowWaterMainGlacierMod.o \
-        ../../noahmp/src/SnowfallGlacierMod.o \
-        ../../noahmp/src/SnowpackCompactionGlacierMod.o \
         ../../noahmp/src/SnowpackHydrologyGlacierMod.o \
         ../../noahmp/src/SurfaceAlbedoGlacierMod.o \
         ../../noahmp/src/SurfaceEmissivityGlacierMod.o \
         ../../noahmp/src/SurfaceEnergyFluxGlacierMod.o \
         ../../noahmp/src/SurfaceRadiationGlacierMod.o \
-        ../../noahmp/src/WaterMainGlacierMod.o \
-        ../../noahmp/src/ConfigVarOutMod.o \
-        ../../noahmp/src/ForcingVarOutMod.o \
-        ../../noahmp/src/EnergyVarOutMod.o \
-        ../../noahmp/src/WaterVarOutMod.o \
-        ../../noahmp/src/BiochemVarOutMod.o
+        ../../noahmp/src/WaterMainGlacierMod.o
 
 CMD = hrldas.exe
 all:	$(CMD)
@@ -187,7 +191,7 @@ hrldas.exe: $(OBJS)
 	@echo ""
 	echo "${TAO_FORTRAN_LIB} ${TAO_LIB} ${PETSC_LIB} ${PHDF5_INC} -Wl,-rpath,${TACC_HDF5_LIB} -L${TACC_HDF5_LIB} -lhdf5 -lz"
 # We have to include the modules built in ../IO_code 
-	$(COMPILERF90) -o $(@) -I../IO_code -I../../wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o $(@) -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers/hrldas \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP) $(HYDRO_LIB) $(RAPID_LIB) $(NETCDFLIB) $(RAPID_MACRO)
 
 	@echo ""
@@ -195,7 +199,7 @@ hrldas.exe: $(OBJS)
 # Template to create the exe file based on different land model. Such as NoahMP
 NoahMP: $(OBJS)
 	@echo ""
-	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../wrf -I../../noahmp/src -I../../noahmp/drivers \
+	$(COMPILERF90) -o hrldas.exe  -I../IO_code -I../../urban/wrf -I../../noahmp/src -I../../noahmp/drivers/hrldas \
         -I../../noahmp/utility -I../Utility_routines $(OBJS) $(OBJS_NoahMP)  $(HYDRO_LIB) $(NETCDFLIB)
 	@echo ""
 

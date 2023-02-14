@@ -19,7 +19,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: HRT_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -59,10 +59,10 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( DepthSnowSoilInv(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( HeatCapacPerArea(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( TempGradDepth   (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( EnergyExcess    (-NumSnowLayerMax+1:NumSoilLayer) )
+    if (.not. allocated(DepthSnowSoilInv)) allocate(DepthSnowSoilInv(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(HeatCapacPerArea)) allocate(HeatCapacPerArea(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(TempGradDepth)   ) allocate(TempGradDepth   (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(EnergyExcess)    ) allocate(EnergyExcess    (-NumSnowLayerMax+1:NumSoilLayer))
     MatRight(:)         = 0.0
     MatLeft1(:)         = 0.0
     MatLeft2(:)         = 0.0
@@ -127,6 +127,12 @@ contains
        endif
           MatRight(LoopInd)    = EnergyExcess(LoopInd) / (-HeatCapacPerArea(LoopInd))
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(DepthSnowSoilInv)
+    deallocate(HeatCapacPerArea)
+    deallocate(TempGradDepth   )
+    deallocate(EnergyExcess    )
 
     end associate
 

@@ -32,7 +32,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SOILWATER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -92,11 +92,11 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( MatRight  (1:NumSoilLayer) )
-    allocate( MatLeft1  (1:NumSoilLayer) )
-    allocate( MatLeft2  (1:NumSoilLayer) )
-    allocate( MatLeft3  (1:NumSoilLayer) )
-    allocate( SoilLiqTmp(1:NumSoilLayer) )
+    if (.not. allocated(MatRight)  ) allocate(MatRight  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft1)  ) allocate(MatLeft1  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft2)  ) allocate(MatLeft2  (1:NumSoilLayer))
+    if (.not. allocated(MatLeft3)  ) allocate(MatLeft3  (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqTmp)) allocate(SoilLiqTmp(1:NumSoilLayer))
     MatRight         = 0.0
     MatLeft1         = 0.0
     MatLeft2         = 0.0
@@ -255,6 +255,13 @@ contains
     RunoffSurface    = RunoffSurface    * SoilTimeStep
     RunoffSubsurface = RunoffSubsurface * SoilTimeStep
     TileDrain        = TileDrain        * SoilTimeStep
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(MatRight  )
+    deallocate(MatLeft1  )
+    deallocate(MatLeft2  )
+    deallocate(MatLeft3  )
+    deallocate(SoilLiqTmp)
 
     end associate
 

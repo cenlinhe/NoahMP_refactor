@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: ATM
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -48,10 +48,13 @@ contains
               PrecipGraupelRefHeight  => noahmp%forcing%PrecipGraupelRefHeight       ,& ! in,  graupel rate [mm/s] at reference height
               PrecipHailRefHeight     => noahmp%forcing%PrecipHailRefHeight          ,& ! in,  hail rate [mm/s] at reference height
               RadSwDownRefHeight      => noahmp%forcing%RadSwDownRefHeight           ,& ! in,  downward shortwave radiation [W/m2] at reference height
+              WindEastwardRefHeight   => noahmp%forcing%WindEastwardRefHeight        ,& ! in,  wind speed [m/s] in eastward direction at reference height
+              WindNorthwardRefHeight  => noahmp%forcing%WindNorthwardRefHeight       ,& ! in,  wind speed [m/s] in northward direction at reference height
               SnowfallDensityMax      => noahmp%water%param%SnowfallDensityMax       ,& ! in,  maximum fresh snowfall density [kg/m3]
               TemperaturePotRefHeight => noahmp%energy%state%TemperaturePotRefHeight ,& ! out, surface potential temperature [K]
               PressureVaporRefHeight  => noahmp%energy%state%PressureVaporRefHeight  ,& ! out, vapor pressure air [Pa] at reference height
               DensityAirRefHeight     => noahmp%energy%state%DensityAirRefHeight     ,& ! out, density air [kg/m3]
+              WindSpdRefHeight        => noahmp%energy%state%WindSpdRefHeight        ,& ! out, wind speed [m/s] at reference height
               RadSwDownDir            => noahmp%energy%flux%RadSwDownDir             ,& ! out, incoming direct solar radiation [W/m2]
               RadSwDownDif            => noahmp%energy%flux%RadSwDownDif             ,& ! out, incoming diffuse solar radiation [W/m2]
               RainfallRefHeight       => noahmp%water%flux%RainfallRefHeight         ,& ! out, rainfall [mm/s] at reference height
@@ -168,6 +171,9 @@ contains
     ! rain-snow partitioning
     RainfallRefHeight = PrecipTotRefHeight * (1.0 - FrozenPrecipFrac)
     SnowfallRefHeight = PrecipTotRefHeight * FrozenPrecipFrac
+
+    ! wind speed at reference height for turbulence calculation
+    WindSpdRefHeight = max(sqrt(WindEastwardRefHeight**2.0 + WindNorthwardRefHeight**2.0), 1.0)
 
     end associate
 

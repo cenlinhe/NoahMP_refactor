@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: RADIATION_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -29,7 +29,7 @@ contains
 
 ! -----------------------------------------------------------------
     associate(                                                   &
-              NumSWRadBand => noahmp%config%domain%NumSWRadBand ,& ! in,  number of solar radiation wave bands
+              NumSwRadBand => noahmp%config%domain%NumSwRadBand ,& ! in,  number of solar radiation wave bands
               RadSwDownDir => noahmp%energy%flux%RadSwDownDir   ,& ! in,  incoming direct solar radiation [W/m2]
               RadSwDownDif => noahmp%energy%flux%RadSwDownDif   ,& ! in,  incoming diffuse solar radiation [W/m2]
               AlbedoGrdDir => noahmp%energy%state%AlbedoGrdDir  ,& ! in,  ground albedo (direct beam: vis, nir)
@@ -45,7 +45,7 @@ contains
     RadSwAbsSfc  = 0.0
     RadSwReflSfc = 0.0
 
-    do IndBand = 1, NumSWRadBand
+    do IndBand = 1, NumSwRadBand
        ! solar radiation absorbed by glacier surface
        RadSwAbsGrdTmp  = RadSwDownDir(IndBand) * (1.0 - AlbedoGrdDir(IndBand)) + &
                          RadSwDownDif(IndBand) * (1.0 - AlbedoGrdDif(IndBand))

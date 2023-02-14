@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: CSNOW
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -43,7 +43,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( SnowDensBulk(-NumSnowLayerMax+1:0) )
+    if (.not. allocated(SnowDensBulk)) allocate(SnowDensBulk(-NumSnowLayerMax+1:0))
     SnowDensBulk = 0.0
 
     !  effective porosity of snow
@@ -74,6 +74,9 @@ contains
        if (OptSnowThermConduct == 5) &
           ThermConductSnow(LoopInd) = 2.22 * (SnowDensBulk(LoopInd)/1000.0)**1.88                 ! Douvill(Yen, 1981)
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SnowDensBulk)
 
     end associate
 

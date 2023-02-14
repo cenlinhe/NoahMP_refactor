@@ -10,6 +10,10 @@ contains
 
   subroutine ErrorHandle(status)
 
+! ------------------------ Code history -----------------------------------
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
+! -------------------------------------------------------------------------
+
     integer, intent (in) :: status
  
     if(status /= nf90_noerr) then

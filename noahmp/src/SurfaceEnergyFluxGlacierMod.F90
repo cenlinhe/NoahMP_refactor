@@ -3,7 +3,7 @@ module SurfaceEnergyFluxGlacierMod
 !!! Compute surface energy fluxes and budget for bare ground (glacier)
 !!! Use newton-raphson iteration to solve for ground temperatures
 !!! Surface energy balance (bare soil):
-!!! Ground level: -RadSwAbsGrd + RadLwNetBareGrd + HeatSensibleBareGrd + HeatLatentBareGrd + HeatGroundBareGrd = 0
+!!! Ground level: -RadSwAbsGrd - HeatPrecipAdvBareGrd + RadLwNetBareGrd + HeatSensibleBareGrd + HeatLatentBareGrd + HeatGroundBareGrd = 0
 
   use Machine
   use NoahmpVarType
@@ -20,7 +20,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: GLACIER_FLUX
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -81,7 +81,7 @@ contains
               RoughLenMomGrd          => noahmp%energy%state%RoughLenMomGrd          ,& ! in,    roughness length, momentum, ground [m]
               LatHeatVapGrd           => noahmp%energy%state%LatHeatVapGrd           ,& ! in,    latent heat of vaporization/subli [J/kg], ground
               PsychConstGrd           => noahmp%energy%state%PsychConstGrd           ,& ! in,    psychrometric constant [Pa/K], ground
-              SpecHumiditySfcBare     => noahmp%energy%state%SpecHumiditySfcBare     ,& ! inout, specific humidity at bare surface
+              SpecHumiditySfc         => noahmp%energy%state%SpecHumiditySfc         ,& ! inout, specific humidity at surface
               TemperatureGrdBare      => noahmp%energy%state%TemperatureGrdBare      ,& ! inout, bare ground temperature [K]
               ExchCoeffMomBare        => noahmp%energy%state%ExchCoeffMomBare        ,& ! inout, momentum exchange coeff [m/s], above ZeroPlaneDisp, bare ground
               ExchCoeffShBare         => noahmp%energy%state%ExchCoeffShBare         ,& ! inout, heat exchange coeff [m/s], above ZeroPlaneDisp, bare ground
@@ -107,7 +107,7 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization (including variables that do not depend on stability iteration)
-    allocate(SoilIceTmp(1:NumSoilLayer))
+    if (.not. allocated(SoilIceTmp)) allocate(SoilIceTmp(1:NumSoilLayer))
     SoilIceTmp         = 0.0
     TemperatureGrdChg  = 0.0
     MoStabParaBare     = 0.0
@@ -175,9 +175,9 @@ contains
        else
           VapPresSatGrdBare = VapPresSatIceTmp
        endif
-       SpecHumiditySfcBare  = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
+       SpecHumiditySfc      = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
                               (PressureAirRefHeight - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
-       MoistureFluxSfc      = (SpecHumiditySfcBare - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
+       MoistureFluxSfc      = (SpecHumiditySfc - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
 
     enddo loop3 ! end stability iteration
 
@@ -190,9 +190,9 @@ contains
           TempTmp             = TempUnitConv(TemperatureGrdBare) ! MB: recalculate VapPresSatGrdBare
           call VaporPressureSaturation(TempTmp, VapPresSatWatTmp, VapPresSatIceTmp, VapPresSatWatTmpD, VapPresSatIceTmpD)
           VapPresSatGrdBare   = VapPresSatIceTmp
-          SpecHumiditySfcBare = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
+          SpecHumiditySfc     = 0.622 * (VapPresSatGrdBare*RelHumidityGrd) / &
                                 (PressureAirRefHeight - 0.378 * (VapPresSatGrdBare*RelHumidityGrd))
-          MoistureFluxSfc     = (SpecHumiditySfcBare - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
+          MoistureFluxSfc     = (SpecHumiditySfc - SpecHumidityRefHeight) * LhCoeff * PsychConstGrd / ConstHeatCapacAir
           RadLwNetBareGrd     = LwRadCoeff * TemperatureGrdBare**4 - EmissivityGrd * RadLwDownRefHeight
           HeatSensibleBareGrd = ShCoeff * (TemperatureGrdBare - TemperatureAirRefHeight)
           HeatLatentBareGrd   = LhCoeff * (VapPresSatGrdBare*RelHumidityGrd - PressureVaporRefHeight)
@@ -210,16 +210,19 @@ contains
                         (log((2.0+RoughLenShBareGrd)/RoughLenShBareGrd) - MoStabCorrShBare2m)
     if ( ExchCoeffSh2mBare < 1.0e-5 ) then
        TemperatureAir2mBare = TemperatureGrdBare
-       SpecHumidity2mBare   = SpecHumiditySfcBare
+       SpecHumidity2mBare   = SpecHumiditySfc
     else
        TemperatureAir2mBare = TemperatureGrdBare - HeatSensibleBareGrd / &
                               (DensityAirRefHeight*ConstHeatCapacAir) * 1.0 / ExchCoeffSh2mBare
-       SpecHumidity2mBare   = SpecHumiditySfcBare - HeatLatentBareGrd /  &
+       SpecHumidity2mBare   = SpecHumiditySfc - HeatLatentBareGrd /  &
                               (LatHeatVapGrd*DensityAirRefHeight) * (1.0/ExchCoeffSh2mBare + ResistanceGrdEvap)
     endif
 
     ! update ExchCoeffShBare 
     ExchCoeffShBare = ExchCoeffShTmp
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SoilIceTmp)
 
     end associate
 

@@ -4,6 +4,10 @@ module Machine
 !!! To define real data type precision, use "-DOUBLE_PREC" in CPPFLAG in user_build_options file
 !!! By default, Noah-MP uses single precision
 
+! ------------------------ Code history -----------------------------------
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
+! -------------------------------------------------------------------------
+
   implicit none
   save
   private

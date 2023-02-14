@@ -6,7 +6,7 @@ module SnowpackHydrologyGlacierMod
   use Machine
   use NoahmpVarType
   use ConstantDefineMod
-  use SnowLayerCombineGlacierMod, only : SnowLayerCombineGlacier
+  use SnowLayerCombineMod, only : SnowLayerCombine
 
   implicit none
 
@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: SNOWH2O_GLACIER
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -60,8 +60,8 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( SnowLiqVol(-NumSnowLayerMax+1:0) )
-    allocate( SnowIceVol(-NumSnowLayerMax+1:0) )
+    if (.not. allocated(SnowLiqVol)) allocate(SnowLiqVol(-NumSnowLayerMax+1:0))
+    if (.not. allocated(SnowIceVol)) allocate(SnowIceVol(-NumSnowLayerMax+1:0))
     SnowLiqVol(:)      = 0.0
     SnowIceVol(:)      = 0.0
     SnowEffPorosity(:) = 0.0
@@ -116,7 +116,7 @@ contains
     if ( NumSnowLayerNeg < 0 ) then
       SnowIceTmp = SnowIce(NumSnowLayerNeg+1) - SublimSnowSfcIce*MainTimeStep + FrostSnowSfcIce*MainTimeStep
       SnowIce(NumSnowLayerNeg+1) = SnowIceTmp
-      if ( (SnowIceTmp < 1.0e-6) .and. (NumSnowLayerNeg < 0) ) call SnowLayerCombineGlacier(noahmp)
+      if ( (SnowIceTmp < 1.0e-6) .and. (NumSnowLayerNeg < 0) ) call SnowLayerCombine(noahmp)
       if ( NumSnowLayerNeg < 0 ) then
          SnowLiqWater(NumSnowLayerNeg+1) = SnowLiqWater(NumSnowLayerNeg+1) + RainfallGround * MainTimeStep
          SnowLiqWater(NumSnowLayerNeg+1) = max(0.0, SnowLiqWater(NumSnowLayerNeg+1))
@@ -157,6 +157,10 @@ contains
 
     ! Liquid water from snow bottom to soil (mm/s)
     SnowBotOutflow = OutflowSnowLayer / MainTimeStep
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SnowLiqVol)
+    deallocate(SnowIceVol)
 
     end associate
 

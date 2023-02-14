@@ -1,6 +1,6 @@
 module RunoffSubSurfaceShallowMmfMod
 
-!!! Calculate subsurface runoff based on TOPMODEL with groundwater (Niu et al 2007)
+!!! Calculate subsurface runoff based on MMF groundwater scheme
 
   use Machine
   use NoahmpVarType
@@ -16,7 +16,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Originally embeded in WATER subroutine instead of as a separate subroutine
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -42,8 +42,6 @@ contains
     SoilLiqWater(NumSoilLayer) = SoilMoisture(NumSoilLayer) - SoilIce(NumSoilLayer)
 
     ! compute subsurface runoff
-    ! it really comes from subroutine watertable, 
-    ! which is not called with the same frequency as the soil routines here
     RunoffSubsurface    = RunoffSubsurface + DrainSoilBot 
     WaterStorageAquifer = 0.0
 

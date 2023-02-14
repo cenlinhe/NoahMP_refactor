@@ -1,4 +1,4 @@
-module PedoTransferSR2006
+module PedoTransferSR2006Mod
 
 !!! Compute soil water infiltration based on different soil composition
 
@@ -10,44 +10,44 @@ module PedoTransferSR2006
 
 contains
 
-  subroutine PedoTransfer_SR2006(NoahmpIO, noahmp, Sand, Clay, Orgm)
+  subroutine PedoTransferSR2006(NoahmpIO, noahmp, Sand, Clay, Orgm)
 
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: PEDOTRANSFER_SR2006
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
 
     type(NoahmpIO_type), intent(inout) :: NoahmpIO
-    type(noahmp_type),   intent(inout) :: noahmp
+    type(noahmp_type)  , intent(inout) :: noahmp
 
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Sand
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Clay
-    real(kind=kind_noahmp), dimension(1:NoahmpIO%nsoil), intent(inout) :: Orgm
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Sand
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Clay
+    real(kind=kind_noahmp), dimension(1:NoahmpIO%NSOIL), intent(inout) :: Orgm
 
-    ! local
+! local
     integer                                                 :: k
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_1500
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_33t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_33
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_s33t
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: theta_s33
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_et
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psi_e                                 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_1500t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_1500
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_33t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_33
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_s33t
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: theta_s33
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psi_et
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psi_e                                 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcmax 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcref 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcwlt 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: smcdry 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: bexp   
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: psisat 
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: dksat  
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: dwsat  
+    real(kind=kind_noahmp), dimension( 1:NoahmpIO%NSOIL )   :: quartz 
 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcmax 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcref 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcwlt 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: smcdry 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: bexp   
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: psisat 
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: dksat  
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: dwsat  
-    real(kind=kind_noahmp), dimension( 1:NoahmpIO%nsoil )   :: quartz 
-
+! ------------------------------------------------------------------------------
     associate(                                                               & 
               sr2006_theta_1500t_a  =>  NoahmpIO%sr2006_theta_1500t_a_TABLE ,& 
               sr2006_theta_1500t_b  =>  NoahmpIO%sr2006_theta_1500t_b_TABLE ,&
@@ -90,9 +90,9 @@ contains
               sr2006_smcmax_a       =>  NoahmpIO%sr2006_smcmax_a_TABLE      ,&
               sr2006_smcmax_b       =>  NoahmpIO%sr2006_smcmax_b_TABLE       &
              ) 
+! -------------------------------------------------------------------------------
 
-    !-------------------------------------------------------------------------
-
+    ! initialize
     smcmax  = 0.0
     smcref  = 0.0
     smcwlt  = 0.0
@@ -110,7 +110,8 @@ contains
       end if
       if(Orgm(k) <= 0 ) Orgm(k) = 0.0
     end do
-        
+       
+    ! compute soil properties 
     theta_1500t =   sr2006_theta_1500t_a*Sand       &
                   + sr2006_theta_1500t_b*Clay       &
                   + sr2006_theta_1500t_c*Orgm       &
@@ -161,6 +162,7 @@ contains
                   + sr2006_psi_e_b*psi_et         &
                   + sr2006_psi_e_c
     
+    ! assign property values
     smcwlt = theta_1500
     smcref = theta_33
     smcmax = theta_33                     &
@@ -173,20 +175,18 @@ contains
     dksat  = 1930.0 * (smcmax - theta_33) ** (3.0 - 1.0/bexp)
     quartz = Sand
     
-! Units conversion
-    
+    ! Units conversion
     psisat = max(0.1, psisat)               ! arbitrarily impose a limit of 0.1kpa
     psisat = 0.101997 * psisat              ! convert kpa to m
     dksat  = dksat / 3600000.0              ! convert mm/h to m/s
     dwsat  = dksat * psisat * bexp / smcmax ! units should be m*m/s
     smcdry = smcwlt
   
-! Introducing somewhat arbitrary limits (based on NoahmpTable soil) to prevent bad things
-  
+    ! Introducing somewhat arbitrary limits (based on NoahmpTable soil) to prevent bad things
     smcmax = max(0.32 ,min(smcmax,  0.50 ))
-    smcref = max(0.17 ,min(smcref,smcmax ))
-    smcwlt = max(0.01 ,min(smcwlt,smcref ))
-    smcdry = max(0.01 ,min(smcdry,smcref ))
+    smcref = max(0.17 ,min(smcref, smcmax))
+    smcwlt = max(0.01 ,min(smcwlt, smcref))
+    smcdry = max(0.01 ,min(smcdry, smcref))
     bexp   = max(2.50 ,min(bexp,    12.0 ))
     psisat = max(0.03 ,min(psisat,  1.00 ))
     dksat  = max(5.e-7,min(dksat,   1.e-5))
@@ -205,6 +205,6 @@ contains
 
     end associate
 
-  end subroutine PedoTransfer_SR2006
+  end subroutine PedoTransferSR2006
 
-end module PedoTransferSR2006
+end module PedoTransferSR2006Mod

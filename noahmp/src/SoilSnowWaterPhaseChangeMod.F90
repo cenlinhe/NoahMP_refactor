@@ -5,7 +5,8 @@ module SoilSnowWaterPhaseChangeMod
   use Machine
   use NoahmpVarType
   use ConstantDefineMod
-  use SoilWaterSupercoolLiquidMod, only : SoilWaterSupercoolLiquid
+  use SoilWaterSupercoolKoren99Mod, only : SoilWaterSupercoolKoren99
+  use SoilWaterSupercoolNiu06Mod,   only : SoilWaterSupercoolNiu06
 
   implicit none
 
@@ -16,7 +17,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: PHASECHANGE
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -29,10 +30,9 @@ contains
     real(kind=kind_noahmp)                :: EnergyResLeft                  ! energy residual or loss after melting/freezing
     real(kind=kind_noahmp)                :: SnowWaterPrev                  ! old/previous snow water equivalent [kg/m2]
     real(kind=kind_noahmp)                :: SnowWaterRatio                 ! ratio of previous vs updated snow water equivalent 
-    real(kind=kind_noahmp)                :: SoilWatPotFrz                  ! frozen water potential [mm]
     real(kind=kind_noahmp)                :: HeatLhTotPhsChg                ! total latent heat of phase change
     real(kind=kind_noahmp), allocatable, dimension(:) :: EnergyRes          ! energy residual [w/m2]
-    real(kind=kind_noahmp), allocatable, dimension(:) :: SnowWaterChg       ! melting or freezing water [kg/m2]
+    real(kind=kind_noahmp), allocatable, dimension(:) :: WaterPhaseChg      ! melting or freezing water [kg/m2]
     real(kind=kind_noahmp), allocatable, dimension(:) :: MassWatTotInit     ! initial total water (ice + liq) mass
     real(kind=kind_noahmp), allocatable, dimension(:) :: MassWatIceInit     ! initial ice content
     real(kind=kind_noahmp), allocatable, dimension(:) :: MassWatLiqInit     ! initial liquid content
@@ -67,13 +67,20 @@ contains
 ! ----------------------------------------------------------------------
 
     !--- Initialization
-    allocate( EnergyRes     (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( SnowWaterChg  (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatTotInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatIceInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatLiqInit(-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatIceTmp (-NumSnowLayerMax+1:NumSoilLayer) )
-    allocate( MassWatLiqTmp (-NumSnowLayerMax+1:NumSoilLayer) )
+    if (.not. allocated(EnergyRes)     ) allocate(EnergyRes     (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(WaterPhaseChg) ) allocate(WaterPhaseChg (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatTotInit)) allocate(MassWatTotInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatIceInit)) allocate(MassWatIceInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatLiqInit)) allocate(MassWatLiqInit(-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatIceTmp) ) allocate(MassWatIceTmp (-NumSnowLayerMax+1:NumSoilLayer))
+    if (.not. allocated(MassWatLiqTmp) ) allocate(MassWatLiqTmp (-NumSnowLayerMax+1:NumSoilLayer))
+    EnergyRes          = 0.0
+    WaterPhaseChg      = 0.0
+    MassWatTotInit     = 0.0
+    MassWatIceInit     = 0.0
+    MassWatLiqInit     = 0.0
+    MassWatIceTmp      = 0.0
+    MassWatLiqTmp      = 0.0
     MeltGroundSnow     = 0.0
     PondSfcThinSnwMelt = 0.0
     HeatLhTotPhsChg    = 0.0
@@ -99,7 +106,7 @@ contains
     do LoopInd = NumSnowLayerNeg+1, NumSoilLayer
        IndexPhaseChange(LoopInd) = 0
        EnergyRes(LoopInd)        = 0.0
-       SnowWaterChg(LoopInd)     = 0.0
+       WaterPhaseChg(LoopInd)    = 0.0
        MassWatIceInit(LoopInd)   = MassWatIceTmp(LoopInd)
        MassWatLiqInit(LoopInd)   = MassWatLiqTmp(LoopInd)
        MassWatTotInit(LoopInd)   = MassWatIceTmp(LoopInd) + MassWatLiqTmp(LoopInd)
@@ -110,17 +117,14 @@ contains
        do LoopInd = 1, NumSoilLayer
           if ( OptSoilSupercoolWater == 1 ) then
              if ( TemperatureSoilSnow(LoopInd) < ConstFreezePoint ) then
-                SoilWatPotFrz               = ConstLatHeatFusion * (ConstFreezePoint - TemperatureSoilSnow(LoopInd)) /   &
-                                              (ConstGravityAcc * TemperatureSoilSnow(LoopInd))
-                SoilSupercoolWater(LoopInd) = SoilMoistureSat(LoopInd) * (SoilWatPotFrz/SoilMatPotentialSat(LoopInd)) ** &
-                                                                         (-1.0 / SoilExpCoeffB(LoopInd))
+                call SoilWaterSupercoolNiu06(noahmp, LoopInd, SoilSupercoolWater(LoopInd),TemperatureSoilSnow(LoopInd))
                 SoilSupercoolWater(LoopInd) = SoilSupercoolWater(LoopInd) * ThicknessSnowSoilLayer(LoopInd) * 1000.0
              endif
           endif
           if ( OptSoilSupercoolWater == 2 ) then
              if ( TemperatureSoilSnow(LoopInd) < ConstFreezePoint ) then
-                call SoilWaterSupercoolLiquid(noahmp, LoopInd, SoilSupercoolWater(LoopInd), &
-                                              TemperatureSoilSnow(LoopInd), SoilMoisture(LoopInd), SoilLiqWater(LoopInd))
+                call SoilWaterSupercoolKoren99(noahmp, LoopInd, SoilSupercoolWater(LoopInd), &
+                                               TemperatureSoilSnow(LoopInd), SoilMoisture(LoopInd), SoilLiqWater(LoopInd))
                 SoilSupercoolWater(LoopInd) = SoilSupercoolWater(LoopInd) * ThicknessSnowSoilLayer(LoopInd) * 1000.0
              endif
           endif
@@ -158,23 +162,23 @@ contains
           EnergyRes(LoopInd)        = 0.0
           IndexPhaseChange(LoopInd) = 0
        endif
-       SnowWaterChg(LoopInd) = EnergyRes(LoopInd) * MainTimeStep / ConstLatHeatFusion
+       WaterPhaseChg(LoopInd) = EnergyRes(LoopInd) * MainTimeStep / ConstLatHeatFusion
     enddo
 
-    !--- The rate of melting and freezing for snow without a layer, needs more work.
-    if ( (NumSnowLayerNeg == 0) .and. (SnowWaterEquiv > 0.0) .and. (SnowWaterChg(1) > 0.0) ) then
+    !--- The rate of melting for snow without a layer, needs more work.
+    if ( (NumSnowLayerNeg == 0) .and. (SnowWaterEquiv > 0.0) .and. (WaterPhaseChg(1) > 0.0) ) then
        SnowWaterPrev  = SnowWaterEquiv
-       SnowWaterEquiv = max(0.0, SnowWaterPrev-SnowWaterChg(1))
+       SnowWaterEquiv = max(0.0, SnowWaterPrev-WaterPhaseChg(1))
        SnowWaterRatio = SnowWaterEquiv / SnowWaterPrev
        SnowDepth      = max(0.0, SnowWaterRatio*SnowDepth )
        SnowDepth      = min(max(SnowDepth,SnowWaterEquiv/500.0), SnowWaterEquiv/50.0)      ! limit adjustment to a reasonable density
        EnergyResLeft  = EnergyRes(1) - ConstLatHeatFusion * (SnowWaterPrev - SnowWaterEquiv) / MainTimeStep
        if ( EnergyResLeft > 0.0 ) then
-          SnowWaterChg(1) = EnergyResLeft * MainTimeStep / ConstLatHeatFusion
-          EnergyRes(1)    = EnergyResLeft
+          WaterPhaseChg(1) = EnergyResLeft * MainTimeStep / ConstLatHeatFusion
+          EnergyRes(1)     = EnergyResLeft
        else
-          SnowWaterChg(1) = 0.0
-          EnergyRes(1)    = 0.0
+          WaterPhaseChg(1) = 0.0
+          EnergyRes(1)     = 0.0
        endif
        MeltGroundSnow     = max(0.0, (SnowWaterPrev-SnowWaterEquiv)) / MainTimeStep
        HeatLhTotPhsChg    = ConstLatHeatFusion * MeltGroundSnow
@@ -185,19 +189,19 @@ contains
     do LoopInd = NumSnowLayerNeg+1, NumSoilLayer
        if ( (IndexPhaseChange(LoopInd) > 0) .and. (abs(EnergyRes(LoopInd)) > 0.0) ) then
           EnergyResLeft = 0.0
-          if ( SnowWaterChg(LoopInd) > 0.0 ) then
-             MassWatIceTmp(LoopInd) = max(0.0, MassWatIceInit(LoopInd)-SnowWaterChg(LoopInd))
+          if ( WaterPhaseChg(LoopInd) > 0.0 ) then
+             MassWatIceTmp(LoopInd) = max(0.0, MassWatIceInit(LoopInd)-WaterPhaseChg(LoopInd))
              EnergyResLeft          = EnergyRes(LoopInd) - ConstLatHeatFusion * &
                                       (MassWatIceInit(LoopInd) - MassWatIceTmp(LoopInd)) / MainTimeStep
-          elseif ( SnowWaterChg(LoopInd) < 0.0 ) then
+          elseif ( WaterPhaseChg(LoopInd) < 0.0 ) then
              if ( LoopInd <= 0 ) then  ! snow layer
-                MassWatIceTmp(LoopInd) = min(MassWatTotInit(LoopInd), MassWatIceInit(LoopInd)-SnowWaterChg(LoopInd))
+                MassWatIceTmp(LoopInd) = min(MassWatTotInit(LoopInd), MassWatIceInit(LoopInd)-WaterPhaseChg(LoopInd))
              else                      ! soil layer
                 if ( MassWatTotInit(LoopInd) < SoilSupercoolWater(LoopInd) ) then
                    MassWatIceTmp(LoopInd) = 0.0
                 else
                    MassWatIceTmp(LoopInd) = min(MassWatTotInit(LoopInd)-SoilSupercoolWater(LoopInd), &
-                                                MassWatIceInit(LoopInd)-SnowWaterChg(LoopInd))
+                                                MassWatIceInit(LoopInd)-WaterPhaseChg(LoopInd))
                    MassWatIceTmp(LoopInd) = max(MassWatIceTmp(LoopInd), 0.0)
                 endif
              endif
@@ -215,7 +219,7 @@ contains
                 if ( MassWatIceTmp(LoopInd) == 0.0 ) then         ! BARLAGE
                    TemperatureSoilSnow(LoopInd) = ConstFreezePoint
                    EnergyRes(LoopInd+1)         = EnergyRes(LoopInd+1) + EnergyResLeft
-                   SnowWaterChg(LoopInd+1)      = EnergyRes(LoopInd+1) * MainTimeStep / ConstLatHeatFusion
+                   WaterPhaseChg(LoopInd+1)     = EnergyRes(LoopInd+1) * MainTimeStep / ConstLatHeatFusion
                 endif
              endif
           endif
@@ -237,6 +241,15 @@ contains
        SoilLiqWater(LoopInd) = MassWatLiqTmp(LoopInd) / (1000.0 * ThicknessSnowSoilLayer(LoopInd))
        SoilMoisture(LoopInd) = (MassWatLiqTmp(LoopInd)+MassWatIceTmp(LoopInd)) / (1000.0*ThicknessSnowSoilLayer(LoopInd))
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(EnergyRes     )
+    deallocate(WaterPhaseChg )
+    deallocate(MassWatTotInit)
+    deallocate(MassWatIceInit)
+    deallocate(MassWatLiqInit)
+    deallocate(MassWatIceTmp )
+    deallocate(MassWatLiqTmp )
 
     end associate
 

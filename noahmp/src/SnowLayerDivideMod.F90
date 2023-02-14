@@ -17,7 +17,7 @@ contains
 ! ------------------------ Code history -----------------------------------
 ! Original Noah-MP subroutine: DIVIDE
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
     implicit none
@@ -48,11 +48,11 @@ contains
              )
 ! ----------------------------------------------------------------------
 
-! initialization
-    allocate( SnowIceTmp        (1:NumSnowLayerMax) )
-    allocate( SnowLiqTmp        (1:NumSnowLayerMax) )
-    allocate( TemperatureSnowTmp(1:NumSnowLayerMax) )
-    allocate( SnowThickTmp      (1:NumSnowLayerMax) )
+    ! initialization
+    if (.not. allocated(SnowIceTmp)        ) allocate(SnowIceTmp        (1:NumSnowLayerMax))
+    if (.not. allocated(SnowLiqTmp)        ) allocate(SnowLiqTmp        (1:NumSnowLayerMax))
+    if (.not. allocated(TemperatureSnowTmp)) allocate(TemperatureSnowTmp(1:NumSnowLayerMax))
+    if (.not. allocated(SnowThickTmp)      ) allocate(SnowThickTmp      (1:NumSnowLayerMax))
     SnowIceTmp        (:) = 0.0
     SnowLiqTmp        (:) = 0.0
     TemperatureSnowTmp(:) = 0.0
@@ -67,7 +67,7 @@ contains
        endif
     enddo
 
-! start snow layer division
+    ! start snow layer division
     NumSnowLayerTmp = abs(NumSnowLayerNeg)
 
     if ( NumSnowLayerTmp == 1 ) then
@@ -146,6 +146,12 @@ contains
        SnowLiqWater(LoopInd)           = SnowLiqTmp(LoopInd-NumSnowLayerNeg)
        TemperatureSoilSnow(LoopInd)    = TemperatureSnowTmp(LoopInd-NumSnowLayerNeg)
     enddo
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(SnowIceTmp        )
+    deallocate(SnowLiqTmp        )
+    deallocate(TemperatureSnowTmp)
+    deallocate(SnowThickTmp      )
 
     end associate
 

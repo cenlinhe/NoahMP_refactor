@@ -1,6 +1,6 @@
 module RunoffSurfaceBatsMod
 
-!!! Calculate surface runoff based on TOPMODEL with groundwater scheme (Niu et al., 2007)
+!!! Calculate surface runoff based on BATS scheme
 
   use Machine
   use NoahmpVarType
@@ -15,7 +15,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Originally embeded in SOILWATER subroutine instead of as a separate subroutine
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none

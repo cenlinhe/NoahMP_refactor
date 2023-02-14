@@ -1,10 +1,10 @@
-module EnergyVarOutMod
+module EnergyVarOutTransferMod
 
-!!! Transfer column (1-D) Noah-MP energy variables to 2D NoahmpIO for output
+!!! Transfer column (1-D) Noah-MP Energy variables to 2D NoahmpIO for output
 
 ! ------------------------ Code history -----------------------------------
 ! Original code: Guo-Yue Niu and Noah-MP team (Niu et al. 2011)
-! Refactered code: P. Valayamkunnath, C. He, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! -------------------------------------------------------------------------
 
   use Machine
@@ -15,7 +15,8 @@ module EnergyVarOutMod
 
 contains
 
-!=== Transfer model states to output=====
+!=== Transfer model states to output =====
+
   subroutine EnergyVarOutTransfer(noahmp, NoahmpIO)
 
     implicit none
@@ -104,7 +105,7 @@ contains
     ! energy state variables
     NoahmpIO%TSK     (I,J) = noahmp%energy%state%TemperatureRadSfc
     NoahmpIO%EMISS   (I,J) = noahmp%energy%state%EmissivitySfc
-    NoahmpIO%QSFC    (I,J) = noahmp%energy%state%SpecHumiditySfcBare
+    NoahmpIO%QSFC    (I,J) = noahmp%energy%state%SpecHumiditySfcMean
     NoahmpIO%TVXY    (I,J) = noahmp%energy%state%TemperatureCanopy
     NoahmpIO%TGXY    (I,J) = noahmp%energy%state%TemperatureGrd
     NoahmpIO%EAHXY   (I,J) = noahmp%energy%state%PressureVaporCanAir
@@ -185,4 +186,4 @@ contains
 
   end subroutine EnergyVarOutTransfer
 
-end module EnergyVarOutMod
+end module EnergyVarOutTransferMod

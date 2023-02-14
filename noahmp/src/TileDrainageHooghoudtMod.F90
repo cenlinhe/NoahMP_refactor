@@ -18,7 +18,7 @@ contains
 ! ------------------------ Code history --------------------------------------------------
 ! Original Noah-MP subroutine: TILE_HOOGHOUDT
 ! Original code: P. Valayamkunnath (NCAR)
-! Refactered code: C. He, P. Valayamkunnath, & refactor team (July 2022)
+! Refactered code: C. He, P. Valayamkunnath, & refactor team (He et al. 2023)
 ! ----------------------------------------------------------------------------------------
 
     implicit none
@@ -71,10 +71,10 @@ contains
 ! ----------------------------------------------------------------------
 
     ! initialization
-    allocate( ThickSatZone        (1:NumSoilLayer) )
-    allocate( LateralWatCondTmp   (1:NumSoilLayer) )
-    allocate( WatExcFieldCapTmp   (1:NumSoilLayer) )
-    allocate( SoilLiqWaterAftDrain(1:NumSoilLayer) )
+    if (.not. allocated(ThickSatZone)        ) allocate(ThickSatZone        (1:NumSoilLayer))
+    if (.not. allocated(LateralWatCondTmp)   ) allocate(LateralWatCondTmp   (1:NumSoilLayer))
+    if (.not. allocated(WatExcFieldCapTmp)   ) allocate(WatExcFieldCapTmp   (1:NumSoilLayer))
+    if (.not. allocated(SoilLiqWaterAftDrain)) allocate(SoilLiqWaterAftDrain(1:NumSoilLayer))
     ThickSatZone         = 0.0
     LateralWatCondTmp    = 0.0
     WatExcFieldCapTmp    = 0.0
@@ -174,6 +174,12 @@ contains
     enddo
 
     TileDrain = TileDrain / SoilTimeStep            ! mm/s
+
+    ! deallocate local arrays to avoid memory leaks
+    deallocate(ThickSatZone        )
+    deallocate(LateralWatCondTmp   )
+    deallocate(WatExcFieldCapTmp   )
+    deallocate(SoilLiqWaterAftDrain)
 
     end associate
 
