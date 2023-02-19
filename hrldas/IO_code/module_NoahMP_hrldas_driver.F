@@ -321,7 +321,7 @@ contains
      call find_restart_file(NoahmpIO%rank, trim(NoahmpIO%restart_filename_requested), NoahmpIO%startdate, &
                             NoahmpIO%khour, NoahmpIO%olddate, NoahmpIO%restart_flnm)
 
-     call read_restart(trim(NoahmpIO%restart_flnm), xstart, xend, xstart, ixfull, jxfull, NoahmpIO%nsoil, NoahmpIO%olddate)
+     call read_restart(trim(NoahmpIO%restart_flnm), xstart, xend, xstart, ixfull, jxfull, NoahmpIO%NSOIL, NoahmpIO%olddate)
 
 #ifdef MPP_LAND
      call mpp_land_bcast_char(19,NoahmpIO%OLDDATE(1:19))
@@ -355,6 +355,7 @@ contains
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "LFMASS"  , NoahmpIO%LFMASSXY )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "RTMASS"  , NoahmpIO%RTMASSXY )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "STMASS"  , NoahmpIO%STMASSXY )
+     call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "CROPCAT" , NoahmpIO%CROPCAT  )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "WOOD"    , NoahmpIO%WOODXY   )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "GRAIN"   , NoahmpIO%GRAINXY  )
      call get_from_restart(xstart, xend, xstart, ixfull, jxfull, "GDD"     , NoahmpIO%GDDXY    )
@@ -633,7 +634,7 @@ contains
     call HYDRO_HRLDAS_ini   &
 #endif
        (trim(NoahmpIO%hrldas_setup_file), NoahmpIO%xend-NoahmpIO%xstart+1,NoahmpIO%yend-NoahmpIO%ystart+1,     & 
-       NoahmpIO%nsoil,NoahmpIO%SMOIS(:,1:NSOIL,:),NoahmpIO%TSLB(:,1:NSOIL,:),NoahmpIO%SH2O(:,1:NSOIL,:),    &
+       NoahmpIO%NSOIL,NoahmpIO%SMOIS(:,1:NoahmpIO%NSOIL,:),NoahmpIO%TSLB(:,1:NoahmpIO%NSOIL,:),NoahmpIO%SH2O(:,1:NoahmpIO%NSOIL,:),    &
        NoahmpIO%CANWAT, NoahmpIO%TSK, NoahmpIO%SNOW, NoahmpIO%SNOWH, NoahmpIO%lai, NoahmpIO%VEGFRA, NoahmpIO%IVGTYP, &
        NoahmpIO%FNDSNOWH)
 
@@ -746,11 +747,11 @@ contains
     etpnd     = 0.0
     prcp0     = 0
 
-   allocate(zsoil (NSOIL))
+   allocate(zsoil (NoahmpIO%NSOIL))
    zsoil = 0
 
    zsoil(1) = -1*NoahmpIO%soil_thick_input(1)
-   do kk = 2, NSOIL
+   do kk = 2, NoahmpIO%NSOIL
       zsoil(kk) = zsoil(kk-1)-NoahmpIO%soil_thick_input(kk)
    end do
    
@@ -1094,7 +1095,7 @@ contains
                                      NoahmpIO%xstartpar, NoahmpIO%ystartpar,                           &
                                      NoahmpIO%iswater, NoahmpIO%mapproj, NoahmpIO%lat1, NoahmpIO%lon1, &
                                      NoahmpIO%dx, NoahmpIO%dy, NoahmpIO%truelat1, NoahmpIO%truelat2,   &
-                                     NoahmpIO%cen_lon, NoahmpIO%nsoil, NoahmpIO%nsnow, NoahmpIO%dzs,   &
+                                     NoahmpIO%cen_lon, NoahmpIO%NSOIL, NoahmpIO%nsnow, NoahmpIO%dzs,   &
                                      NoahmpIO%startdate, NoahmpIO%olddate, NoahmpIO%spinup_loop,       &
                                      NoahmpIO%spinup_loops, NoahmpIO%IVGTYP, NoahmpIO%ISLTYP)
 
@@ -1357,7 +1358,7 @@ subroutine lsm_restart()
   call prepare_restart_file (trim(NoahmpIO%outdir), version, NoahmpIO%igrid, NoahmpIO%llanduse,       &
                              NoahmpIO%olddate, NoahmpIO%startdate, NoahmpIO%ixfull, NoahmpIO%jxfull,  &
                              NoahmpIO%ixpar, NoahmpIO%jxpar, NoahmpIO%xstartpar, NoahmpIO%ystartpar,  &                               
-                             NoahmpIO%nsoil, NoahmpIO%nsnow, NoahmpIO%max_urban_dim, NoahmpIO%dx,     &
+                             NoahmpIO%NSOIL, NoahmpIO%nsnow, NoahmpIO%max_urban_dim, NoahmpIO%dx,     &
                              NoahmpIO%dy, NoahmpIO%truelat1, NoahmpIO%truelat2, NoahmpIO%mapproj,     &
                              NoahmpIO%lat1, NoahmpIO%lon1, NoahmpIO%cen_lon, NoahmpIO%iswater, NoahmpIO%ivgtyp)
   
@@ -1389,6 +1390,7 @@ subroutine lsm_restart()
   call add_to_restart(NoahmpIO%LFMASSXY  , "LFMASS")
   call add_to_restart(NoahmpIO%RTMASSXY  , "RTMASS")
   call add_to_restart(NoahmpIO%STMASSXY  , "STMASS")
+  call add_to_restart(NoahmpIO%CROPCAT   , "CROPCAT")
   call add_to_restart(NoahmpIO%WOODXY    , "WOOD"  )
   call add_to_restart(NoahmpIO%GRAINXY   , "GRAIN" )
   call add_to_restart(NoahmpIO%GDDXY     , "GDD"   )
