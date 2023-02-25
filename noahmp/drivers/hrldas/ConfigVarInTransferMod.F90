@@ -157,6 +157,13 @@ contains
        noahmp%config%domain%SoilType = 7
     endif
 
+    ! set warning message for inconsistent surface and subsurface runoff option
+    ! for now, only the same options for surface and subsurface runoff have been tested
+    if ( noahmp%config%nmlist%OptRunoffSurface /= noahmp%config%nmlist%OptRunoffSubsurface ) then
+       write(*,*) "Warning: Surface and subsurface runoff options are inconsistent! They may be incompatible!"
+       write(*,*) "Warning: Currently only the same options for surface and subsurface runoff are tested."
+    endif
+
     end associate
 
   end subroutine ConfigVarInTransfer
